@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 11: CI/CD con Kubernetes</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #1e88e5; }
+        .reveal h1 { font-size: 1.4em; margin-bottom: 0.4em; }
+        .reveal h2 { font-size: 1.0em; margin-bottom: 0.4em; }
+        .reveal h3 { font-size: 0.8em; margin-bottom: 0.3em; }
+        .reveal p { font-size: 0.5em; margin: 0.2em 0; }
+        .reveal strong { color: #1e88e5; font-weight: bold; }
+        .reveal pre { background: #f8f8f8; border: 1px solid #ddd; width: 100%; padding: 0.4em; margin: 0.3em 0; font-size: 0.31em; }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; font-size: 0.85em; }
+        .reveal ul { font-size: 0.42em; text-align: left; margin-left: 0.5em; }
+        .reveal li { margin: 0.10em 0; }
+        .reveal table { font-size: 0.35em; width: 100%; border-collapse: collapse; margin: 0.3em 0; }
+        .reveal table th, .reveal table td { border: 1px solid #ddd; padding: 0.10em; text-align: left; }
+        .reveal table th { background-color: #f0f0f0; color: #1e88e5; font-weight: bold; }
+        .highlight-box { background-color: #e3f2fd; border-left: 4px solid #1e88e5; padding: 0.3em; margin: 0.3em 0; font-size: 0.38em; }
+        .warning-box { background-color: #fff3e0; border-left: 4px solid #f57c00; padding: 0.3em; margin: 0.3em 0; font-size: 0.38em; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>Módulo 11: CI/CD con Kubernetes</h1>
+                <h2 style="color: #1e88e5;">GitHub Actions, ArgoCD, GitOps</h2>
+                <p style="font-size: 0.7em; margin-top: 1em;">Integración continua y despliegue continuo en Kubernetes</p>
+            </section>
+
+            <section>
+                <h2>CI/CD: Conceptos</h2>
+                <ul>
+                    <li><strong>CI (Continuous Integration):</strong> Integrar código frecuentemente, tests automáticos</li>
+                    <li><strong>CD (Continuous Deployment):</strong> Desplegar automáticamente a producción</li>
+                    <li><strong>Flujo:</strong> Código → Build → Test → Despliegue → Monitoreo</li>
+                    <li><strong>Beneficios:</strong> Faster releases, menos errores, feedback rápido</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Herramientas CI/CD</h2>
+                <table>
+                    <tr>
+                        <th>Herramienta</th>
+                        <th>Tipo</th>
+                        <th>Caso de Uso</th>
+                    </tr>
+                    <tr>
+                        <td><strong>GitHub Actions</strong></td>
+                        <td>CI/CD</td>
+                        <td>Build, test, push imágenes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GitLab CI</strong></td>
+                        <td>CI/CD</td>
+                        <td>Pipelines integrados en GitLab</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Jenkins</strong></td>
+                        <td>CI/CD</td>
+                        <td>On-premise, muy flexible</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ArgoCD</strong></td>
+                        <td>CD/GitOps</td>
+                        <td>Despliegues automáticos desde Git</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Flux</strong></td>
+                        <td>CD/GitOps</td>
+                        <td>GitOps nativo de Kubernetes</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>GitHub Actions: Workflow Básico</h2>
+                <pre><code class="language-yaml">name: CI/CD Pipeline
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build image
+        run: |
+          docker build -t myapp:${{ github.sha }} .
+
+      - name: Push to registry
+        run: |
+          docker push myapp:${{ github.sha }}</code></pre>
+            </section>
+
+            <section>
+                <h2>GitHub Actions: Tests y Quality</h2>
+                <pre><code class="language-yaml">      - name: Run tests
+        run: npm test
+
+      - name: Code coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/coverage-final.json
+
+      - name: Scan security
+        run: |
+          npm install -g snyk
+          snyk test --severity-threshold=high</code></pre>
+            </section>
+
+            <section>
+                <h2>GitHub Actions: Despliegue a K8s</h2>
+                <pre><code class="language-yaml">      - name: Deploy to K8s
+        run: |
+          kubectl set image deployment/myapp \
+            myapp=myapp:${{ github.sha }} \
+            --record
+
+      - name: Rollout status
+        run: |
+          kubectl rollout status \
+            deployment/myapp</code></pre>
+            </section>
+
+            <section>
+                <h2>GitOps: Concepto</h2>
+                <ul>
+                    <li><strong>Git como source of truth:</strong> Todo en Git, incluyendo despliegues</li>
+                    <li><strong>Declarativo:</strong> Describe estado deseado, no comandos imperativos</li>
+                    <li><strong>Automático:</strong> Sistema sync Kubernetes con Git automáticamente</li>
+                    <li><strong>Auditable:</strong> Todo los cambios en Git history</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Flujo GitOps:</strong> Cambio en Git → ArgoCD detecta → Sincroniza cluster
+                </div>
+            </section>
+
+            <section>
+                <h2>ArgoCD: Instalación</h2>
+                <pre><code class="language-bash"># Crear namespace
+kubectl create namespace argocd
+
+# Instalar ArgoCD
+kubectl apply -n argocd -f \
+  https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# Acceder a UI
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+# Obtener password admin
+kubectl -n argocd get secret argocd-initial-admin-secret \
+  -o jsonpath="{.data.password}" | base64 -d</code></pre>
+            </section>
+
+            <section>
+                <h2>ArgoCD: Crear Application</h2>
+                <pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/user/myapp.git
+    targetRevision: HEAD
+    path: deploy/k8s
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production
+  syncPolicy:
+    automated:
+      prune: true      # Eliminar recursos no en Git
+      selfHeal: true   # Auto-sync si drift</code></pre>
+            </section>
+
+            <section>
+                <h2>ArgoCD: CLI Commands</h2>
+                <pre><code class="language-bash"># Login
+argocd login argocd-server
+
+# Crear application
+argocd app create myapp \
+  --repo https://github.com/user/myapp.git \
+  --path deploy/k8s \
+  --dest-namespace production
+
+# Ver estado
+argocd app get myapp
+
+# Sincronizar manualmente
+argocd app sync myapp
+
+# Ver logs de sincronización
+argocd app logs myapp</code></pre>
+            </section>
+
+            <section>
+                <h2>Git Repository Estructura (GitOps)</h2>
+                <pre><code class="language-text">myapp/
+├── src/               # Código fuente
+│   └── ...
+├── deploy/
+│   └── k8s/          # Manifests de Kubernetes
+│       ├── deployment.yaml
+│       ├── service.yaml
+│       ├── configmap.yaml
+│       ├── kustomization.yaml
+│       └── values/    # Helm values
+│           ├── values-dev.yaml
+│           ├── values-prod.yaml
+├── .github/workflows/ # CI/CD pipelines
+│   ├── build.yml
+│   └── deploy.yml
+└── README.md</code></pre>
+            </section>
+
+            <section>
+                <h2>Kustomize: Overlays para Ambientes</h2>
+                <pre><code class="language-text">deploy/k8s/
+├── base/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   └── kustomization.yaml
+└── overlays/
+    ├── dev/
+    │   ├── kustomization.yaml
+    │   └── replicas-patch.yaml
+    ├── staging/
+    │   └── kustomization.yaml
+    └── prod/
+        ├── kustomization.yaml
+        └── resources-patch.yaml</code></pre>
+            </section>
+
+            <section>
+                <h2>Kustomization: Ejemplo</h2>
+                <pre><code class="language-yaml"># base/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - deployment.yaml
+  - service.yaml
+
+---
+# overlays/prod/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+  - ../../base
+patchesStrategicMerge:
+  - replicas-patch.yaml
+namePrefix: prod-</code></pre>
+            </section>
+
+            <section>
+                <h2>Helm + ArgoCD</h2>
+                <pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp
+  namespace: argocd
+spec:
+  source:
+    repoURL: https://github.com/user/myapp.git
+    targetRevision: HEAD
+    path: helm/myapp
+    helm:
+      releaseName: myapp
+      values: |
+        replicaCount: 3
+        image:
+          tag: latest
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production</code></pre>
+            </section>
+
+            <section>
+                <h2>Deployment Strategies</h2>
+                <table>
+                    <tr>
+                        <th>Estrategia</th>
+                        <th>Descripción</th>
+                        <th>Riesgo</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Blue-Green</strong></td>
+                        <td>Dos ambientes, switch instantáneo</td>
+                        <td>Bajo (reversible)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Canary</strong></td>
+                        <td>% usuarios nuevo, luego 100%</td>
+                        <td>Bajo (gradual)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rolling</strong></td>
+                        <td>Reemplaza Pods gradualmente</td>
+                        <td>Medio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Recreate</strong></td>
+                        <td>Kill todos, create nuevos</td>
+                        <td>Alto (downtime)</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Rolling Deployment (Default)</h2>
+                <pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # 1 Pod extra durante update
+      maxUnavailable: 0  # 0 Pods pueden estar down
+
+  # Resultado: 0 downtime</code></pre>
+            </section>
+
+            <section>
+                <h2>Canary Deployment</h2>
+                <pre><code class="language-yaml"># Deploy v2 con 1 Pod
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+      version: v2
+
+# Service load-balancéa a v1 y v2
+# Monitorea métricas de v2
+# Si OK: scale v2 a 3, delete v1</code></pre>
+            </section>
+
+            <section>
+                <h2>Blue-Green Deployment</h2>
+                <pre><code class="language-yaml"># Blue (v1): 3 replicas
+# Green (v2): 3 replicas
+
+# Service apunta a Blue
+# Verificar Green está OK
+# Switch: Service apunta a Green
+# Revertir es trivial: Service apunta a Blue
+
+# Ventaja: instant rollback</code></pre>
+            </section>
+
+            <section>
+                <h2>GitOps Best Practices</h2>
+                <ul>
+                    <li><strong>Git es fuente de verdad:</strong> Todo lo que está en Git está en cluster</li>
+                    <li><strong>Cambios solo via PR:</strong> No kubectl apply directo</li>
+                    <li><strong>Drift detection:</strong> ArgoCD alerta si cluster != Git</li>
+                    <li><strong>Autosync cuidado:</strong> En prod, revisar antes de aplicar</li>
+                    <li><strong>RBAC:</strong> ArgoCD con permisos limitados</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>CI/CD Pipeline Completo</h2>
+                <ul>
+                    <li><strong>1. Código:</strong> Git push</li>
+                    <li><strong>2. CI (GitHub Actions):</strong> Build, test, scan</li>
+                    <li><strong>3. Build imagen:</strong> docker build & push</li>
+                    <li><strong>4. Actualizar manifests:</strong> Image tag en Git</li>
+                    <li><strong>5. CD (ArgoCD):</strong> Sincroniza cluster con Git</li>
+                    <li><strong>6. Monitoreo:</strong> Alerts si hay problemas</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Configurar Secrets en CI/CD</h2>
+                <pre><code class="language-yaml">name: Deploy
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to registry
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | \
+          docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Build & push
+        run: docker push myrepo/myapp:${{ github.sha }}</code></pre>
+            </section>
+
+            <section>
+                <h2>Checklist: CI/CD en Producción</h2>
+                <ul>
+                    <li><strong>☐ CI configurado:</strong> Tests automáticos en cada PR</li>
+                    <li><strong>☐ Imagenes escaneadas:</strong> Vulnerabilidades antes de deploy</li>
+                    <li><strong>☐ Registry privado:</strong> Imágenes no públicas</li>
+                    <li><strong>☐ ArgoCD/Flux instalado:</strong> GitOps automático</li>
+                    <li><strong>☐ Secrets seguros:</strong> No en Git, usar Vault o AWS Secrets</li>
+                    <li><strong>☐ Rollback automático:</strong> En caso de fallos</li>
+                    <li><strong>☐ Monitoring de pipelines:</strong> Alertas si fallano</li>
+                </ul>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            center: false,
+            transition: 'slide',
+            width: 960,
+            height: 700
+        });
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

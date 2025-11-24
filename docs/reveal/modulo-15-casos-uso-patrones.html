@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 15: Casos de Uso y Patrones</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #1e88e5; }
+        .reveal h1 { font-size: 1.4em; margin-bottom: 0.4em; }
+        .reveal h2 { font-size: 1.0em; margin-bottom: 0.4em; }
+        .reveal h3 { font-size: 0.8em; margin-bottom: 0.3em; }
+        .reveal p { font-size: 0.5em; margin: 0.2em 0; }
+        .reveal strong { color: #1e88e5; font-weight: bold; }
+        .reveal pre { background: #f8f8f8; border: 1px solid #ddd; width: 100%; padding: 0.4em; margin: 0.3em 0; font-size: 0.30em; }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; font-size: 0.85em; }
+        .reveal ul { font-size: 0.42em; text-align: left; margin-left: 0.5em; }
+        .reveal li { margin: 0.10em 0; }
+        .reveal table { font-size: 0.35em; width: 100%; border-collapse: collapse; margin: 0.3em 0; }
+        .reveal table th, .reveal table td { border: 1px solid #ddd; padding: 0.10em; text-align: left; }
+        .reveal table th { background-color: #f0f0f0; color: #1e88e5; font-weight: bold; }
+        .highlight-box { background-color: #e3f2fd; border-left: 4px solid #1e88e5; padding: 0.3em; margin: 0.3em 0; font-size: 0.38em; }
+        .warning-box { background-color: #fff3e0; border-left: 4px solid #f57c00; padding: 0.3em; margin: 0.3em 0; font-size: 0.38em; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>Módulo 15: Casos de Uso y Patrones</h1>
+                <h2 style="color: #1e88e5;">Microservicios, Batch, ML, Edge Computing</h2>
+                <p style="font-size: 0.7em; margin-top: 1em;">Patrones y arquitecturas reales con Kubernetes</p>
+            </section>
+
+            <section>
+                <h2>Casos de Uso Principales</h2>
+                <ul>
+                    <li><strong>Microservicios:</strong> Arquitecturas desacopladas</li>
+                    <li><strong>Batch Processing:</strong> Trabajos computacionales</li>
+                    <li><strong>Machine Learning:</strong> Entrenamiento e inferencia</li>
+                    <li><strong>IoT/Edge:</strong> Computación distribuida</li>
+                    <li><strong>CI/CD:</strong> Pipelines de automatización</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Realidad:</strong> Kubernetes cubre mayoría de workloads modernos
+                </div>
+            </section>
+
+            <section>
+                <h2>Microservicios: Arquitectura</h2>
+                <ul>
+                    <li><strong>Aislamiento:</strong> Cada servicio en su contenedor</li>
+                    <li><strong>Escalabilidad:</strong> Escalar servicios independientemente</li>
+                    <li><strong>Deployments:</strong> Actualizar sin downtime</li>
+                    <li><strong>Resilencia:</strong> Fallos aislados no derriban sistema</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Patrón:</strong> API Gateway → Múltiples servicios → Bases de datos
+                </div>
+            </section>
+
+            <section>
+                <h2>Microservicios: Ejemplo Práctico</h2>
+                <pre><code class="language-yaml"># API Gateway
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: gateway
+
+---
+# Auth Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+      - name: auth
+        image: auth-service:v1.0.0
+        env:
+        - name: DB_HOST
+          value: postgres.default.svc.cluster.local</code></pre>
+            </section>
+
+            <section>
+                <h2>Microservicios: Communication Patterns</h2>
+                <table>
+                    <tr>
+                        <th>Patrón</th>
+                        <th>Caso de Uso</th>
+                        <th>Tool</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Sync (RPC)</strong></td>
+                        <td>Request-response inmediato</td>
+                        <td>REST, gRPC</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Async (Pub/Sub)</strong></td>
+                        <td>Eventos desacoplados</td>
+                        <td>RabbitMQ, Kafka</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Saga Pattern</strong></td>
+                        <td>Transacciones distribuidas</td>
+                        <td>Orchestration, choreography</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Circuit Breaker</strong></td>
+                        <td>Fallos en cascada</td>
+                        <td>Istio, Resilience4j</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Service Discovery en K8s</h2>
+                <pre><code class="language-yaml"># DNS automático
+# Formato: <service>.<namespace>.svc.cluster.local
+
+# Desde un pod, acceder a otro servicio:
+# http://auth-service.default.svc.cluster.local:8080/login
+
+---
+# Service DNS
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  namespace: default
+spec:
+  clusterIP: 10.0.0.10  # IP virtual
+  selector:
+    app: auth-service
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080</code></pre>
+                <div class="highlight-box">
+                    <strong>Ventaja:</strong> Sin configurar DNS manualmente
+                </div>
+            </section>
+
+            <section>
+                <h2>Batch Processing: Jobs</h2>
+                <pre><code class="language-yaml">apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-processing
+spec:
+  completions: 10         # Completar 10 pods
+  parallelism: 3          # 3 pods en paralelo
+  backoffLimit: 2         # Reintentos antes de fallar
+  template:
+    spec:
+      containers:
+      - name: processor
+        image: batch-processor:v1
+        args:
+        - --input=/data/input.csv
+        - --output=/data/output.csv
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+      restartPolicy: Never</code></pre>
+            </section>
+
+            <section>
+                <h2>Batch Processing: CronJobs</h2>
+                <pre><code class="language-yaml">apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: daily-backup
+spec:
+  # Ejecutar diariamente a las 2 AM
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: backup-sa
+          containers:
+          - name: backup
+            image: backup-tool:v1
+            args:
+            - --database=production
+            - --bucket=s3://backups
+          restartPolicy: OnFailure
+  # Mantener últimos 3 backups
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1</code></pre>
+            </section>
+
+            <section>
+                <h2>Machine Learning: Training Jobs</h2>
+                <pre><code class="language-yaml">apiVersion: kubeflow.org/v1
+kind: PyTorchJob
+metadata:
+  name: mnist-training
+spec:
+  pytorchReplicaSpecs:
+    Master:
+      replicas: 1
+      template:
+        spec:
+          containers:
+          - name: pytorch
+            image: pytorch:v1.0
+            command:
+            - python
+            - /workspace/train.py
+            resources:
+              limits:
+                nvidia.com/gpu: 1
+    Worker:
+      replicas: 3
+      template:
+        spec:
+          containers:
+          - name: pytorch
+            image: pytorch:v1.0
+            resources:
+              limits:
+                nvidia.com/gpu: 1</code></pre>
+            </section>
+
+            <section>
+                <h2>Machine Learning: Model Serving</h2>
+                <pre><code class="language-yaml">apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: iris-predictor
+spec:
+  predictor:
+    sklearn:
+      storageUri: gs://bucket/model
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+  canary:
+    # Deploy v2 a 10% de tráfico
+    trafficPercent: 10
+    sklearn:
+      storageUri: gs://bucket/model-v2</code></pre>
+                <div class="highlight-box">
+                    <strong>Tool:</strong> KServe para servir modelos ML en K8s
+                </div>
+            </section>
+
+            <section>
+                <h2>Stateful Applications: Databases</h2>
+                <pre><code class="language-yaml">apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  serviceName: postgres
+  replicas: 3
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15
+        ports:
+        - containerPort: 5432
+          name: postgres
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 100Gi</code></pre>
+            </section>
+
+            <section>
+                <h2>Caching: Redis</h2>
+                <pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 512Mi
+            cpu: 500m
+        livenessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 10
+          periodSeconds: 10</code></pre>
+            </section>
+
+            <section>
+                <h2>Message Queue: RabbitMQ</h2>
+                <pre><code class="language-yaml">apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbitmq
+spec:
+  replicas: 3
+  persistence:
+    storageClassName: fast-ssd
+    storage: 10Gi
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  rabbitmq:
+    additionalConfig: |
+      default_user = guest
+      default_pass = guest
+      default_vhost = /</code></pre>
+            </section>
+
+            <section>
+                <h2>API Gateway Pattern</h2>
+                <ul>
+                    <li><strong>Punto de entrada:</strong> Único endpoint para múltiples servicios</li>
+                    <li><strong>Rate limiting:</strong> Proteger backend</li>
+                    <li><strong>Authentication:</strong> Centralizado</li>
+                    <li><strong>Routing:</strong> Basado en path, headers, etc</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Implementación:</strong> Kong, Tyk, AWS API Gateway, Nginx
+                </div>
+            </section>
+
+            <section>
+                <h2>API Gateway: Kong</h2>
+                <pre><code class="language-yaml">apiVersion: configuration.konghq.com/v1
+kind: KongService
+metadata:
+  name: api-service
+spec:
+  protocol: http
+  host: api-service
+  port: 8080
+  path: /api
+
+---
+apiVersion: configuration.konghq.com/v1
+kind: KongRoute
+metadata:
+  name: api-route
+spec:
+  protocols:
+  - http
+  - https
+  paths:
+  - /api
+  service:
+    name: api-service</code></pre>
+            </section>
+
+            <section>
+                <h2>IoT/Edge Computing</h2>
+                <ul>
+                    <li><strong>Edge devices:</strong> K3s, Rancher, OpenShift</li>
+                    <li><strong>Sync con cloud:</strong> Git, Apache Kafka</li>
+                    <li><strong>Local processing:</strong> ML inference en edge</li>
+                    <li><strong>Fallback offline:</strong> Resilencia sin conectividad</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Patrón:</strong> Hub (cloud) + múltiples nodes (edge)
+                </div>
+            </section>
+
+            <section>
+                <h2>Istio + Kubernetes Pattern</h2>
+                <ul>
+                    <li><strong>Service Mesh:</strong> Gestión avanzada de tráfico</li>
+                    <li><strong>Mutual TLS:</strong> Encriptación automática</li>
+                    <li><strong>Observabilidad:</strong> Métricas, logs, trazas</li>
+                    <li><strong>Traffic management:</strong> Canary, A/B testing</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Casos:</strong> Aplicaciones críticas, múltiples servicios
+                </div>
+            </section>
+
+            <section>
+                <h2>Anti-patterns: Qué NO hacer</h2>
+                <ul>
+                    <li><strong>✗ Toda data en memoria:</strong> Pods efímeros</li>
+                    <li><strong>✗ Config hardcoded:</strong> Usar ConfigMaps/Secrets</li>
+                    <li><strong>✗ Monolito en contenedor:</strong> Usa microservicios</li>
+                    <li><strong>✗ Sin health checks:</strong> Pod muerto sigue corriendo</li>
+                    <li><strong>✗ Escalado manual:</strong> Usar HPA</li>
+                </ul>
+                <div class="warning-box">
+                    <strong>Prevención:</strong> Code review, testing, policies
+                </div>
+            </section>
+
+            <section>
+                <h2>Performance Patterns</h2>
+                <ul>
+                    <li><strong>Connection pooling:</strong> Reutilizar conexiones BD</li>
+                    <li><strong>Caching:</strong> Redis, memcached</li>
+                    <li><strong>Async processing:</strong> Queues, workers</li>
+                    <li><strong>Load balancing:</strong> Distribuir carga</li>
+                    <li><strong>Rate limiting:</strong> Proteger recursos</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Scaling Patterns</h2>
+                <table>
+                    <tr>
+                        <th>Patrón</th>
+                        <th>Cuándo usar</th>
+                        <th>Herramienta</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Horizontal (HPA)</strong></td>
+                        <td>Aumentar pods</td>
+                        <td>Kubernetes built-in</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vertical (VPA)</strong></td>
+                        <td>Aumentar recursos por pod</td>
+                        <td>Vertical Pod Autoscaler</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cluster Auto</strong></td>
+                        <td>Aumentar nodos</td>
+                        <td>Cluster Autoscaler</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Manual</strong></td>
+                        <td>Control total</td>
+                        <td>kubectl scale</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Deployment Patterns</h2>
+                <ul>
+                    <li><strong>Rolling:</strong> Reemplazar pods gradualmente</li>
+                    <li><strong>Blue-Green:</strong> Dos ambientes, switch instantáneo</li>
+                    <li><strong>Canary:</strong> % usuarios a nueva versión</li>
+                    <li><strong>Shadow:</strong> Copiar tráfico a nueva versión</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Recomendación:</strong> Canary + monitoring para validar cambios
+                </div>
+            </section>
+
+            <section>
+                <h2>Resilience Patterns</h2>
+                <ul>
+                    <li><strong>Retry:</strong> Reintentar con backoff</li>
+                    <li><strong>Timeout:</strong> No esperar infinito</li>
+                    <li><strong>Circuit Breaker:</strong> Detener llamadas cuando servicio está down</li>
+                    <li><strong>Bulkhead:</strong> Aislar fallos por thread pool</li>
+                    <li><strong>Fallback:</strong> Alternativa cuando falla</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Observability Patterns</h2>
+                <pre><code class="language-yaml"># Logging
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit
+data:
+  fluent-bit.conf: |
+    [INPUT]
+      Name tail
+      Path /var/log/containers/*/*.log
+    [OUTPUT]
+      Name es
+      Match kube.*
+      Host elasticsearch:9200
+
+---
+# Monitoring
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: app-metrics
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  endpoints:
+  - port: metrics
+    interval: 30s</code></pre>
+            </section>
+
+            <section>
+                <h2>Configuration Management Pattern</h2>
+                <pre><code class="language-yaml"># ConfigMap para no-secrets
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  database_url: "postgres://db:5432/myapp"
+  log_level: "info"
+
+---
+# Secrets para datos sensibles
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secrets
+type: Opaque
+stringData:
+  db_password: "supersecret"
+  api_key: "sk-1234567890"
+
+---
+# Usar en deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  template:
+    spec:
+      containers:
+      - name: app
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: app-secrets</code></pre>
+            </section>
+
+            <section>
+                <h2>Testing en Kubernetes</h2>
+                <ul>
+                    <li><strong>Unit tests:</strong> En build time</li>
+                    <li><strong>Integration tests:</strong> Con servicios mínimos</li>
+                    <li><strong>E2E tests:</strong> Stack completo</li>
+                    <li><strong>Chaos engineering:</strong> Romper cosas para validar</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Tool:</strong> Chaos Mesh, Gremlin para chaos testing
+                </div>
+            </section>
+
+            <section>
+                <h2>Security Patterns</h2>
+                <ul>
+                    <li><strong>✓ Secrets en Vault:</strong> No en Git</li>
+                    <li><strong>✓ Network Policies:</strong> Restricción tráfico</li>
+                    <li><strong>✓ RBAC:</strong> Control de acceso mínimo</li>
+                    <li><strong>✓ Pod Security:</strong> Non-root, read-only</li>
+                    <li><strong>✓ Image scanning:</strong> Vulnerabilidades</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Adopción de Kubernetes: Roadmap</h2>
+                <ul>
+                    <li><strong>Mes 1-2:</strong> Setup básico, aplicación simple</li>
+                    <li><strong>Mes 3-4:</strong> CI/CD, monitoreo, logging</li>
+                    <li><strong>Mes 5-6:</strong> Backup, DR, seguridad</li>
+                    <li><strong>Mes 7-8:</strong> Optimización, cost control</li>
+                    <li><strong>Mes 9+:</strong> Advanced patterns, multi-cluster</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Cuando NO usar Kubernetes</h2>
+                <ul>
+                    <li><strong>Aplicación simple:</strong> Lambda/Functions suficiente</li>
+                    <li><strong>Equipo pequeño:</strong> Overhead operacional muy alto</li>
+                    <li><strong>Datos clandestinos:</strong> Bases de datos traditioneles mejor</li>
+                    <li><strong>Low latency crítico:</strong> Bare metal podría ser mejor</li>
+                </ul>
+                <div class="warning-box">
+                    <strong>Honestidad:</strong> K8s no es siempre la solución
+                </div>
+            </section>
+
+            <section>
+                <h2>Futuro de Kubernetes</h2>
+                <ul>
+                    <li><strong>WebAssembly:</strong> Alternativa a contenedores</li>
+                    <li><strong>eBPF:</strong> Networking y observabilidad avanzada</li>
+                    <li><strong>AI-driven:</strong> Optimizaciones automáticas</li>
+                    <li><strong>Edge/IoT:</strong> K3s en dispositivos</li>
+                    <li><strong>Sustainability:</strong> Optimización de energía</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Resumen: 15 Módulos Completados</h2>
+                <ul>
+                    <li><strong>1-4:</strong> Fundamentos y conceptos básicos</li>
+                    <li><strong>5-7:</strong> Storage, configuración, seguridad</li>
+                    <li><strong>8-10:</strong> Observabilidad, escalado, Helm</li>
+                    <li><strong>11-12:</strong> CI/CD, Service Mesh</li>
+                    <li><strong>13-15:</strong> Operaciones, producción, casos de uso</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Ahora:</strong> ¡Listo para usar Kubernetes en producción!
+                </div>
+            </section>
+
+            <section>
+                <h2>Recursos para Continuar Aprendiendo</h2>
+                <ul>
+                    <li><strong>Documentación oficial:</strong> kubernetes.io</li>
+                    <li><strong>Comunidad:</strong> CNCF, Kubernetes Slack</li>
+                    <li><strong>Certificaciones:</strong> CKA, CKAD, CKS</li>
+                    <li><strong>Blogs:</strong> Container solutions, Kelsey Hightower</li>
+                    <li><strong>Práctica:</strong> Minikube, Kind, Colima</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Mensajes Finales</h2>
+                <ul>
+                    <li><strong>1. Kubernetes es una herramienta:</strong> No solución mágica</li>
+                    <li><strong>2. Empieza simple:</strong> Crece gradualmente</li>
+                    <li><strong>3. Aprende operando:</strong> Teoría + práctica</li>
+                    <li><strong>4. Comunidad es key:</strong> Aprender de otros</li>
+                    <li><strong>5. Nunca dejes de aprender:</strong> K8s evoluciona rápido</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>¡Éxito en tu viaje con Kubernetes!</strong>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            center: false,
+            transition: 'slide',
+            width: 960,
+            height: 700
+        });
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

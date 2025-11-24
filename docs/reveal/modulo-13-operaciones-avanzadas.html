@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 13: Operaciones Avanzadas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #1e88e5; }
+        .reveal h1 { font-size: 1.4em; margin-bottom: 0.4em; }
+        .reveal h2 { font-size: 1.0em; margin-bottom: 0.4em; }
+        .reveal h3 { font-size: 0.8em; margin-bottom: 0.3em; }
+        .reveal p { font-size: 0.5em; margin: 0.2em 0; }
+        .reveal strong { color: #1e88e5; font-weight: bold; }
+        .reveal pre { background: #f8f8f8; border: 1px solid #ddd; width: 100%; padding: 0.4em; margin: 0.3em 0; font-size: 0.30em; }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; font-size: 0.85em; }
+        .reveal ul { font-size: 0.42em; text-align: left; margin-left: 0.5em; }
+        .reveal li { margin: 0.10em 0; }
+        .reveal table { font-size: 0.35em; width: 100%; border-collapse: collapse; margin: 0.3em 0; }
+        .reveal table th, .reveal table td { border: 1px solid #ddd; padding: 0.10em; text-align: left; }
+        .reveal table th { background-color: #f0f0f0; color: #1e88e5; font-weight: bold; }
+        .highlight-box { background-color: #e3f2fd; border-left: 4px solid #1e88e5; padding: 0.3em; margin: 0.3em 0; font-size: 0.38em; }
+        .warning-box { background-color: #fff3e0; border-left: 4px solid #f57c00; padding: 0.3em; margin: 0.3em 0; font-size: 0.38em; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>Módulo 13: Operaciones Avanzadas</h1>
+                <h2 style="color: #1e88e5;">Upgrades, Backup, DR, Multi-cluster</h2>
+                <p style="font-size: 0.7em; margin-top: 1em;">Gestión avanzada de clusters Kubernetes en producción</p>
+            </section>
+
+            <section>
+                <h2>¿Qué es Operaciones Avanzadas?</h2>
+                <ul>
+                    <li><strong>Cluster Management:</strong> Actualizar, mantener cluster</li>
+                    <li><strong>Backup & Restore:</strong> Proteger datos contra fallos</li>
+                    <li><strong>Disaster Recovery:</strong> Plan de recuperación ante desastres</li>
+                    <li><strong>Multi-cluster:</strong> Gestionar múltiples clusters</li>
+                    <li><strong>Custom Resources:</strong> Extender API de Kubernetes</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Objetivo:</strong> Mantener clusters seguros, disponibles y escalables
+                </div>
+            </section>
+
+            <section>
+                <h2>Actualización de Cluster</h2>
+                <ul>
+                    <li><strong>Planificación:</strong> Revisar release notes, verificar compatibilidad</li>
+                    <li><strong>Versiones:</strong> Control plane y kubelet en versiones cercanas</li>
+                    <li><strong>Estrategia:</strong> Rolling update = sin downtime</li>
+                    <li><strong>Validación:</strong> Verificar salud post-actualización</li>
+                </ul>
+                <div class="warning-box">
+                    <strong>Importante:</strong> Siempre hacer backup antes de actualizar
+                </div>
+            </section>
+
+            <section>
+                <h2>Actualización con kubeadm (Paso 1-2)</h2>
+                <pre><code class="language-bash"># 1. Verificar versión disponible
+kubeadm upgrade plan
+
+# 2. Actualizar kubeadm (control plane)
+apt-get update && apt-get install -y kubeadm=1.27.0-00
+
+# 3. Planificar upgrade
+kubeadm upgrade plan v1.27.0
+
+# 4. Aplicar upgrade a control plane
+kubeadm upgrade apply v1.27.0</code></pre>
+            </section>
+
+            <section>
+                <h2>Actualización con kubeadm (Paso 3-4)</h2>
+                <pre><code class="language-bash"># 5. Actualizar kubelet en control plane
+apt-get install -y kubelet=1.27.0-00 kubectl=1.27.0-00
+systemctl daemon-reload
+systemctl restart kubelet
+
+# 6. Verificar control plane actualizado
+kubectl get nodes</code></pre>
+            </section>
+
+            <section>
+                <h2>Actualización de Worker Nodes</h2>
+                <pre><code class="language-bash"># Para cada worker node:
+for node in worker1 worker2 worker3; do
+  # Marcar nodo como no schedulable
+  kubectl cordon $node
+
+  # Evacuar pods
+  kubectl drain $node --ignore-daemonsets \
+    --delete-emptydir-data
+
+  # SSH al nodo y ejecutar:
+  # apt-get install -y kubelet=1.27.0-00
+  # systemctl restart kubelet
+
+  # Volver a schedulable
+  kubectl uncordon $node
+done</code></pre>
+            </section>
+
+            <section>
+                <h2>Actualización en Clusters Managed</h2>
+                <pre><code class="language-bash"># AWS EKS
+aws eks update-cluster-version \
+  --name my-cluster \
+  --kubernetes-version 1.27
+
+# Google GKE
+gcloud container clusters upgrade my-cluster \
+  --cluster-version 1.27
+
+# Azure AKS
+az aks upgrade \
+  --resource-group myResourceGroup \
+  --name myAKSCluster \
+  --kubernetes-version 1.27</code></pre>
+            </section>
+
+            <section>
+                <h2>Validación Post-Actualización</h2>
+                <pre><code class="language-bash"># Verificar versión
+kubectl version
+
+# Verificar nodos
+kubectl get nodes
+
+# Verificar componentes del sistema
+kubectl get componentstatus
+kubectl get pods -n kube-system
+
+# Revisar logs de kubelet
+journalctl -u kubelet -n 50</code></pre>
+            </section>
+
+            <section>
+                <h2>Backup: Estrategia</h2>
+                <ul>
+                    <li><strong>etcd backup:</strong> Estado del cluster</li>
+                    <li><strong>Application backup:</strong> Datos de aplicaciones</li>
+                    <li><strong>PersistentVolume backup:</strong> Volúmenes persistentes</li>
+                    <li><strong>Frecuencia:</strong> Diaria, horaria o en tiempo real</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Regla:</strong> Backup regular = baja RPO (Recovery Point Objective)
+                </div>
+            </section>
+
+            <section>
+                <h2>Backup de etcd</h2>
+                <pre><code class="language-bash"># Snapshot de etcd (backup)
+ETCDCTL_API=3 etcdctl \
+  --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
+  snapshot save /backup/etcd-snapshot.db
+
+# Verificar snapshot
+ETCDCTL_API=3 etcdctl \
+  snapshot status /backup/etcd-snapshot.db</code></pre>
+            </section>
+
+            <section>
+                <h2>Restore de etcd</h2>
+                <pre><code class="language-bash"># Restaurar snapshot
+ETCDCTL_API=3 etcdctl \
+  --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
+  snapshot restore /backup/etcd-snapshot.db \
+  --data-dir=/var/lib/etcd-backup
+
+# Copiar datos restaurados
+mv /var/lib/etcd /var/lib/etcd-old
+mv /var/lib/etcd-backup /var/lib/etcd</code></pre>
+            </section>
+
+            <section>
+                <h2>Velero: Backup Completo</h2>
+                <pre><code class="language-bash"># Descargar e instalar Velero
+wget https://github.com/vmware-tanzu/velero/releases/download/v1.11.0/velero-v1.11.0-linux-amd64.tar.gz
+tar -xzf velero-v1.11.0-linux-amd64.tar.gz
+sudo mv velero-v1.11.0-linux-amd64/velero /usr/local/bin/
+
+# Instalar en cluster (con AWS S3)
+velero install \
+  --provider aws \
+  --bucket velero-backups \
+  --secret-file ./credentials-velero</code></pre>
+            </section>
+
+            <section>
+                <h2>Velero: Crear Backups</h2>
+                <pre><code class="language-bash"># Backup completo
+velero backup create full-backup
+
+# Backup de namespace específico
+velero backup create prod-backup \
+  --include-namespaces production
+
+# Backup con schedule (cron)
+velero schedule create daily-backup \
+  --schedule="0 2 * * *" \
+  --include-namespaces production
+
+# Ver estado de backups
+velero backup get
+velero backup describe full-backup</code></pre>
+            </section>
+
+            <section>
+                <h2>Velero: Restaurar</h2>
+                <pre><code class="language-bash"># Restaurar backup completo
+velero restore create \
+  --from-backup full-backup
+
+# Restaurar namespace específico
+velero restore create \
+  --from-backup prod-backup \
+  --include-namespaces production
+
+# Ver estado de restauración
+velero restore get
+velero restore logs full-backup-20231115</code></pre>
+            </section>
+
+            <section>
+                <h2>Disaster Recovery: Conceptos</h2>
+                <ul>
+                    <li><strong>RTO (Recovery Time Objective):</strong> Tiempo máx para recuperar (ej: 4 horas)</li>
+                    <li><strong>RPO (Recovery Point Objective):</strong> Máx pérdida de datos (ej: 1 hora)</li>
+                    <li><strong>RTO bajo:</strong> Requiere replicación activa</li>
+                    <li><strong>RPO bajo:</strong> Requiere backups frecuentes</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Trade-off:</strong> RTO/RPO bajos = costo más alto
+                </div>
+            </section>
+
+            <section>
+                <h2>DR: Estrategia Multi-Cluster</h2>
+                <ul>
+                    <li><strong>Cluster primario:</strong> Producción activa</li>
+                    <li><strong>Cluster secundario:</strong> Standby o activo-activo</li>
+                    <li><strong>Replicación:</strong> Estado entre clusters</li>
+                    <li><strong>DNS/LB:</strong> Apuntar a secundario en fallo</li>
+                </ul>
+                <div class="warning-box">
+                    <strong>Probar DR:</strong> Simular fallo regularmente, no en producción
+                </div>
+            </section>
+
+            <section>
+                <h2>DR: Testing Procedimiento</h2>
+                <pre><code class="language-bash"># 1. Crear backup en cluster primario
+velero backup create pre-disaster-backup
+
+# 2. Cambiar contexto a cluster secundario
+kubectl config use-context secondary-cluster
+
+# 3. Restaurar aplicación
+velero restore create \
+  --from-backup pre-disaster-backup
+
+# 4. Validar funcionalidad
+kubectl get all -n production
+
+# 5. Cambiar DNS/LB para probar tráfico
+# (en test, luego revertir)
+
+# 6. Documentar resultados y timepos</code></pre>
+            </section>
+
+            <section>
+                <h2>Multi-cluster: Motivación</h2>
+                <ul>
+                    <li><strong>Alta Disponibilidad:</strong> Fallo de región</li>
+                    <li><strong>Compliance:</strong> Datos en múltiples jurisdicciones</li>
+                    <li><strong>Escalado:</strong> Distribuir carga entre regiones</li>
+                    <li><strong>Latencia:</strong> Clusters cerca de usuarios</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Desafío:</strong> Sincronización y consistencia de datos
+                </div>
+            </section>
+
+            <section>
+                <h2>Multi-cluster: Herramientas</h2>
+                <table>
+                    <tr>
+                        <th>Herramienta</th>
+                        <th>Tipo</th>
+                        <th>Caso de Uso</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Helm</strong></td>
+                        <td>Package</td>
+                        <td>Desplegar en múltiples clusters</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ArgoCD/Flux</strong></td>
+                        <td>GitOps</td>
+                        <td>Sincronización declarativa</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Karmada</strong></td>
+                        <td>Control Plane</td>
+                        <td>Nativo multi-cluster</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rancher</strong></td>
+                        <td>Platform</td>
+                        <td>Gestión centralizada</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Multi-cluster con Helm</h2>
+                <pre><code class="language-bash"># Cluster 1
+kubectl config use-context cluster1
+helm install myapp ./chart --namespace production
+
+# Cluster 2
+kubectl config use-context cluster2
+helm install myapp ./chart --namespace production
+
+# Cluster 3
+kubectl config use-context cluster3
+helm install myapp ./chart --namespace production
+
+# Ver despliegues
+for context in cluster1 cluster2 cluster3; do
+  kubectl config use-context $context
+  helm list
+done</code></pre>
+            </section>
+
+            <section>
+                <h2>Multi-cluster con ArgoCD</h2>
+                <pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp-cluster1
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/myorg/config
+    targetRevision: main
+    path: clusters/cluster1
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production</code></pre>
+            </section>
+
+            <section>
+                <h2>Multi-cluster con ArgoCD (Cluster 2)</h2>
+                <pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp-cluster2
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/myorg/config
+    targetRevision: main
+    path: clusters/cluster2
+  destination:
+    server: https://cluster2-api.example.com:6443
+    namespace: production</code></pre>
+            </section>
+
+            <section>
+                <h2>Karmada: Control Plane Multi-cluster</h2>
+                <pre><code class="language-bash"># Instalar Karmada
+git clone https://github.com/karmada-io/karmada.git
+cd karmada
+hack/local-up-karmada.sh
+
+# Registrar clusters
+karmadactl join cluster1 \
+  --cluster-kubeconfig=/path/to/cluster1.conf
+karmadactl join cluster2 \
+  --cluster-kubeconfig=/path/to/cluster2.conf</code></pre>
+            </section>
+
+            <section>
+                <h2>Karmada: Propagación de Workloads</h2>
+                <pre><code class="language-yaml">apiVersion: policy.karmada.io/v1alpha1
+kind: PropagationPolicy
+metadata:
+  name: multi-cluster-app
+spec:
+  resourceSelectors:
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: myapp
+  placement:
+    clusterAffinity:
+      clusterNames:
+      - cluster1
+      - cluster2
+      - cluster3</code></pre>
+            </section>
+
+            <section>
+                <h2>Monitoreo Multi-cluster</h2>
+                <pre><code class="language-yaml"># Prometheus federado
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+- job_name: 'cluster1'
+  kubernetes_sd_configs:
+  - api_server: https://cluster1-api.example.com:6443
+
+- job_name: 'cluster2'
+  kubernetes_sd_configs:
+  - api_server: https://cluster2-api.example.com:6443</code></pre>
+            </section>
+
+            <section>
+                <h2>Custom Resources (CRDs)</h2>
+                <ul>
+                    <li><strong>CRD:</strong> CustomResourceDefinition</li>
+                    <li><strong>Extender API:</strong> Crear nuevos tipos de recursos</li>
+                    <li><strong>Ejemplos:</strong> Website, Database, Cache, ML Job</li>
+                    <li><strong>Operadores:</strong> Controllers que gestionan CRDs</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Patrón:</strong> CRD + Operator = aplicación nativa K8s
+                </div>
+            </section>
+
+            <section>
+                <h2>Crear CRD: Definición</h2>
+                <pre><code class="language-yaml">apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: websites.mycompany.io
+spec:
+  group: mycompany.io
+  scope: Namespaced
+  names:
+    plural: websites
+    kind: Website
+    shortNames:
+    - ws</code></pre>
+            </section>
+
+            <section>
+                <h2>Crear CRD: Schema</h2>
+                <pre><code class="language-yaml">  versions:
+  - name: v1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            required:
+            - domain
+            - owner
+            properties:
+              domain:
+                type: string
+                pattern: '^[a-z0-9\-]+\.[a-z]+$'
+              owner:
+                type: string
+              replicas:
+                type: integer
+                minimum: 1
+                maximum: 10</code></pre>
+            </section>
+
+            <section>
+                <h2>Usar CRD: Crear Instancia</h2>
+                <pre><code class="language-yaml">apiVersion: mycompany.io/v1
+kind: Website
+metadata:
+  name: my-blog
+spec:
+  domain: myblog.com
+  owner: john@example.com
+  replicas: 3
+  ssl: true
+
+---
+# Otra instancia
+apiVersion: mycompany.io/v1
+kind: Website
+metadata:
+  name: my-shop
+spec:
+  domain: myshop.com
+  owner: jane@example.com
+  replicas: 5
+  ssl: true</code></pre>
+            </section>
+
+            <section>
+                <h2>Usar CRD: Comandos</h2>
+                <pre><code class="language-bash"># Listar instancias
+kubectl get websites
+kubectl get ws
+
+# Ver detalles
+kubectl describe website my-blog
+
+# Editar
+kubectl edit website my-blog
+
+# Eliminar
+kubectl delete website my-blog
+
+# Ver en YAML
+kubectl get website my-blog -o yaml</code></pre>
+            </section>
+
+            <section>
+                <h2>Validación en CRDs</h2>
+                <pre><code class="language-yaml">properties:
+  engine:
+    type: string
+    enum:
+    - postgresql
+    - mysql
+    - mongodb
+  size:
+    type: integer
+    minimum: 1
+    maximum: 1000
+  retentionDays:
+    type: integer
+    default: 30</code></pre>
+                <div class="highlight-box">
+                    <strong>Beneficio:</strong> API valida datos automáticamente
+                </div>
+            </section>
+
+            <section>
+                <h2>Operadores: Concepto</h2>
+                <ul>
+                    <li><strong>Operator:</strong> Controller para gestionar CRD</li>
+                    <li><strong>Automatiza:</strong> Provisión, actualización, mantenimiento</li>
+                    <li><strong>Encapsula:</strong> Lógica operacional en software</li>
+                    <li><strong>Ejemplos:</strong> Prometheus Operator, MySQL Operator</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Patrón:</strong> Declaramos QARÁ (estado deseado), Operator lo implementa
+                </div>
+            </section>
+
+            <section>
+                <h2>Troubleshooting: Nodos</h2>
+                <pre><code class="language-bash"># Ver estado de nodos
+kubectl get nodes
+kubectl describe node worker1
+
+# Ver condiciones del nodo
+kubectl get nodes -o json | jq '.items[].status.conditions'
+
+# Revisar recursos del nodo
+kubectl describe node worker1 | grep -A 10 Allocatable
+
+# Ver eventos del nodo
+kubectl get events --field-selector \
+  involvedObject.kind=Node</code></pre>
+            </section>
+
+            <section>
+                <h2>Troubleshooting: Pods</h2>
+                <pre><code class="language-bash"># Ver estado de pods
+kubectl get pods -A
+kubectl describe pod problematic-pod
+
+# Ver logs
+kubectl logs problematic-pod
+kubectl logs problematic-pod -c container-name
+
+# Ver logs previos (si pod crasheó)
+kubectl logs problematic-pod --previous
+
+# Exec en pod para debugging
+kubectl exec -it problematic-pod -- /bin/bash</code></pre>
+            </section>
+
+            <section>
+                <h2>Troubleshooting: Eventos y Logs</h2>
+                <pre><code class="language-bash"># Ver eventos de cluster
+kubectl get events -A --sort-by='.lastTimestamp'
+
+# Ver eventos específicos
+kubectl describe namespace production
+
+# Revisar logs de control plane
+kubectl logs -n kube-system deployment/coredns
+
+# Revisar logs de kubelet en nodo
+ssh worker1 'journalctl -u kubelet -n 50'</code></pre>
+            </section>
+
+            <section>
+                <h2>Troubleshooting: Red y DNS</h2>
+                <pre><code class="language-bash"># Probar DNS
+kubectl run debug --image=busybox --rm -it -- \
+  nslookup kubernetes.default
+
+# Revisar servicios
+kubectl get svc -A
+
+# Probar conectividad entre pods
+kubectl run client --image=busybox -it -- \
+  wget -O- http://target-service:8080
+
+# Ver iptables en nodo
+sudo iptables -L -n -t nat | grep kubernetes</code></pre>
+            </section>
+
+            <section>
+                <h2>Troubleshooting: Storage</h2>
+                <pre><code class="language-bash"># Ver PersistentVolumes
+kubectl get pv
+kubectl describe pv pvc-xxxxx
+
+# Ver PersistentVolumeClaims
+kubectl get pvc -A
+kubectl describe pvc my-pvc
+
+# Revisar StorageClasses
+kubectl get storageclass
+
+# Revisar estado de mount
+kubectl exec -it pod-name -- mount</code></pre>
+            </section>
+
+            <section>
+                <h2>Best Practices: Upgrades</h2>
+                <ul>
+                    <li><strong>✓ Planificar:</strong> Revisar release notes, verificar compatibilidad</li>
+                    <li><strong>✓ Backup previo:</strong> Siempre hacer backup antes</li>
+                    <li><strong>✓ Testing:</strong> Probar en cluster no-prod primero</li>
+                    <li><strong>✓ Rolling update:</strong> Nodo por nodo para zero downtime</li>
+                    <li><strong>✓ Monitorear:</strong> Revisar logs y métricas post-upgrade</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Best Practices: Backup</h2>
+                <ul>
+                    <li><strong>✓ Automático:</strong> Schedule backups diarios/horarios</li>
+                    <li><strong>✓ Verificar:</strong> Restaurar backups regularmente para validar</li>
+                    <li><strong>✓ Geográfico:</strong> Guardar backups en múltiples regiones</li>
+                    <li><strong>✓ Retención:</strong> Política clara de cuánto guardar</li>
+                    <li><strong>✓ Documentado:</strong> Procedimiento de restore bien documentado</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Best Practices: DR</h2>
+                <ul>
+                    <li><strong>✓ Definir RTO/RPO:</strong> Objetivos claros de recuperación</li>
+                    <li><strong>✓ Documentar plan:</strong> Runbook para activar DR</li>
+                    <li><strong>✓ Testear regularmente:</strong> DR drills sin afectar prod</li>
+                    <li><strong>✓ Automatizar:</strong> Reducir errores humanos</li>
+                    <li><strong>✓ Comunicar:</strong> Equipo entiende el plan</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Best Practices: Multi-cluster</h2>
+                <ul>
+                    <li><strong>✓ Standardizar:</strong> Mismos versions, configs en clusters</li>
+                    <li><strong>✓ Monitorear todos:</strong> Vista centralizada de salud</li>
+                    <li><strong>✓ Sincronizar datos:</strong> Garantizar consistencia</li>
+                    <li><strong>✓ Failover automático:</strong> DNS/LB para conmutación</li>
+                    <li><strong>✓ Costos:</strong> Multi-cluster es caro, justificar ROI</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Comparación: Opciones de Backup</h2>
+                <table>
+                    <tr>
+                        <th>Opción</th>
+                        <th>Scope</th>
+                        <th>Complejidad</th>
+                        <th>Casos de Uso</th>
+                    </tr>
+                    <tr>
+                        <td><strong>etcd backup</strong></td>
+                        <td>Estado cluster</td>
+                        <td>Baja</td>
+                        <td>Backup rápido, clusters simples</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Velero</strong></td>
+                        <td>Apps + Storage</td>
+                        <td>Media</td>
+                        <td>Backup completo, multi-cluster</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Application-level</strong></td>
+                        <td>Datos app</td>
+                        <td>Alta</td>
+                        <td>Control fino, backup selectivo</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Checklist: Producción Ready</h2>
+                <ul>
+                    <li><strong>☐ Upgrade path:</strong> Versión N-2 soportada</li>
+                    <li><strong>☐ Backup automático:</strong> Diario mínimo</li>
+                    <li><strong>☐ Restore probado:</strong> Monthly DR drills</li>
+                    <li><strong>☐ Multi-cluster:</strong> Si requiere HA</li>
+                    <li><strong>☐ Monitoring:</strong> Alertas de degradación</li>
+                    <li><strong>☐ Runbooks:</strong> Procedimientos documentados</li>
+                    <li><strong>☐ RBAC:</strong> Roles para operadores</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Herramientas Recomendadas</h2>
+                <table>
+                    <tr>
+                        <th>Función</th>
+                        <th>Herramienta</th>
+                        <th>Comentario</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Upgrade</strong></td>
+                        <td>kubeadm / managed</td>
+                        <td>Depende del tipo de cluster</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Backup</strong></td>
+                        <td>Velero</td>
+                        <td>Estándar de facto</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Multi-cluster</strong></td>
+                        <td>ArgoCD / Karmada</td>
+                        <td>ArgoCD para GitOps simple</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CRDs</strong></td>
+                        <td>operator-sdk</td>
+                        <td>Framework para operadores</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Resumen: Operaciones Avanzadas</h2>
+                <ul>
+                    <li><strong>Upgrades:</strong> Planificar, backup, validar</li>
+                    <li><strong>Backup/Restore:</strong> Automatizar, verificar regularmente</li>
+                    <li><strong>Disaster Recovery:</strong> Plan escrito, testear regularmente</li>
+                    <li><strong>Multi-cluster:</strong> Para HA, requiere synchronización</li>
+                    <li><strong>CRDs:</strong> Extender Kubernetes para necesidades custom</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Próximos Pasos</h2>
+                <ul>
+                    <li><strong>1. Implementar backup:</strong> Velero en producción</li>
+                    <li><strong>2. Documentar DR:</strong> Escribir runbooks</li>
+                    <li><strong>3. Testear upgrade:</strong> En cluster de staging primero</li>
+                    <li><strong>4. Monitoreo:</strong> Alertas para health del cluster</li>
+                    <li><strong>5. Automation:</strong> Scripts de operaciones comunes</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Meta:</strong> Cluster seguro, recuperable, escalable
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            center: false,
+            transition: 'slide',
+            width: 960,
+            height: 700
+        });
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

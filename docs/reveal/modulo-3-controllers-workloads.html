@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 3: Controllers y Workloads</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #1e88e5; }
+
+        /* Encabezados */
+        .reveal h1 { font-size: 2em; margin-bottom: 0.5em; }
+        .reveal h2 { font-size: 1.4em; margin-bottom: 0.5em; }
+        .reveal h3 { font-size: 1.1em; margin-bottom: 0.3em; color: #1e88e5; }
+
+        /* Párrafos y énfasis */
+        .reveal p { font-size: 0.6em; margin: 0.3em 0; color: #555555; }
+        .reveal strong { color: #1e88e5; font-weight: bold; }
+
+        /* Código */
+        .reveal pre { background: #f8f8f8; border: 1px solid #ddd; width: 100%; padding: 0.5em; margin: 0.5em 0; font-size: 0.45em; }
+        .reveal pre code { color: #333333; }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; }
+
+        /* Listas */
+        .reveal ul { font-size: 0.55em; text-align: left; margin-left: 0.5em; }
+        .reveal li { margin: 0.3em 0; color: #555555; }
+
+        /* Tablas */
+        .reveal table { font-size: 0.5em; width: 100%; border-collapse: collapse; margin: 0.5em 0; }
+        .reveal table th, .reveal table td { border: 1px solid #ddd; padding: 0.3em; text-align: left; }
+        .reveal table th { background-color: #f0f0f0; color: #1e88e5; font-weight: bold; }
+
+        /* Dos columnas */
+        .two-column { display: flex; gap: 2em; }
+        .two-column > div { flex: 1; }
+
+        /* Highlight boxes */
+        .highlight-box { background-color: #e3f2fd; border-left: 4px solid #1e88e5; padding: 0.5em; margin: 0.5em 0; }
+        .warning-box { background-color: #fff3e0; border-left: 4px solid #f57c00; padding: 0.5em; margin: 0.5em 0; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Slide 1: Title -->
+            <section>
+                <h1>Módulo 3</h1>
+                <h2 style="color: #1e88e5;">Controllers y Workloads</h2>
+                <p style="font-size: 0.7em; margin-top: 1em;">ReplicaSets, Deployments, StatefulSets, DaemonSets, Jobs y CronJobs</p>
+            </section>
+
+            <!-- ReplicaSets Section -->
+            <section>
+                <h2>ReplicaSets: Introducción</h2>
+                <p>Controlador que mantiene un número específico de réplicas de un Pod ejecutándose.</p>
+                <ul>
+                    <li>Asegura que siempre haya N réplicas disponibles</li>
+                    <li>Reemplaza automáticamente Pods que fallan</li>
+                    <li>Reemplaza Pods eliminados manualmente</li>
+                    <li>Base de los Deployments</li>
+                </ul>
+                <div class="highlight-box" style="font-size: 0.55em;">
+                    <strong>Nota:</strong> Usa Deployments en lugar de ReplicaSets directamente.
+                </div>
+            </section>
+
+            <section>
+                <h2>ReplicaSet: Definición YAML</h2>
+                <pre><code class="language-yaml">apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: nginx-rs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.21
+        ports:
+        - containerPort: 80</code></pre>
+            </section>
+
+            <section>
+                <h2>ReplicaSet: Campos Clave</h2>
+                <table>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>replicas</td>
+                        <td>Número de Pods deseados</td>
+                    </tr>
+                    <tr>
+                        <td>selector</td>
+                        <td>Identifica Pods del ReplicaSet</td>
+                    </tr>
+                    <tr>
+                        <td>template</td>
+                        <td>Spec del Pod a crear</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>ReplicaSet: Escalado</h2>
+                <pre><code class="language-bash"># Escalar usando kubectl scale
+kubectl scale rs nginx-rs --replicas=5
+
+# Escalar a cero (detiene todos)
+kubectl scale rs nginx-rs --replicas=0
+
+# Ver status
+kubectl describe rs nginx-rs</code></pre>
+            </section>
+
+            <section>
+                <h2>ReplicaSet: Self-healing</h2>
+                <p>ReplicaSet monitorea continuamente el estado de los Pods:</p>
+                <ul>
+                    <li>Cada 5-10 segundos: cuenta Pods actuales vs replicas deseadas</li>
+                    <li>Si falta Pod: crea uno nuevo automáticamente</li>
+                    <li>Si hay extra: elimina Pod sobrante</li>
+                    <li>Los datos locales en el Pod nuevo se pierden</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>ReplicaSet: Monitoreo</h2>
+                <pre><code class="language-bash"># Ver status del ReplicaSet
+kubectl describe rs nginx-rs
+
+# Ver Pods creados
+kubectl get pods -l app=nginx
+
+# Ver eventos
+kubectl get events | grep nginx-rs</code></pre>
+            </section>
+
+            <section>
+                <h2>ReplicaSet: Best Practices</h2>
+                <ul>
+                    <li>Usa Deployments en lugar de ReplicaSets</li>
+                    <li>Define recursos (CPU/Memory)</li>
+                    <li>Implementa health checks</li>
+                    <li>Usa selectors específicos</li>
+                    <li>Monitorea eventos regularmente</li>
+                </ul>
+            </section>
+
+            <!-- Deployments Section -->
+            <section>
+                <h2>Deployments: Introducción</h2>
+                <p>La forma recomendada de ejecutar Pods stateless.</p>
+                <ul>
+                    <li>Proporciona actualizaciones declarativas</li>
+                    <li>Mantiene historial de versiones</li>
+                    <li>Permite rollback automático</li>
+                    <li>Soporta varias estrategias de despliegue</li>
+                </ul>
+                <div class="highlight-box" style="font-size: 0.55em;">
+                    Usa Deployments en lugar de ReplicaSets directamente.
+                </div>
+            </section>
+
+            <section>
+                <h2>Deployment: Definición Básica</h2>
+                <pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: nginx:1.21
+        ports:
+        - containerPort: 80</code></pre>
+            </section>
+
+            <section>
+                <h2>Rolling Update (por defecto)</h2>
+                <p>Reemplaza Pods gradualmente sin tiempo de inactividad.</p>
+                <ul>
+                    <li>Pods nuevos se crean mientras antiguos se terminan</li>
+                    <li>Sin downtime</li>
+                    <li>Permite detectar problemas con nueva versión</li>
+                    <li>Fácil de revertir</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Rolling Update: Configuración</h2>
+                <pre><code class="language-yaml">spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1          # Máximo Pods extras
+      maxUnavailable: 0    # Máximo no disponibles
+  minReadySeconds: 30     # Segundos antes de Ready</code></pre>
+            </section>
+
+            <section>
+                <h2>Recreate Strategy</h2>
+                <p>Termina todos los Pods antes de crear nuevos.</p>
+                <ul>
+                    <li>Garantiza sin dos versiones simultáneas</li>
+                    <li>Causa downtime</li>
+                    <li>Útil para cambios incompatibles</li>
+                    <li>Casos: migraciones DB, cambios de estado</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Recreate: Configuración</h2>
+                <pre><code class="language-yaml">spec:
+  strategy:
+    type: Recreate</code></pre>
+            </section>
+
+            <section>
+                <h2>Rollout: Ver Historial</h2>
+                <pre><code class="language-bash"># Ver revisiones
+kubectl rollout history deployment/web
+
+# Ver detalles de una revisión
+kubectl rollout history deployment/web --revision=2</code></pre>
+            </section>
+
+            <section>
+                <h2>Rollout: Revertir Cambios</h2>
+                <pre><code class="language-bash"># Rollback a revisión anterior
+kubectl rollout undo deployment/web
+
+# Rollback a una revisión específica
+kubectl rollout undo deployment/web --to-revision=1
+
+# Ver estado del rollback
+kubectl rollout status deployment/web</code></pre>
+            </section>
+
+            <section>
+                <h2>Pause y Resume</h2>
+                <pre><code class="language-bash"># Pausar despliegue
+kubectl rollout pause deployment/web
+
+# Hacer cambios mientras está pausado
+kubectl set image deployment/web web=web:v3
+
+# Reanudar
+kubectl rollout resume deployment/web</code></pre>
+            </section>
+
+            <!-- StatefulSets Section -->
+            <section>
+                <h2>StatefulSets: Introducción</h2>
+                <p>Para aplicaciones con estado que requieren:</p>
+                <ul>
+                    <li>Identidad estable de Pods</li>
+                    <li>Almacenamiento persistente por Pod</li>
+                    <li>Actualización ordenada</li>
+                    <li>Escalado ordenado</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>StatefulSet vs Deployment</h2>
+                <table>
+                    <tr>
+                        <th>Aspecto</th>
+                        <th>Deployment</th>
+                        <th>StatefulSet</th>
+                    </tr>
+                    <tr>
+                        <td>Identidad</td>
+                        <td>Efímera</td>
+                        <td>Estable</td>
+                    </tr>
+                    <tr>
+                        <td>Nombres</td>
+                        <td>Aleatorios</td>
+                        <td>mysql-0, mysql-1</td>
+                    </tr>
+                    <tr>
+                        <td>Almacenamiento</td>
+                        <td>Compartido</td>
+                        <td>PVC por Pod</td>
+                    </tr>
+                    <tr>
+                        <td>Escalado</td>
+                        <td>Paralelo</td>
+                        <td>Secuencial</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>StatefulSet: Identidad Estable</h2>
+                <p>Nombre: &lt;StatefulSet-name&gt;-&lt;ordinal&gt;</p>
+                <ul>
+                    <li>Ejemplo: mysql-0, mysql-1, mysql-2</li>
+                    <li>Hostname dentro Pod = su nombre</li>
+                    <li>DNS predecible: mysql-0.mysql.default.svc.cluster.local</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>StatefulSet: volumeClaimTemplates</h2>
+                <pre><code class="language-yaml">spec:
+  serviceName: mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: fast-ssd
+      resources:
+        requests:
+          storage: 10Gi</code></pre>
+            </section>
+
+            <section>
+                <h2>StatefulSet: Headless Service</h2>
+                <p>Requerido para StatefulSets.</p>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  clusterIP: None
+  selector:
+    app: mysql
+  ports:
+  - port: 3306</code></pre>
+            </section>
+
+            <section>
+                <h2>StatefulSet: Definición Completa</h2>
+                <pre><code class="language-yaml">apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  serviceName: mysql
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:5.7</code></pre>
+            </section>
+
+            <section>
+                <h2>StatefulSet: Almacenamiento Persistente</h2>
+                <ul>
+                    <li>Cada Pod obtiene su propio PVC</li>
+                    <li>PVCs persisten si Pod se elimina</li>
+                    <li>Nuevo Pod se monta a su PVC anterior</li>
+                    <li>Garantiza durabilidad de datos</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>StatefulSet: Actualización Ordenada</h2>
+                <p>Actualización en orden inverso de ordinales:</p>
+                <ul>
+                    <li>mysql-2 → mysql-1 → mysql-0</li>
+                    <li>Un Pod a la vez</li>
+                    <li>Espera a que esté Ready antes de siguiente</li>
+                    <li>Más lento pero seguro para datos</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>StatefulSet: Escalado</h2>
+                <pre><code class="language-bash"># Escalar hacia arriba (crea en orden)
+kubectl scale statefulset mysql --replicas=5
+
+# Escalar hacia abajo (elimina en orden inverso)
+kubectl scale statefulset mysql --replicas=2
+
+# IMPORTANTE: PVCs no se eliminan automáticamente
+kubectl delete pvc data-mysql-3</code></pre>
+            </section>
+
+            <section>
+                <h2>StatefulSet: Monitoreo</h2>
+                <pre><code class="language-bash"># Ver status
+kubectl describe statefulset mysql
+
+# Ver logs
+kubectl logs mysql-0
+
+# Verificar PVCs
+kubectl get pvc | grep mysql</code></pre>
+            </section>
+
+            <section>
+                <h2>StatefulSet: Casos de Uso</h2>
+                <ul>
+                    <li>Bases de datos: MySQL, PostgreSQL, MongoDB</li>
+                    <li>Sistemas de mensajería: Kafka, RabbitMQ</li>
+                    <li>Almacenamiento distribuido: Cassandra, Elasticsearch</li>
+                    <li>Aplicaciones con identidad estable: Zookeeper</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>StatefulSet: Best Practices</h2>
+                <ul>
+                    <li>Usa Headless Service siempre</li>
+                    <li>Planifica almacenamiento correctamente</li>
+                    <li>Ten cuidado al escalar hacia abajo</li>
+                    <li>Implementa backups automáticos</li>
+                    <li>Prueba failover regularmente</li>
+                </ul>
+            </section>
+
+            <!-- DaemonSets Section -->
+            <section>
+                <h2>DaemonSets: Introducción</h2>
+                <p>Ejecuta un Pod en cada nodo del cluster.</p>
+                <ul>
+                    <li>Se crea automáticamente en nodos nuevos</li>
+                    <li>Se elimina cuando nodo se remueve</li>
+                    <li>Sin réplicas configurables</li>
+                    <li>Ideal para agentes globales</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>DaemonSet: Casos de Uso</h2>
+                <ul>
+                    <li>Recolección de logs: Fluent, Filebeat</li>
+                    <li>Monitoreo: Prometheus Node Exporter</li>
+                    <li>Almacenamiento: Ceph, Gluster</li>
+                    <li>Networking: CNI plugins, kube-proxy</li>
+                    <li>Seguridad: Falco para auditoría</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>DaemonSet: Definición Básica</h2>
+                <pre><code class="language-yaml">apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-exporter
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+    spec:
+      containers:
+      - name: node-exporter
+        image: prom/node-exporter:latest
+        ports:
+        - containerPort: 9100</code></pre>
+            </section>
+
+            <section>
+                <h2>DaemonSet: Selección de Nodos</h2>
+                <ul>
+                    <li><strong>nodeSelector:</strong> Labels específicos</li>
+                    <li><strong>nodeAffinity:</strong> Reglas más complejas</li>
+                    <li><strong>tolerations:</strong> Tolerar taints (master)</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>DaemonSet: nodeSelector</h2>
+                <pre><code class="language-yaml">spec:
+  template:
+    spec:
+      nodeSelector:
+        nvidia.com/gpu: "true"
+      containers:
+      - name: monitor
+        image: gpu-monitor:latest</code></pre>
+            </section>
+
+            <section>
+                <h2>DaemonSet: Tolerations</h2>
+                <pre><code class="language-yaml">spec:
+  template:
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: monitor
+        image: system-monitor:latest</code></pre>
+            </section>
+
+            <section>
+                <h2>DaemonSet: Acceso al Host</h2>
+                <ul>
+                    <li><code>hostNetwork: true</code> - Namespace de red del host</li>
+                    <li><code>hostPID: true</code> - Acceso a procesos del host</li>
+                    <li><code>hostIPC: true</code> - Acceso a IPC del host</li>
+                    <li><code>hostPath volumes</code> - Monta directorios del host</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>DaemonSet: Ciclo de Vida</h2>
+                <ul>
+                    <li>Nodo nuevo: DaemonSet detecta y crea Pod</li>
+                    <li>Nodo removido: Pod se elimina automáticamente</li>
+                    <li>Actualización: según updateStrategy</li>
+                    <li>Escalado: no se configura, es automático por nodo</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>DaemonSet: Monitoreo</h2>
+                <pre><code class="language-bash"># Ver DaemonSet status
+kubectl describe daemonset node-exporter
+
+# Ver pods en todos los nodos
+kubectl get pods -o wide -l app=node-exporter
+
+# Ver logs
+kubectl logs -l app=node-exporter -f</code></pre>
+            </section>
+
+            <section>
+                <h2>DaemonSet: Best Practices</h2>
+                <ul>
+                    <li>Usa tolerations para nodos especiales</li>
+                    <li>Define recursos adecuadamente</li>
+                    <li>Implementa health checks</li>
+                    <li>Actualiza cuidadosamente</li>
+                    <li>Documenta necesidad de ejecución global</li>
+                </ul>
+            </section>
+
+            <!-- Jobs Section -->
+            <section>
+                <h2>Jobs: Introducción</h2>
+                <p>Ejecuta tareas batch hasta completarse.</p>
+                <ul>
+                    <li>Pods terminan cuando tarea finaliza</li>
+                    <li>No reinician indefinidamente</li>
+                    <li>Garantiza completitud</li>
+                    <li>Reinicia Pods si fallan</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Job: Casos de Uso</h2>
+                <ul>
+                    <li>Procesamiento batch: archivos, logs</li>
+                    <li>Cálculos complejos: rendering, análisis</li>
+                    <li>Exportación/Import: backup, restore</li>
+                    <li>Trabajos programados: eventos externos</li>
+                    <li>Limpiezas periódicas: compresión, archivado</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Job: Definición Básica</h2>
+                <pre><code class="language-yaml">apiVersion: batch/v1
+kind: Job
+metadata:
+  name: process-files
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 3
+  template:
+    spec:
+      containers:
+      - name: processor
+        image: python:3.9
+        command: ["python", "process.py"]
+      restartPolicy: Never</code></pre>
+            </section>
+
+            <section>
+                <h2>Job: Parámetros Clave</h2>
+                <table>
+                    <tr>
+                        <th>Parámetro</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>completions</td>
+                        <td>Pods exitosos requeridos</td>
+                    </tr>
+                    <tr>
+                        <td>parallelism</td>
+                        <td>Pods ejecutando en paralelo</td>
+                    </tr>
+                    <tr>
+                        <td>backoffLimit</td>
+                        <td>Máximo de reintentos</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Job: Patrones de Ejecución</h2>
+                <ul style="font-size: 0.5em;">
+                    <li><strong>Simple:</strong> completions: 1, parallelism: 1</li>
+                    <li><strong>Completar múltiples:</strong> completions: 5, parallelism: 1</li>
+                    <li><strong>Trabajo paralelo:</strong> completions: 10, parallelism: 5</li>
+                    <li><strong>Work queue:</strong> completions: null, parallelism: 3</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Job: Estados</h2>
+                <ul>
+                    <li><strong>Active:</strong> Ejecutándose</li>
+                    <li><strong>Succeeded:</strong> Completado exitosamente</li>
+                    <li><strong>Failed:</strong> Falló definitivamente</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Job: Limpieza Automática</h2>
+                <pre><code class="language-yaml">spec:
+  ttlSecondsAfterFinished: 3600
+  # Job se elimina automáticamente
+  # después de 1 hora de completarse</code></pre>
+            </section>
+
+            <section>
+                <h2>Job: Reintentos</h2>
+                <pre><code class="language-yaml">spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 3600
+  # backoffLimit: reintentos máximos
+  # activeDeadlineSeconds: timeout total</code></pre>
+            </section>
+
+            <section>
+                <h2>Job: Monitoreo</h2>
+                <pre><code class="language-bash"># Ver Jobs
+kubectl get jobs
+
+# Ver detalles
+kubectl describe job process-files
+
+# Ver logs
+kubectl logs -l job-name=process-files</code></pre>
+            </section>
+
+            <section>
+                <h2>Job: Best Practices</h2>
+                <ul>
+                    <li>Define <code>restartPolicy</code> apropiada</li>
+                    <li>Configura <code>activeDeadlineSeconds</code></li>
+                    <li>Usa <code>ttlSecondsAfterFinished</code></li>
+                    <li>Implementa mecanismo de bloqueo</li>
+                    <li>Monitorea ejecutiones regularmente</li>
+                </ul>
+            </section>
+
+            <!-- CronJobs Section -->
+            <section>
+                <h2>CronJobs: Introducción</h2>
+                <p>Crea Jobs automáticamente en horarios específicos.</p>
+                <ul>
+                    <li>Funciona como cron en sistemas Unix</li>
+                    <li>Formato: minuto hora día_mes mes día_semana</li>
+                    <li>Ejemplos: 0 2 * * * (2:00 AM cada día)</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>CronJob: Expresiones Cron</h2>
+                <pre><code class="language-bash">0 2 * * *       # Cada día a las 2:00 AM
+0 */4 * * *     # Cada 4 horas
+0 9 * * 1-5     # Lunes a viernes 9:00 AM
+0 0 1 * *       # Primer día del mes
+*/15 * * * *    # Cada 15 minutos</code></pre>
+            </section>
+
+            <section>
+                <h2>CronJob: Definición Básica</h2>
+                <pre><code class="language-yaml">apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-daily
+spec:
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: backup-tool:latest
+          restartPolicy: OnFailure</code></pre>
+            </section>
+
+            <section>
+                <h2>CronJob: concurrencyPolicy</h2>
+                <ul>
+                    <li><strong>Allow (defecto):</strong> Múltiples Jobs simultáneos</li>
+                    <li><strong>Forbid:</strong> No crea si otro está ejecutándose</li>
+                    <li><strong>Replace:</strong> Cancela anterior y crea nuevo</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>CronJob: Configuración Completa</h2>
+                <pre><code class="language-yaml">spec:
+  schedule: "0 2 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: backup-tool:latest</code></pre>
+            </section>
+
+            <section>
+                <h2>CronJob: Timezone</h2>
+                <pre><code class="language-yaml">spec:
+  timezone: "America/New_York"
+  schedule: "0 2 * * *"
+  # 2:00 AM en New York, no UTC</code></pre>
+            </section>
+
+            <section>
+                <h2>CronJob: Monitoreo</h2>
+                <pre><code class="language-bash"># Ver CronJobs
+kubectl get cronjobs
+
+# Ver próxima ejecución
+kubectl describe cronjob backup-daily
+
+# Ver Jobs creados
+kubectl get jobs -l cronjob=backup-daily</code></pre>
+            </section>
+
+            <section>
+                <h2>CronJob: Best Practices</h2>
+                <ul>
+                    <li>Define <code>concurrencyPolicy</code> apropiada</li>
+                    <li>Usa <code>timezone</code> para consistencia</li>
+                    <li>Distribuye horarios (no todo a las 2 AM)</li>
+                    <li>Configura historia de ejecuciones</li>
+                    <li>Monitorea fallos regularmente</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>CronJob: Troubleshooting</h2>
+                <ul>
+                    <li>No se ejecuta: verificar sintaxis schedule, eventos</li>
+                    <li>Se ejecuta múltiples veces: cambiar concurrencyPolicy</li>
+                    <li>Timeout: aumentar activeDeadlineSeconds</li>
+                    <li>Falla persistente: ver logs del Job</li>
+                </ul>
+            </section>
+
+            <!-- Summary Section -->
+            <section>
+                <h2>Resumen: Controllers y Workloads</h2>
+                <table style="font-size: 0.5em;">
+                    <tr>
+                        <th>Controller</th>
+                        <th>Uso Principal</th>
+                    </tr>
+                    <tr>
+                        <td>ReplicaSet</td>
+                        <td>Mantiene N réplicas</td>
+                    </tr>
+                    <tr>
+                        <td>Deployment</td>
+                        <td>Apps stateless con actualizaciones</td>
+                    </tr>
+                    <tr>
+                        <td>StatefulSet</td>
+                        <td>Apps con estado persistente</td>
+                    </tr>
+                    <tr>
+                        <td>DaemonSet</td>
+                        <td>Agentes en todos los nodos</td>
+                    </tr>
+                    <tr>
+                        <td>Job</td>
+                        <td>Tareas batch</td>
+                    </tr>
+                    <tr>
+                        <td>CronJob</td>
+                        <td>Tareas programadas</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Eligiendo el Controller Correcto</h2>
+                <ul style="font-size: 0.55em;">
+                    <li>¿App sin estado? → <strong>Deployment</strong></li>
+                    <li>¿Con almacenamiento persistente? → <strong>StatefulSet</strong></li>
+                    <li>¿En cada nodo? → <strong>DaemonSet</strong></li>
+                    <li>¿Tarea que termina? → <strong>Job</strong></li>
+                    <li>¿Tarea programada? → <strong>CronJob</strong></li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Comandos Rápidos - Parte 1</h2>
+                <pre><code class="language-bash"># ReplicaSets
+kubectl get replicasets
+kubectl scale rs my-rs --replicas=5
+
+# Deployments
+kubectl get deployments
+kubectl set image deployment/web web=web:v2
+kubectl rollout undo deployment/web</code></pre>
+            </section>
+
+            <section>
+                <h2>Comandos Rápidos - Parte 2</h2>
+                <pre><code class="language-bash"># StatefulSets
+kubectl get statefulsets
+kubectl scale statefulset mysql --replicas=5
+
+# DaemonSets
+kubectl get daemonsets
+kubectl rollout status daemonset/node-exporter</code></pre>
+            </section>
+
+            <section>
+                <h2>Comandos Rápidos - Parte 3</h2>
+                <pre><code class="language-bash"># Jobs
+kubectl get jobs
+kubectl logs -l job-name=my-job
+
+# CronJobs
+kubectl get cronjobs
+kubectl get jobs -l cronjob=my-cronjob</code></pre>
+            </section>
+
+            <!-- FAQ Section -->
+            <section>
+                <h2>Preguntas Frecuentes - FAQ</h2>
+                <ul style="font-size: 0.65em;">
+                    <li><strong>¿Cuándo usar Deployment vs StatefulSet?</strong>
+                        <ul><li>Deployment: apps sin estado (web, API)</li>
+                            <li>StatefulSet: apps con estado (BD, Kafka)</li></ul>
+                    </li>
+                    <li><strong>¿Puedo escalar un DaemonSet?</strong>
+                        <ul><li>No. Se ejecuta automáticamente en todos los nodos</li></ul>
+                    </li>
+                    <li><strong>¿Qué pasa si un Job falla?</strong>
+                        <ul><li>Se reinicia automáticamente hasta backoffLimit</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Checklist Section -->
+            <section>
+                <h2>Checklist - Antes de Producción</h2>
+                <ul style="font-size: 0.65em;">
+                    <li>☐ Elegir controlador apropiado (Deployment, StatefulSet, etc)</li>
+                    <li>☐ Definir requests y limits para todos los contenedores</li>
+                    <li>☐ Implementar health checks (liveness/readiness probes)</li>
+                    <li>☐ Configurar rolling update strategy</li>
+                    <li>☐ Definir update strategy y rollout parameters</li>
+                    <li>☐ Para StatefulSet: configurar Headless Service</li>
+                    <li>☐ Para Jobs: configurar backoffLimit y ttl</li>
+                    <li>☐ Monitorear eventos regularmente</li>
+                    <li>☐ Implementar logging y alertas</li>
+                </ul>
+            </section>
+
+            <!-- Ejercicio 1 -->
+            <section>
+                <h2>Ejercicio 1 - Deployment Básico</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Crear y actualizar un Deployment</p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear Deployment nginx con 3 replicas</li>
+                    <li>Verificar que los 3 Pods están corriendo</li>
+                    <li>Actualizar a imagen nginx:1.25.0</li>
+                    <li>Ver el rolling update en progreso</li>
+                    <li>Verificar historial con kubectl rollout history</li>
+                    <li>Hacer rollback a la versión anterior</li>
+                </ol>
+            </section>
+
+            <!-- Ejercicio 2 -->
+            <section>
+                <h2>Ejercicio 2 - StatefulSet con PVC</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Crear StatefulSet con almacenamiento persistente</p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear Headless Service para StatefulSet</li>
+                    <li>Crear StatefulSet con volumeClaimTemplates</li>
+                    <li>Escalar a 3 réplicas y verificar PVCs</li>
+                    <li>Borrar un Pod y observar que obtiene su PVC anterior</li>
+                    <li>Verificar nombres DNS predecibles del StatefulSet</li>
+                </ol>
+            </section>
+
+            <!-- Ejercicio 3 -->
+            <section>
+                <h2>Ejercicio 3 - DaemonSet</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Crear DaemonSet que corre en cada nodo</p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear DaemonSet con node-exporter</li>
+                    <li>Verificar que hay un Pod en cada nodo</li>
+                    <li>Agregar nodo al cluster y ver que DaemonSet crea Pod</li>
+                    <li>Usar nodeSelector para limitarlo a nodos específicos</li>
+                    <li>Agregar tolerations para nodos especiales</li>
+                </ol>
+            </section>
+
+            <!-- Ejercicio 4 -->
+            <section>
+                <h2>Ejercicio 4 - Job</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Crear Job que completa una tarea</p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear Job simple que ejecuta un comando</li>
+                    <li>Monitorear el Job hasta completarse</li>
+                    <li>Ver logs del Job</li>
+                    <li>Crear Job con parallelism: 2, completions: 5</li>
+                    <li>Usar backoffLimit para reintentos</li>
+                </ol>
+            </section>
+
+            <!-- Ejercicio 5 -->
+            <section>
+                <h2>Ejercicio 5 - CronJob</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Crear CronJob que ejecuta tareas programadas</p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear CronJob que se ejecuta cada hora</li>
+                    <li>Verificar próxima ejecución con describe</li>
+                    <li>Ver Jobs creados por el CronJob</li>
+                    <li>Cambiar concurrencyPolicy a Forbid</li>
+                    <li>Verificar historial de ejecuciones</li>
+                </ol>
+            </section>
+
+            <!-- Best Practices Summary -->
+            <section>
+                <h2>Best Practices - Resumen</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Deployments:</strong> Define strategy, minReadySeconds, resources</li>
+                    <li><strong>StatefulSets:</strong> Usa Headless Service, planifica storage</li>
+                    <li><strong>DaemonSets:</strong> Usa tolerations, nodeSelector cuidadosamente</li>
+                    <li><strong>Jobs:</strong> Define backoffLimit, ttl, activeDeadlineSeconds</li>
+                    <li><strong>CronJobs:</strong> Usa Forbid si no quieres concurrencia</li>
+                    <li><strong>Todos:</strong> Implementa health checks y logging</li>
+                </ul>
+            </section>
+
+            <!-- References -->
+            <section>
+                <h2>Recursos Recomendados</h2>
+                <ul style="font-size: 0.65em;">
+                    <li><strong>Documentación oficial:</strong>
+                        <ul><li>kubernetes.io/docs/concepts/workloads/</li></ul>
+                    </li>
+                    <li><strong>Controllers:</strong>
+                        <ul><li>kubernetes.io/docs/concepts/workloads/controllers/</li></ul>
+                    </li>
+                    <li><strong>Tutoriales:</strong>
+                        <ul><li>kubernetes.io/docs/tutorials/</li></ul>
+                    </li>
+                    <li><strong>Herramientas:</strong>
+                        <ul><li>kubectl - CLI oficial</li>
+                            <li>Lens - UI visual para Kubernetes</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Resumen Final -->
+            <section>
+                <h2>Resumen - Controllers y Workloads</h2>
+                <ul style="font-size: 0.7em;">
+                    <li>✓ Entender diferencia entre cada controller</li>
+                    <li>✓ Elegir el controller apropiado para tu caso</li>
+                    <li>✓ Implementar estrategias de actualización</li>
+                    <li>✓ Usar health checks para confiabilidad</li>
+                    <li>✓ Monitorear y debuggear controllers</li>
+                    <li>✓ Seguir best practices en producción</li>
+                </ul>
+                <p style="font-size: 0.7em; margin-top: 1em;"><strong>Próximo:</strong> Módulo 4 - Servicios y Networking</p>
+            </section>
+
+            <!-- Final Slide -->
+            <section>
+                <h1 style="font-size: 2em; color: #1e88e5;">Preguntas?</h1>
+                <p style="font-size: 0.8em; margin-top: 2em;">Módulo 3: Controllers y Workloads</p>
+                <p style="font-size: 0.7em; color: #999;">Herramientas fundamentales para desplegar aplicaciones</p>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            center: false,
+            width: 1200,
+            height: 800,
+            margin: 0.1,
+            minScale: 0.2,
+            maxScale: 2.0,
+            slideNumber: true,
+            transition: 'slide'
+        });
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

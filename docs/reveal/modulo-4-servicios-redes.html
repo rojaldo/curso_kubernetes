@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 4: Servicios y Redes</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #1e88e5; }
+
+        /* Encabezados */
+        .reveal h1 { font-size: 2em; margin-bottom: 0.5em; }
+        .reveal h2 { font-size: 1.4em; margin-bottom: 0.5em; }
+        .reveal h3 { font-size: 1.1em; margin-bottom: 0.3em; color: #1e88e5; }
+
+        /* Párrafos y énfasis */
+        .reveal p { font-size: 0.6em; margin: 0.3em 0; color: #555555; }
+        .reveal strong { color: #1e88e5; font-weight: bold; }
+
+        /* Código */
+        .reveal pre { background: #f8f8f8; border: 1px solid #ddd; width: 100%; padding: 0.5em; margin: 0.5em 0; font-size: 0.45em; }
+        .reveal pre code { color: #333333; }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; }
+
+        /* Listas */
+        .reveal ul { font-size: 0.55em; text-align: left; margin-left: 0.5em; }
+        .reveal li { margin: 0.3em 0; color: #555555; }
+
+        /* Tablas */
+        .reveal table { font-size: 0.5em; width: 100%; border-collapse: collapse; margin: 0.5em 0; }
+        .reveal table th, .reveal table td { border: 1px solid #ddd; padding: 0.3em; text-align: left; }
+        .reveal table th { background-color: #f0f0f0; color: #1e88e5; font-weight: bold; }
+
+        /* Dos columnas */
+        .two-column { display: flex; gap: 2em; }
+        .two-column > div { flex: 1; }
+
+        /* Highlight boxes */
+        .highlight-box { background-color: #e3f2fd; border-left: 4px solid #1e88e5; padding: 0.5em; margin: 0.5em 0; }
+        .warning-box { background-color: #fff3e0; border-left: 4px solid #f57c00; padding: 0.5em; margin: 0.5em 0; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Portada -->
+            <section>
+                <h1>Módulo 4</h1>
+                <h2 style="color: #1e88e5;">Servicios y Redes</h2>
+                <p style="font-size: 0.7em; margin-top: 1em;">Networking, Services, Ingress y Network Policies</p>
+            </section>
+
+            <!-- Índice -->
+            <section>
+                <h2>Contenidos</h2>
+                <ul>
+                    <li>Networking en Kubernetes</li>
+                    <li>Services y tipos</li>
+                    <li>Ingress y controladores</li>
+                    <li>Network Policies</li>
+                    <li>Troubleshooting</li>
+                </ul>
+            </section>
+
+            <!-- =============== NETWORKING =============== -->
+            <section>
+                <h1>Networking</h1>
+                <h2 style="color: #1e88e5;">en Kubernetes</h2>
+            </section>
+
+            <section>
+                <h2>Modelo de Red</h2>
+                <ul>
+                    <li>Todos los Pods pueden comunicarse entre sí</li>
+                    <li>Sin NAT (Network Address Translation)</li>
+                    <li>Dentro del mismo cluster</li>
+                    <li>Independientemente del nodo donde corran</li>
+                    <li>Todos los nodos pueden comunicarse con todos los Pods</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Espacios de Direcciones</h2>
+                <ul>
+                    <li><strong>Pod CIDR:</strong> Red de Pods (10.0.0.0/8 o 10.0.0.0/16)</li>
+                    <li><strong>Service CIDR:</strong> Red de Services (10.96.0.0/12)</li>
+                    <li><strong>Node CIDR:</strong> Red de nodos (depende del provider)</li>
+                </ul>
+                <div class="highlight-box" style="font-size: 0.55em;">
+                    <strong>Importante:</strong> Las redes deben ser no solapadas
+                </div>
+            </section>
+
+            <section>
+                <h2>CNI: Container Network Interface</h2>
+                <p>Estándar que define cómo conectarse los contenedores.</p>
+                <p>Kubernetes delega el networking a plugins CNI.</p>
+                <ul>
+                    <li>Crear interfaz de red en el contenedor</li>
+                    <li>Asignar dirección IP del Pod</li>
+                    <li>Conectar contenedor a la red del cluster</li>
+                    <li>Mantener conectividad entre Pods</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Plugins CNI Populares</h2>
+                <table>
+                    <tr>
+                        <th>Plugin</th>
+                        <th>Tipo</th>
+                        <th>Casos de uso</th>
+                    </tr>
+                    <tr>
+                        <td>Flannel</td>
+                        <td>Overlay</td>
+                        <td>Desarrollo, clusters pequeños</td>
+                    </tr>
+                    <tr>
+                        <td>Calico</td>
+                        <td>L3 Routing</td>
+                        <td>Producción, clusters grandes</td>
+                    </tr>
+                    <tr>
+                        <td>Cilium</td>
+                        <td>eBPF</td>
+                        <td>Producción crítica</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>DNS en Kubernetes</h2>
+                <ul>
+                    <li>CoreDNS o kube-dns proporcionan DNS del cluster</li>
+                    <li>DNS del cluster corre en kube-system</li>
+                    <li>Todos los Pods apuntan a 10.96.0.10 por defecto</li>
+                    <li>Resolución automática de Pods y Services</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Resolución DNS: Formatos</h2>
+                <pre><code class="language-bash">Pod DNS:
+&lt;pod-name&gt;.&lt;namespace&gt;.pod.cluster.local
+
+Service DNS:
+&lt;service-name&gt;.&lt;namespace&gt;.svc.cluster.local
+
+Ejemplos:
+mypod.default.pod.cluster.local → 10.0.0.5
+web.default.svc.cluster.local → 10.96.1.5</code></pre>
+            </section>
+
+            <section>
+                <h2>Comunicación Pod-to-Pod: Mismo Nodo</h2>
+                <p>Los Pods se conectan a través de un bridge virtual (docker0, cni0).</p>
+                <ul>
+                    <li>Comunicación directa local</li>
+                    <li>Sin overhead de red</li>
+                    <li>Rápida y eficiente</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Comunicación Pod-to-Pod: Nodos Diferentes</h2>
+                <ul>
+                    <li><strong>Flannel:</strong> Encapsulación VXLAN entre nodos</li>
+                    <li><strong>Calico:</strong> BGP routing sin encapsulación</li>
+                    <li><strong>Weave:</strong> Encapsulación opcional</li>
+                    <li><strong>Cilium:</strong> eBPF con optimización</li>
+                </ul>
+                <p style="font-size: 0.55em;">En todos los casos, la IP del Pod se mantiene íntegra</p>
+            </section>
+
+            <section>
+                <h2>dnsPolicy en Pods</h2>
+                <ul>
+                    <li><strong>ClusterFirst:</strong> DNS cluster, fallback a DNS nodo (por defecto)</li>
+                    <li><strong>ClusterFirstWithHostNet:</strong> DNS cluster incluso con hostNetwork</li>
+                    <li><strong>Default:</strong> DNS del nodo</li>
+                    <li><strong>None:</strong> usa dnsConfig personalizado</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Troubleshooting: Conectividad de Red</h2>
+                <pre><code class="language-bash">kubectl get pod target-pod -o wide
+kubectl exec source-pod -- ping &lt;target-ip&gt;
+
+# Verificar CNI instalado
+kubectl get daemonset -n kube-system
+
+# Ver logs del CNI
+kubectl logs -n kube-system &lt;cni-pod-name&gt;</code></pre>
+            </section>
+
+            <section>
+                <h2>Best Practices: Networking</h2>
+                <ul>
+                    <li>Entiende el modelo de red de tu CNI</li>
+                    <li>Usa DNS en lugar de IPs</li>
+                    <li>Configura dnsPolicy apropiadamente</li>
+                    <li>Monitorea conectividad regularmente</li>
+                    <li>Planifica capacidad de red</li>
+                    <li>Implementa Network Policies desde el inicio</li>
+                </ul>
+            </section>
+
+            <!-- =============== SERVICES =============== -->
+            <section>
+                <h1>Services</h1>
+                <h2 style="color: #1e88e5;">Exposición de Pods</h2>
+            </section>
+
+            <section>
+                <h2>¿Qué es un Service?</h2>
+                <p><strong>Abstracción que expone un conjunto de Pods como servicio de red.</strong></p>
+                <ul>
+                    <li>Dirección IP estable</li>
+                    <li>Nombre DNS estable</li>
+                    <li>Load balancing entre Pods</li>
+                    <li>Acceso consistente</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>¿Por qué necesitamos Services?</h2>
+                <p><strong>Los Pods son efímeros.</strong> Sus IPs cambian cuando se recrean.</p>
+                <div class="highlight-box" style="font-size: 0.55em;">
+                    Un Service proporciona una dirección estable para acceder a Pods que van y vienen.
+                </div>
+            </section>
+
+            <section>
+                <h2>ClusterIP (por defecto)</h2>
+                <p>Service accesible solo dentro del cluster.</p>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: web
+spec:
+  type: ClusterIP
+  selector:
+    app: web
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080</code></pre>
+            </section>
+
+            <section>
+                <h2>ClusterIP: Uso</h2>
+                <pre><code class="language-bash">kubectl apply -f service.yaml
+kubectl get svc web
+# NAME   TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)
+# web    ClusterIP   10.96.1.5    &lt;none&gt;        80/TCP
+
+# Acceder desde dentro del cluster
+kubectl exec client -- wget http://web</code></pre>
+            </section>
+
+            <section>
+                <h2>NodePort</h2>
+                <p>Service expuesto en cada nodo en un puerto estático (30000-32767).</p>
+                <pre><code class="language-yaml">spec:
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+    nodePort: 30080</code></pre>
+            </section>
+
+            <section>
+                <h2>NodePort: Uso</h2>
+                <pre><code class="language-bash">kubectl get svc web
+# web    NodePort   10.96.1.5    &lt;none&gt;        80:30080/TCP
+
+# Acceder desde fuera del cluster
+curl http://192.168.1.1:30080
+curl http://192.168.1.2:30080</code></pre>
+            </section>
+
+            <section>
+                <h2>NodePort: Casos de uso</h2>
+                <ul>
+                    <li>Desarrollo/testing</li>
+                    <li>Exposición temporal</li>
+                    <li>Aplicaciones sin load balancer</li>
+                </ul>
+                <div class="warning-box" style="font-size: 0.55em;">
+                    En producción, preferir LoadBalancer o Ingress
+                </div>
+            </section>
+
+            <section>
+                <h2>LoadBalancer</h2>
+                <p>Service expuesto externamente con cloud load balancer.</p>
+                <pre><code class="language-yaml">spec:
+  type: LoadBalancer
+  selector:
+    app: web
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080</code></pre>
+            </section>
+
+            <section>
+                <h2>LoadBalancer: Uso</h2>
+                <pre><code class="language-bash">kubectl get svc web
+# NAME   TYPE           CLUSTER-IP  EXTERNAL-IP     PORT(S)
+# web    LoadBalancer   10.96.1.5   203.0.113.100   80:30080/TCP
+
+# Acceder desde fuera
+curl http://203.0.113.100</code></pre>
+            </section>
+
+            <section>
+                <h2>ExternalName</h2>
+                <p>Service que redirige a un nombre externo (CNAME).</p>
+                <pre><code class="language-yaml">spec:
+  type: ExternalName
+  externalName: db.example.com
+  ports:
+  - port: 5432
+
+# Desde un Pod:
+kubectl exec -it client -- psql -h external-db</code></pre>
+            </section>
+
+            <section>
+                <h2>Tabla Comparativa de Tipos</h2>
+                <table>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Acceso</th>
+                        <th>Casos de uso</th>
+                    </tr>
+                    <tr>
+                        <td>ClusterIP</td>
+                        <td>Intra-cluster</td>
+                        <td>Comunicación interna</td>
+                    </tr>
+                    <tr>
+                        <td>NodePort</td>
+                        <td>Extra-cluster:puerto</td>
+                        <td>Testing</td>
+                    </tr>
+                    <tr>
+                        <td>LoadBalancer</td>
+                        <td>Extra-cluster IP pública</td>
+                        <td>Producción</td>
+                    </tr>
+                    <tr>
+                        <td>ExternalName</td>
+                        <td>DNS externo</td>
+                        <td>Integración externa</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Labels y Selectors</h2>
+                <p>Los Services usan selectors para identificar qué Pods están detrás.</p>
+                <pre><code class="language-yaml">spec:
+  selector:
+    app: web           # Selecciona Pods con este label
+    version: v1
+  ports:
+  - port: 80
+    targetPort: 8080</code></pre>
+            </section>
+
+            <section>
+                <h2>Endpoints</h2>
+                <p>Los Endpoints son los Pods reales detrás de un Service.</p>
+                <pre><code class="language-bash">kubectl get endpoints web
+# ENDPOINTS                              AGE
+# 10.0.0.10:8080,10.0.0.11:8080        3m
+
+# Se actualiza automáticamente con cambios en Pods</code></pre>
+            </section>
+
+            <section>
+                <h2>Session Affinity</h2>
+                <p>Por defecto, tráfico distribuido sin estado.</p>
+                <pre><code class="language-yaml">spec:
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800</code></pre>
+                <p style="font-size: 0.55em;">Útil para: sesiones en memoria, caches locales</p>
+            </section>
+
+            <section>
+                <h2>Multi-port Services</h2>
+                <pre><code class="language-yaml">ports:
+- name: http
+  port: 80
+  targetPort: 8080
+- name: https
+  port: 443
+  targetPort: 8443
+- name: metrics
+  port: 9090
+  targetPort: 9090</code></pre>
+            </section>
+
+            <section>
+                <h2>Headless Services</h2>
+                <p>Service sin ClusterIP para resolución directa de Pods.</p>
+                <pre><code class="language-yaml">spec:
+  clusterIP: None
+  selector:
+    app: mysql
+  ports:
+  - port: 3306
+
+# Usado por StatefulSets
+mysql-0.mysql.default.svc.cluster.local</code></pre>
+            </section>
+
+            <section>
+                <h2>Best Practices: Services</h2>
+                <ul>
+                    <li>Usa nombres descriptivos</li>
+                    <li>Elige el tipo correcto</li>
+                    <li>Especifica puertos con nombres</li>
+                    <li>Usa selectores consistentes</li>
+                    <li>Monitorea Endpoints</li>
+                    <li>Documenta propósito</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Troubleshooting: Endpoints vacío</h2>
+                <pre><code class="language-bash">kubectl describe svc web
+kubectl get endpoints web
+
+# Si está vacío:
+kubectl get pods --show-labels
+kubectl get svc web -o yaml
+kubectl get pods -l app=web</code></pre>
+            </section>
+
+            <!-- =============== INGRESS =============== -->
+            <section>
+                <h1>Ingress</h1>
+                <h2 style="color: #1e88e5;">Routing HTTP/HTTPS</h2>
+            </section>
+
+            <section>
+                <h2>¿Qué es Ingress?</h2>
+                <p><strong>API que expone rutas HTTP/HTTPS desde fuera del cluster.</strong></p>
+                <ul>
+                    <li>Routing de tráfico (hostname/ruta)</li>
+                    <li>TLS/SSL termination</li>
+                    <li>Load balancing HTTP(S)</li>
+                    <li>Virtual hosting</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Ingress vs LoadBalancer Service</h2>
+                <ul>
+                    <li><strong>LoadBalancer (L4):</strong> Transporte TCP/UDP</li>
+                    <li><strong>Ingress (L7):</strong> Aplicación HTTP/HTTPS</li>
+                </ul>
+                <p style="font-size: 0.55em;">Ingress permite routing basado en hostname y path</p>
+            </section>
+
+            <section>
+                <h2>YAML Básico de Ingress</h2>
+                <pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-ingress
+spec:
+  rules:
+  - host: web.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web
+            port:
+              number: 80</code></pre>
+            </section>
+
+            <section>
+                <h2>Ingress Controllers</h2>
+                <p>Ingress Controller implementa la lógica de Ingress.</p>
+                <div class="warning-box" style="font-size: 0.55em;">
+                    <strong>Importante:</strong> Kubernetes NO incluye uno por defecto. Debes instalar uno.
+                </div>
+            </section>
+
+            <section>
+                <h2>Controladores Populares</h2>
+                <table>
+                    <tr>
+                        <th>Controlador</th>
+                        <th>Tipo</th>
+                        <th>Casos de uso</th>
+                    </tr>
+                    <tr>
+                        <td>NGINX</td>
+                        <td>Reverse proxy</td>
+                        <td>La mayoría</td>
+                    </tr>
+                    <tr>
+                        <td>Traefik</td>
+                        <td>Reverse proxy</td>
+                        <td>Microservicios</td>
+                    </tr>
+                    <tr>
+                        <td>HAProxy</td>
+                        <td>Load balancer</td>
+                        <td>Alto rendimiento</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>NGINX Ingress Controller</h2>
+                <pre><code class="language-bash">helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm install nginx ingress-nginx/ingress-nginx \
+  --namespace ingress-nginx \
+  --create-namespace
+
+kubectl get pods -n ingress-nginx</code></pre>
+            </section>
+
+            <section>
+                <h2>Ingress con múltiples hosts</h2>
+                <pre><code class="language-yaml">rules:
+- host: app.example.com
+  http:
+    paths:
+    - path: /
+      backend:
+        service:
+          name: app
+          port: {number: 80}
+- host: api.example.com
+  http:
+    paths:
+    - path: /v1
+      backend:
+        service:
+          name: api-v1</code></pre>
+            </section>
+
+            <section>
+                <h2>Path-based Routing</h2>
+                <pre><code class="language-yaml">- host: example.com
+  http:
+    paths:
+    - path: /
+      backend:
+        service:
+          name: website
+    - path: /api
+      backend:
+        service:
+          name: api-service
+    - path: /admin
+      backend:
+        service:
+          name: admin-panel</code></pre>
+            </section>
+
+            <section>
+                <h2>pathType: Opciones</h2>
+                <ul>
+                    <li><strong>Prefix:</strong> /api coincide /api, /api/v1, /api/users</li>
+                    <li><strong>Exact:</strong> /api coincide solo /api</li>
+                    <li><strong>ImplementationSpecific:</strong> depende del controlador</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Host-based Routing</h2>
+                <pre><code class="language-yaml">rules:
+- host: customer-a.example.com
+  http:
+    paths:
+    - backend:
+        service:
+          name: customer-a-app
+- host: "*.example.com"
+  http:
+    paths:
+    - backend:
+        service:
+          name: default-app</code></pre>
+            </section>
+
+            <section>
+                <h2>TLS/SSL Termination</h2>
+                <pre><code class="language-bash">kubectl create secret tls web-tls \
+  --cert=tls.crt --key=tls.key
+
+spec:
+  tls:
+  - hosts:
+    - app.example.com
+    secretName: web-tls</code></pre>
+            </section>
+
+            <section>
+                <h2>Cert-Manager: Certificados Automáticos</h2>
+                <pre><code class="language-bash">kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.0/cert-manager.yaml
+
+kubectl get pods -n cert-manager</code></pre>
+            </section>
+
+            <section>
+                <h2>ClusterIssuer: Let's Encrypt</h2>
+                <pre><code class="language-yaml">apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@example.com
+    solvers:
+    - http01:
+        ingress:
+          class: nginx</code></pre>
+            </section>
+
+            <section>
+                <h2>Ingress con Auto-certificado</h2>
+                <pre><code class="language-yaml">metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - app.example.com
+    secretName: app-tls-auto
+  rules:
+  - host: app.example.com</code></pre>
+            </section>
+
+            <section>
+                <h2>Best Practices: Ingress</h2>
+                <ul>
+                    <li>Elige controlador adecuado (NGINX por defecto)</li>
+                    <li>Usa TLS automático</li>
+                    <li>Organiza Ingress resources</li>
+                    <li>Implementa rate limiting</li>
+                    <li>Monitorea Ingress Controller</li>
+                    <li>Valida configuración antes de desplegar</li>
+                </ul>
+            </section>
+
+            <!-- =============== NETWORK POLICIES =============== -->
+            <section>
+                <h1>Network Policies</h1>
+                <h2 style="color: #1e88e5;">Seguridad de Red</h2>
+            </section>
+
+            <section>
+                <h2>¿Qué es una Network Policy?</h2>
+                <p><strong>Especificación de cómo grupos de Pods pueden comunicarse.</strong></p>
+                <ul>
+                    <li>Aislamiento de red</li>
+                    <li>Seguridad: menor privilegio</li>
+                    <li>Segmentación de aplicaciones</li>
+                    <li>Control granular</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>¿Por qué Network Policies?</h2>
+                <p><strong>Por defecto, todos los Pods pueden comunicarse con todos.</strong></p>
+                <div class="highlight-box" style="font-size: 0.55em;">
+                    Network Policies restringen esta comunicación según reglas definidas.
+                </div>
+            </section>
+
+            <section>
+                <h2>Requisitos: CNI debe soportar</h2>
+                <ul>
+                    <li><strong>Calico:</strong> ✓ soporta</li>
+                    <li><strong>Cilium:</strong> ✓ soporta</li>
+                    <li><strong>Weave:</strong> ✓ soporta</li>
+                    <li><strong>Flannel:</strong> ✗ NO soporta</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>YAML Básico: Deny All</h2>
+                <pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress: []
+  egress: []</code></pre>
+            </section>
+
+            <section>
+                <h2>YAML Básico: Allow Específico</h2>
+                <pre><code class="language-yaml">spec:
+  podSelector:
+    matchLabels:
+      app: web
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: client
+    ports:
+    - protocol: TCP
+      port: 80</code></pre>
+            </section>
+
+            <section>
+                <h2>Reglas de Ingress: Opciones "from"</h2>
+                <ul>
+                    <li><strong>podSelector:</strong> Desde Pod con label</li>
+                    <li><strong>namespaceSelector:</strong> Desde namespace</li>
+                    <li><strong>ipBlock:</strong> Desde CIDR específico</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Ejemplo: Permitir desde Pods Específicos</h2>
+                <pre><code class="language-yaml">spec:
+  podSelector:
+    matchLabels:
+      app: database
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api
+    ports:
+    - protocol: TCP
+      port: 5432</code></pre>
+            </section>
+
+            <section>
+                <h2>Reglas de Egress</h2>
+                <p>Controla el tráfico saliente de un Pod.</p>
+                <pre><code class="language-yaml">egress:
+- to:
+  - podSelector:
+      matchLabels:
+        app: database
+  ports:
+  - protocol: TCP
+    port: 5432</code></pre>
+            </section>
+
+            <section>
+                <h2>Default Deny + Explicit Allow</h2>
+                <p><strong>Best Practice:</strong></p>
+                <ol>
+                    <li>Crear default deny para todo</li>
+                    <li>Luego permitir explícitamente lo necesario</li>
+                </ol>
+            </section>
+
+            <section>
+                <h2>Best Practices: Network Policies</h2>
+                <ul>
+                    <li>Comienza con "deny all"</li>
+                    <li>Usa labels consistentes</li>
+                    <li>Especifica puertos y protocolos</li>
+                    <li>Documenta la intención</li>
+                    <li>Prueba en staging</li>
+                    <li>Monitorea para bloqueos inesperados</li>
+                </ul>
+            </section>
+
+            <!-- =============== CONCLUSIÓN =============== -->
+            <section>
+                <h2>Resumen Clave</h2>
+                <ul>
+                    <li>Networking es plano y sin NAT</li>
+                    <li>Services proporcionan IP estable</li>
+                    <li>Ingress maneja routing HTTP/HTTPS</li>
+                    <li>Network Policies implementan seguridad</li>
+                    <li>Siempre usa DNS sobre IPs</li>
+                    <li>Implementa políticas desde el inicio</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Palabras Clave</h2>
+                <ul>
+                    <li>CNI, Flannel, Calico, Cilium</li>
+                    <li>Service: ClusterIP, NodePort, LoadBalancer</li>
+                    <li>Ingress, Ingress Controller, NGINX</li>
+                    <li>Network Policy, ingress/egress rules</li>
+                    <li>Endpoints, selectors, labels</li>
+                    <li>TLS, cert-manager, Let's Encrypt</li>
+                </ul>
+            </section>
+
+            <!-- FAQ Section -->
+            <section>
+                <h2>Preguntas Frecuentes - FAQ</h2>
+                <ul style="font-size: 0.65em;">
+                    <li><strong>¿Cuándo usar ClusterIP vs NodePort vs LoadBalancer?</strong>
+                        <ul><li>ClusterIP: solo dentro del cluster</li>
+                            <li>NodePort: acceso externo en puerto del nodo</li>
+                            <li>LoadBalancer: acceso externo con LB</li></ul>
+                    </li>
+                    <li><strong>¿Necesito Ingress si tengo LoadBalancer?</strong>
+                        <ul><li>LoadBalancer expone un único servicio</li>
+                            <li>Ingress gestiona múltiples servicios/rutas</li></ul>
+                    </li>
+                    <li><strong>¿Cómo debuggear conectividad?</strong>
+                        <ul><li>kubectl exec + ping/curl, kubectl describe service</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Checklist Section -->
+            <section>
+                <h2>Checklist - Antes de Producción</h2>
+                <ul style="font-size: 0.65em;">
+                    <li>☐ Elegir tipo de Service apropiado</li>
+                    <li>☐ Configurar selectors correctamente</li>
+                    <li>☐ Implementar Network Policies desde inicio</li>
+                    <li>☐ Configurar Ingress con TLS</li>
+                    <li>☐ Usar cert-manager para certificados automáticos</li>
+                    <li>☐ Testear conectividad entre Pods</li>
+                    <li>☐ Verificar DNS funciona correctamente</li>
+                    <li>☐ Implementar políticas de seguridad de red</li>
+                    <li>☐ Documentar topología de red</li>
+                </ul>
+            </section>
+
+            <!-- Ejercicio 1 -->
+            <section>
+                <h2>Ejercicio 1 - Service ClusterIP</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Crear Service para acceso interno</p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear Deployment nginx con 3 replicas</li>
+                    <li>Crear Service ClusterIP que exponga el Deployment</li>
+                    <li>Verificar DNS con nslookup desde otro Pod</li>
+                    <li>Acceder al Service desde otro Pod con curl</li>
+                    <li>Verificar Endpoints con kubectl get endpoints</li>
+                </ol>
+            </section>
+
+            <!-- Ejercicio 2 -->
+            <section>
+                <h2>Ejercicio 2 - Service NodePort</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Exponer aplicación externamente</p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear Service NodePort para acceso externo</li>
+                    <li>Acceder vía IP_NODO:PUERTO</li>
+                    <li>Verificar routing a todos los Pods</li>
+                    <li>Cambiar nodePort manualmente si es necesario</li>
+                    <li>Ver tráfico distribuido entre replicas</li>
+                </ol>
+            </section>
+
+            <!-- Ejercicio 3 -->
+            <section>
+                <h2>Ejercicio 3 - Ingress</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Configurar enrutamiento HTTP/HTTPS</p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear Ingress que enruta a múltiples servicios</li>
+                    <li>Usar hosts diferentes (app.example.com, api.example.com)</li>
+                    <li>Configurar TLS con certificado</li>
+                    <li>Testear routing con curl -H Host</li>
+                    <li>Verificar redirección HTTP → HTTPS</li>
+                </ol>
+            </section>
+
+            <!-- Ejercicio 4 -->
+            <section>
+                <h2>Ejercicio 4 - Network Policies</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Implementar seguridad de red</p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear Network Policy que niega todo tráfico</li>
+                    <li>Crear Policy que permite acceso específico</li>
+                    <li>Testear conectividad bloqueada y permitida</li>
+                    <li>Usar label selectors para dirigirse a Pods</li>
+                    <li>Implementar egress rules</li>
+                </ol>
+            </section>
+
+            <!-- Ejercicio 5 -->
+            <section>
+                <h2>Ejercicio 5 - DNS y Service Discovery</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Entender naming de Services</strong></p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear Services en diferentes namespaces</li>
+                    <li>Verificar nombres DNS FQDN</li>
+                    <li>Acceder a Service en otro namespace</li>
+                    <li>Ver CoreDNS logs para debug</li>
+                    <li>Testear resolución con nslookup</li>
+                </ol>
+            </section>
+
+            <!-- Best Practices Summary -->
+            <section>
+                <h2>Best Practices - Resumen</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Services:</strong> Usa selectors, define ports, implementa health checks</li>
+                    <li><strong>Ingress:</strong> Usa TLS siempre, configura múltiples hosts</li>
+                    <li><strong>Network Policies:</strong> Default deny, whitelist explícitamente</li>
+                    <li><strong>DNS:</strong> Usa FQDN, no hardcodees IPs</li>
+                    <li><strong>Seguridad:</strong> Segmenta por namespace, implementa policies</li>
+                </ul>
+            </section>
+
+            <!-- References -->
+            <section>
+                <h2>Recursos Recomendados</h2>
+                <ul style="font-size: 0.65em;">
+                    <li><strong>Documentación oficial:</strong>
+                        <ul><li>kubernetes.io/docs/concepts/services-networking/</li></ul>
+                    </li>
+                    <li><strong>Services:</strong>
+                        <ul><li>kubernetes.io/docs/concepts/services-networking/service/</li></ul>
+                    </li>
+                    <li><strong>Ingress:</strong>
+                        <ul><li>kubernetes.io/docs/concepts/services-networking/ingress/</li></ul>
+                    </li>
+                    <li><strong>Network Policies:</strong>
+                        <ul><li>kubernetes.io/docs/concepts/services-networking/network-policies/</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Resumen Final -->
+            <section>
+                <h2>Resumen - Servicios y Redes</h2>
+                <ul style="font-size: 0.7em;">
+                    <li>✓ Entender modelo de red plano de Kubernetes</li>
+                    <li>✓ Elegir tipo de Service apropiado</li>
+                    <li>✓ Configurar Ingress para enrutamiento HTTP/HTTPS</li>
+                    <li>✓ Implementar Network Policies para seguridad</li>
+                    <li>✓ Debuggear problemas de conectividad</li>
+                    <li>✓ Usar DNS para service discovery</li>
+                </ul>
+                <p style="font-size: 0.7em; margin-top: 1em;"><strong>Próximo:</strong> Módulo 5 - Almacenamiento</p>
+            </section>
+
+            <!-- Final Slide -->
+            <section>
+                <h1 style="font-size: 2em; color: #1e88e5;">Preguntas?</h1>
+                <p style="font-size: 0.8em; margin-top: 2em;">Módulo 4: Servicios y Redes</p>
+                <p style="font-size: 0.7em; color: #999;">Fundamentos para conectar y exponer aplicaciones</p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            center: false,
+            width: 1200,
+            height: 800,
+            margin: 0.1,
+            minScale: 0.2,
+            maxScale: 2.0,
+            slideNumber: true,
+            transition: 'slide'
+        });
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 7: Seguridad en Kubernetes</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #1e88e5; }
+        .reveal h1 { font-size: 2em; margin-bottom: 0.4em; }
+        .reveal h2 { font-size: 1.4em; margin-bottom: 0.4em; }
+        .reveal h3 { font-size: 1.1em; margin-bottom: 0.3em; color: #1e88e5; }
+        .reveal p { font-size: 0.6em; margin: 0.2em 0; color: #555555; }
+        .reveal strong { color: #1e88e5; font-weight: bold; }
+        .reveal pre { background: #f8f8f8; border: 1px solid #ddd; width: 100%; padding: 0.4em; margin: 0.4em 0; font-size: 0.45em; }
+        .reveal pre code { color: #333333; }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; font-size: 0.85em; }
+        .reveal ul { font-size: 0.55em; text-align: left; margin-left: 0.5em; }
+        .reveal li { margin: 0.15em 0; color: #555555; }
+        .reveal table { font-size: 0.5em; width: 100%; border-collapse: collapse; margin: 0.4em 0; }
+        .reveal table th, .reveal table td { border: 1px solid #ddd; padding: 0.15em; text-align: left; }
+        .reveal table th { background-color: #f0f0f0; color: #1e88e5; font-weight: bold; }
+        .highlight-box { background-color: #e3f2fd; border-left: 4px solid #1e88e5; padding: 0.3em; margin: 0.3em 0; font-size: 0.5em; }
+        .warning-box { background-color: #fff3e0; border-left: 4px solid #f57c00; padding: 0.3em; margin: 0.3em 0; font-size: 0.5em; }
+        .two-column { display: flex; gap: 2em; }
+        .two-column > div { flex: 1; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Portada -->
+            <section>
+                <h1>Módulo 7: Seguridad en Kubernetes</h1>
+                <h2 style="color: #1e88e5;">RBAC, Service Accounts, Security Context</h2>
+                <p style="font-size: 0.7em; margin-top: 1em;">Autenticación, autorización y restricciones de seguridad en Kubernetes</p>
+            </section>
+
+            <!-- Conceptos Fundamentales -->
+            <section>
+                <h2>Conceptos Fundamentales</h2>
+                <ul>
+                    <li><strong>Autenticación:</strong> Verificar <strong>quién</strong> es el usuario/cliente</li>
+                    <li><strong>Autorización:</strong> Verificar <strong>qué</strong> puede hacer el usuario</li>
+                    <li><strong>Flujo:</strong> Cliente → Autenticación → Autorización → Acción</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Principio clave:</strong> Verificar identidad primero, luego permisos
+                </div>
+            </section>
+
+            <!-- Métodos de Autenticación -->
+            <section>
+                <h2>Métodos de Autenticación (1/3)</h2>
+                <ul>
+                    <li><strong>Certificados X.509:</strong> Cliente con certificado y clave privada</li>
+                    <li><strong>Bearer Tokens:</strong> Tokens estáticos o JWT en header Authorization</li>
+                    <li><strong>OpenID Connect (OIDC):</strong> Integración con proveedores externos (Google, Okta, Azure)</li>
+                    <li><strong>Service Account Tokens:</strong> JWT automáticos para Pods</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Autenticación: Certificados X.509</h2>
+                <pre><code class="language-bash"># Generar certificado para usuario juan
+openssl genrsa -out juan.key 2048
+openssl req -new -key juan.key -out juan.csr \
+  -subj "/CN=juan/O=developers"
+openssl x509 -req -in juan.csr \
+  -CA /etc/kubernetes/pki/ca.crt \
+  -CAkey /etc/kubernetes/pki/ca.key \
+  -out juan.crt -days 365
+
+# Configurar kubeconfig
+kubectl config set-credentials juan \
+  --client-certificate=juan.crt \
+  --client-key=juan.key</code></pre>
+                <p><strong>CN (Common Name)</strong> se usa como nombre de usuario</p>
+            </section>
+
+            <section>
+                <h2>Autenticación: Bearer Tokens</h2>
+                <pre><code class="language-bash"># Token en header Authorization
+curl -H "Authorization: Bearer <token>" \
+  https://kubernetes:6443/api/v1/namespaces
+
+# En kubeconfig
+kubectl config set-credentials myapp --token=<token></code></pre>
+                <p><strong>Tipos:</strong> Tokens estáticos, JWT de Service Account</p>
+            </section>
+
+            <section>
+                <h2>Autenticación: OpenID Connect (OIDC)</h2>
+                <pre><code class="language-yaml"># Configurar en kube-apiserver
+--oidc-issuer-url=https://accounts.google.com
+--oidc-client-id=kubernetes.apps.googleusercontent.com
+--oidc-username-claim=email
+--oidc-groups-claim=groups</code></pre>
+                <ul>
+                    <li><strong>Gestión centralizada:</strong> Identidades en Google, Okta, Azure</li>
+                    <li><strong>SSO:</strong> Single Sign-On integrado</li>
+                </ul>
+            </section>
+
+            <!-- RBAC -->
+            <section>
+                <h2>RBAC: Componentes Principales</h2>
+                <ul>
+                    <li><strong>Role:</strong> Permisos dentro de un namespace</li>
+                    <li><strong>ClusterRole:</strong> Permisos a nivel de cluster</li>
+                    <li><strong>RoleBinding:</strong> Vincula Role a usuarios en un namespace</li>
+                    <li><strong>ClusterRoleBinding:</strong> Vincula ClusterRole globalmente</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Principio:</strong> Define QUÉ recurso QUIÉN puede hacer
+                </div>
+            </section>
+
+            <section>
+                <h2>Role: Definiendo Permisos</h2>
+                <pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: default
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs: ["get"]</code></pre>
+                <p><strong>Permite:</strong> Leer Pods y sus logs en namespace default</p>
+            </section>
+
+            <section>
+                <h2>Role: Componentes de Rules</h2>
+                <ul>
+                    <li><strong>apiGroups:</strong> Grupo de API ("" para core, "apps" para Deployments)</li>
+                    <li><strong>resources:</strong> Recursos (pods, services, deployments, secrets)</li>
+                    <li><strong>verbs:</strong> Acciones (get, list, create, delete, patch)</li>
+                    <li><strong>resourceNames (opcional):</strong> Instancias específicas</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>ClusterRole: Permisos Globales</h2>
+                <pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pod-reader-all-namespaces
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "list", "watch"]</code></pre>
+                <p><strong>Diferencia:</strong> Se aplica a todo el cluster, no solo a un namespace</p>
+            </section>
+
+            <section>
+                <h2>RoleBinding: Asignando Permisos</h2>
+                <pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pod-reader
+subjects:
+- kind: User
+  name: juan@example.com
+- kind: Group
+  name: developers
+- kind: ServiceAccount
+  name: myapp
+  namespace: default</code></pre>
+            </section>
+
+            <section>
+                <h2>ClusterRoleBinding: Permisos Globales</h2>
+                <pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: read-nodes
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+- kind: Group
+  name: monitoring
+  apiGroup: rbac.authorization.k8s.io</code></pre>
+                <p><strong>Aplicado a:</strong> Todos los namespaces del cluster</p>
+            </section>
+
+            <section>
+                <h2>Verbos Comunes en RBAC</h2>
+                <table>
+                    <tr>
+                        <th>Verbo</th>
+                        <th>Descripción</th>
+                        <th>Comando</th>
+                    </tr>
+                    <tr>
+                        <td>get</td>
+                        <td>Recurso específico</td>
+                        <td>kubectl get pod myapp</td>
+                    </tr>
+                    <tr>
+                        <td>list</td>
+                        <td>Listar recursos</td>
+                        <td>kubectl get pods</td>
+                    </tr>
+                    <tr>
+                        <td>watch</td>
+                        <td>Observar cambios</td>
+                        <td>kubectl get pods --watch</td>
+                    </tr>
+                    <tr>
+                        <td>create</td>
+                        <td>Crear recurso</td>
+                        <td>kubectl create</td>
+                    </tr>
+                    <tr>
+                        <td>delete</td>
+                        <td>Eliminar recurso</td>
+                        <td>kubectl delete pod</td>
+                    </tr>
+                    <tr>
+                        <td>exec</td>
+                        <td>Ejecutar en contenedor</td>
+                        <td>kubectl exec -it</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>ResourceNames: Acceso Específico</h2>
+                <pre><code class="language-yaml">- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "delete"]
+  # Solo el pod "production-app"
+  resourceNames: ["production-app"]</code></pre>
+                <p><strong>Limita a:</strong> Solo este Pod específico</p>
+            </section>
+
+            <section>
+                <h2>Verbos Especiales: Escalables y Status</h2>
+                <pre><code class="language-yaml"># Permisos para scale
+- apiGroups: ["apps"]
+  resources: ["deployments/scale"]
+  verbs: ["get", "create", "update"]
+
+# Permisos para status
+- apiGroups: ["apps"]
+  resources: ["deployments/status"]
+  verbs: ["get"]</code></pre>
+            </section>
+
+            <section>
+                <h2>Roles Predefinidas en Kubernetes</h2>
+                <ul>
+                    <li><strong>view:</strong> Leer la mayoría de recursos (excepto RBAC y secrets)</li>
+                    <li><strong>edit:</strong> Crear, actualizar, eliminar recursos de aplicación</li>
+                    <li><strong>admin:</strong> Control total en namespace</li>
+                    <li><strong>cluster-admin:</strong> Control total del cluster</li>
+                </ul>
+                <pre><code class="language-bash"># Ver roles predefinidas
+kubectl get clusterroles | grep -E "system:|cluster"</code></pre>
+            </section>
+
+            <!-- Service Accounts -->
+            <section>
+                <h2>Service Accounts: Identidad para Pods</h2>
+                <ul>
+                    <li><strong>Identidad de Kubernetes</strong> para procesos en Pods</li>
+                    <li><strong>Diferente de usuarios:</strong> Usuarios son para humanos, SA para aplicaciones</li>
+                    <li><strong>Token JWT automático:</strong> Montado en /var/run/secrets/kubernetes.io/serviceaccount/</li>
+                    <li><strong>RBAC control:</strong> Qué puede hacer la aplicación via API</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Creación de Service Accounts</h2>
+                <pre><code class="language-bash"># Método 1: kubectl
+kubectl create serviceaccount myapp
+
+# Método 2: Declarativo
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: myapp
+  namespace: default
+automountServiceAccountToken: true</code></pre>
+            </section>
+
+            <section>
+                <h2>Asignación a Pods</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: app
+spec:
+  # Especificar qué Service Account usar
+  serviceAccountName: myapp
+
+  containers:
+  - name: app
+    image: myapp:latest
+    # Token montado automáticamente en:
+    # /var/run/secrets/kubernetes.io/serviceaccount/</code></pre>
+            </section>
+
+            <section>
+                <h2>Token JWT de Service Account</h2>
+                <p><strong>Estructura:</strong> [Header].[Payload].[Signature]</p>
+                <pre><code class="language-bash"># Dentro del contenedor, leer token
+TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+
+# Usar token para API request
+curl -H "Authorization: Bearer $TOKEN" \
+  https://kubernetes.default/api/v1/namespaces/default/pods
+
+# Decodificar (sin verificar firma)
+echo $TOKEN | cut -d. -f2 | base64 -d | jq .</code></pre>
+            </section>
+
+            <section>
+                <h2>Service Account con RBAC</h2>
+                <pre><code class="language-yaml"># 1. Service Account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pod-lister
+  namespace: default
+---
+# 2. Role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: list-pods
+  namespace: default
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "list", "watch"]</code></pre>
+            </section>
+
+            <section>
+                <h2>Service Account con RBAC (cont.)</h2>
+                <pre><code class="language-yaml">---
+# 3. RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: list-pods-binding
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: list-pods
+subjects:
+- kind: ServiceAccount
+  name: pod-lister
+  namespace: default</code></pre>
+            </section>
+
+            <section>
+                <h2>Automontaje de Tokens</h2>
+                <ul>
+                    <li><strong>Por defecto:</strong> Todo Pod obtiene token montado automáticamente</li>
+                    <li><strong>Ubicación:</strong> /var/run/secrets/kubernetes.io/serviceaccount/</li>
+                    <li><strong>Deshabilitar en Pod:</strong> <code>automountServiceAccountToken: false</code></li>
+                    <li><strong>Deshabilitar en SA:</strong> ServiceAccount level configuration</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Deshabilitar Automontaje</h2>
+                <pre><code class="language-yaml"># A nivel de Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app
+spec:
+  automountServiceAccountToken: false
+  containers:
+  - name: app
+    image: myapp:latest</code></pre>
+                <p><strong>Cuándo:</strong> Pod no accede API, seguridad por defecto</p>
+            </section>
+
+            <!-- Security Context -->
+            <section>
+                <h2>Security Context: Restricciones de Seguridad</h2>
+                <ul>
+                    <li><strong>A nivel de Pod:</strong> Afecta todos los contenedores</li>
+                    <li><strong>A nivel de Contenedor:</strong> Override de Pod settings</li>
+                    <li><strong>Define:</strong> UID/GID, capabilities, privilegios, filesystem read-only</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Security Context: Ejecutar como No-Root</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: secure-app
+spec:
+  securityContext:
+    runAsNonRoot: true    # Rechazar si UID=0
+    runAsUser: 1000       # Usuario myapp
+    runAsGroup: 3000      # Grupo
+    fsGroup: 2000         # GID para volúmenes
+
+  containers:
+  - name: app
+    image: myapp:latest</code></pre>
+                <p><strong>Efecto:</strong> Contenedor ejecuta con UID 1000, no como root</p>
+            </section>
+
+            <section>
+                <h2>Security Context: ReadOnlyRootFilesystem</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: read-only-app
+spec:
+  containers:
+  - name: app
+    image: myapp:latest
+    securityContext:
+      readOnlyRootFilesystem: true
+
+    volumeMounts:
+    # Directorios escribibles necesarios
+    - name: tmp
+      mountPath: /tmp
+    - name: logs
+      mountPath: /var/log
+
+  volumes:
+  - name: tmp
+    emptyDir: {}
+  - name: logs
+    emptyDir: {}</code></pre>
+            </section>
+
+            <section>
+                <h2>Linux Capabilities</h2>
+                <p><strong>Idea:</strong> Dividir permisos de root en unidades específicas</p>
+                <ul>
+                    <li><strong>NET_BIND_SERVICE:</strong> Escuchar puertos <1024</li>
+                    <li><strong>NET_ADMIN:</strong> Configuración de red avanzada</li>
+                    <li><strong>SYS_ADMIN:</strong> Operaciones del sistema</li>
+                    <li><strong>NET_RAW:</strong> Raw sockets (ping)</li>
+                    <li><strong>CHOWN:</strong> Cambiar dueño de archivos</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Security Context: Agregar Capabilities</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: cap-net-bind-service
+spec:
+  securityContext:
+    runAsUser: 1000
+    runAsNonRoot: true
+
+  containers:
+  - name: app
+    image: myapp:latest
+    securityContext:
+      capabilities:
+        add:
+        - NET_BIND_SERVICE  # Escuchar puerto 80
+        - NET_ADMIN</code></pre>
+                <p><strong>Resultado:</strong> Usuario 1000 puede escuchar puertos <1024</p>
+            </section>
+
+            <section>
+                <h2>Security Context: Remover Capabilities</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: minimal-caps
+spec:
+  containers:
+  - name: app
+    image: myapp:latest
+    securityContext:
+      capabilities:
+        drop:
+        - ALL  # Remover TODAS las capabilities</code></pre>
+                <p><strong>Seguridad máxima:</strong> Solo acceso a recursos montados explícitamente</p>
+            </section>
+
+            <section>
+                <h2>Security Context: Privilegiado (Peligroso)</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: privileged-pod
+spec:
+  containers:
+  - name: privileged-app
+    image: privileged:latest
+    securityContext:
+      privileged: true  # Acceso completo al host</code></pre>
+                <ul>
+                    <li><strong>USAR SOLO PARA:</strong> Drivers, networking plugins, monitoreo bajo nivel</li>
+                    <li><strong>NUNCA para aplicaciones normales</strong></li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Security Context: allowPrivilegeEscalation</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: secure-app
+spec:
+  containers:
+  - name: app
+    image: myapp:latest
+    securityContext:
+      allowPrivilegeEscalation: false  # Prevent setuid</code></pre>
+                <p><strong>Previene:</strong> Cambio de UID/GID dentro del contenedor</p>
+            </section>
+
+            <section>
+                <h2>SELinux y AppArmor</h2>
+                <pre><code class="language-yaml"># SELinux
+apiVersion: v1
+kind: Pod
+metadata:
+  name: selinux-pod
+spec:
+  securityContext:
+    seLinuxOptions:
+      level: "s0:c123,c456"
+      type: "container_t"
+      role: "system_r"</code></pre>
+                <p><strong>AppArmor:</strong> Similar pero más simple, vía annotations</p>
+            </section>
+
+            <!-- Aplicación Segura Completa -->
+            <section>
+                <h2>Aplicación Completamente Segura (1/2)</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: secure-app
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 3000
+    fsGroup: 2000
+    seccompProfile:
+      type: RuntimeDefault
+
+  containers:
+  - name: app
+    image: myapp:latest
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+        - ALL
+        add:
+        - NET_BIND_SERVICE</code></pre>
+            </section>
+
+            <section>
+                <h2>Aplicación Completamente Segura (2/2)</h2>
+                <pre><code class="language-yaml">    volumeMounts:
+    - name: tmp
+      mountPath: /tmp
+    - name: logs
+      mountPath: /var/log
+    - name: config
+      mountPath: /etc/config
+      readOnly: true
+
+  volumes:
+  - name: tmp
+    emptyDir: {}
+  - name: logs
+    emptyDir: {}
+  - name: config
+    configMap:
+      name: app-config</code></pre>
+            </section>
+
+            <!-- Best Practices -->
+            <section>
+                <h2>Best Practices: RBAC</h2>
+                <ul>
+                    <li><strong>Principio de menor privilegio:</strong> Solo permisos necesarios</li>
+                    <li><strong>Denegar por defecto:</strong> Permitir explícitamente</li>
+                    <li><strong>Usar grupos:</strong> Gestión escalable de usuarios</li>
+                    <li><strong>Separar responsabilidades:</strong> Dev, DevOps, Seguridad roles diferentes</li>
+                    <li><strong>Revisar regularmente:</strong> Auditar accesos mensuales</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Best Practices: Service Accounts</h2>
+                <ul>
+                    <li><strong>SA por aplicación:</strong> No reutilizar entre apps</li>
+                    <li><strong>RBAC con least privilege:</strong> Solo permisos necesarios</li>
+                    <li><strong>Deshabilitar automontaje si no es necesario:</strong> Seguridad por defecto</li>
+                    <li><strong>Rotar tokens:</strong> Cambios periódicos automáticos</li>
+                    <li><strong>Auditar uso:</strong> Logs de acceso no autorizado</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Best Practices: Security Context</h2>
+                <ul>
+                    <li><strong>Nunca usar privileged:</strong> A menos que sea absolutamente necesario</li>
+                    <li><strong>Ejecutar como non-root:</strong> Por defecto</li>
+                    <li><strong>ReadOnlyRootFilesystem:</strong> Cuando sea posible</li>
+                    <li><strong>Drop ALL capabilities:</strong> Agregar solo las necesarias</li>
+                    <li><strong>allowPrivilegeEscalation: false:</strong> Defensa en profundidad</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Best Practices: Autenticación</h2>
+                <ul>
+                    <li><strong>Usar OIDC para clusters grandes:</strong> Gestión centralizada de identidades</li>
+                    <li><strong>Rotación de certificados:</strong> Automatizar con herramientas</li>
+                    <li><strong>Auditoría de acceso:</strong> Logs de intentos fallidos</li>
+                    <li><strong>Monitorear patrones sospechosos:</strong> Alertas sobre intentos repetidos</li>
+                </ul>
+            </section>
+
+            <!-- Encriptación y Auditoría -->
+            <section>
+                <h2>Encriptación a Reposo (Secrets en etcd)</h2>
+                <pre><code class="language-yaml"># /etc/kubernetes/manifests/encryption-config.yaml
+apiVersion: apiserver.config.k8s.io/v1
+kind: EncryptionConfiguration
+resources:
+- resources:
+  - secrets
+  providers:
+  - aescbc:
+      keys:
+      - name: key1
+        secret: &lt;BASE64_32_BYTES&gt;
+  - identity: {}</code></pre>
+                <p><strong>Agregar a kube-apiserver:</strong> <code>--encryption-provider-config=/path</code></p>
+            </section>
+
+            <section>
+                <h2>Auditoría de API Server</h2>
+                <pre><code class="language-yaml"># Audit policy
+- level: RequestResponse
+  omitStages:
+  - RequestReceived
+  resources:
+  - group: ""
+    resources:
+    - secrets
+  namespaces:
+  - "default"</code></pre>
+                <p><strong>Registra:</strong> Acceso a secrets, cambios RBAC, operaciones sensibles</p>
+            </section>
+
+            <!-- Verificación y Debugging -->
+            <section>
+                <h2>Verificar RBAC</h2>
+                <pre><code class="language-bash"># Ver roles
+kubectl get roles
+
+# Ver rolebindings
+kubectl get rolebindings
+
+# Verificar permisos
+kubectl auth can-i get pods --as=juan
+
+# Ver permisos de usuario actual
+kubectl auth can-i '*' '*'</code></pre>
+            </section>
+
+            <section>
+                <h2>Debugging: ¿Por qué falla acceso?</h2>
+                <pre><code class="language-bash"># Ver mensaje de error
+kubectl describe rolebinding read-pods
+
+# Verificar Service Account token
+kubectl get secret <sa>-token-xyz -o yaml
+
+# Check Pod security context
+kubectl get pod app -o yaml | grep -A5 securityContext</code></pre>
+            </section>
+
+            <section>
+                <h2>Dentro del Contenedor: Ver Identidad</h2>
+                <pre><code class="language-bash"># Ver usuario actual
+id
+
+# Ver grupos
+groups
+
+# Token montado
+cat /var/run/secrets/kubernetes.io/serviceaccount/token
+
+# Namespace
+cat /var/run/secrets/kubernetes.io/serviceaccount/namespace</code></pre>
+            </section>
+
+            <!-- Ejemplo Práctico Completo -->
+            <section>
+                <h2>Ejemplo Práctico: Monitoreo con RBAC</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: metrics-collector
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: metrics-reader
+rules:
+- apiGroups: [""]
+  resources: ["nodes", "pods"]
+  verbs: ["get", "list"]</code></pre>
+            </section>
+
+            <section>
+                <h2>Ejemplo Práctico: Monitoreo con RBAC (cont.)</h2>
+                <pre><code class="language-yaml">---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: metrics-reader-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: metrics-reader
+subjects:
+- kind: ServiceAccount
+  name: metrics-collector
+  namespace: monitoring
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-collector
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metrics-collector
+  template:
+    metadata:
+      labels:
+        app: metrics-collector
+    spec:
+      serviceAccountName: metrics-collector
+      containers:
+      - name: collector
+        image: metrics-app:latest</code></pre>
+            </section>
+
+            <!-- Herramientas y Extensiones -->
+            <section>
+                <h2>Herramientas de Seguridad</h2>
+                <ul>
+                    <li><strong>Falco:</strong> Monitoreo de comportamiento en tiempo real</li>
+                    <li><strong>OPA/Gatekeeper:</strong> Policies para validar recursos</li>
+                    <li><strong>Pod Security Standards:</strong> Built-in policies para seguridad</li>
+                    <li><strong>Sealed Secrets:</strong> Encriptación de secrets en git</li>
+                    <li><strong>HashiCorp Vault:</strong> Gestión centralizada de secrets</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Pod Security Standards</h2>
+                <ul>
+                    <li><strong>Restricted:</strong> Máxima seguridad, muchas restricciones</li>
+                    <li><strong>Baseline:</strong> Policies mínimas de seguridad</li>
+                    <li><strong>Privileged:</strong> Sin restricciones (default antiguo)</li>
+                </ul>
+                <pre><code class="language-bash"># Aplicar a namespace
+kubectl label namespace default \
+  pod-security.kubernetes.io/enforce=restricted</code></pre>
+            </section>
+
+            <!-- Resumen -->
+            <section>
+                <h2>Resumen: Capas de Seguridad</h2>
+                <table>
+                    <tr>
+                        <th>Capa</th>
+                        <th>Controla</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Autenticación</strong></td>
+                        <td>¿Quién eres?</td>
+                        <td>Certificado, Token</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Autorización</strong></td>
+                        <td>¿Qué puedes hacer?</td>
+                        <td>RBAC, Role, RoleBinding</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Seguridad de Pod</strong></td>
+                        <td>¿Cómo ejecutas?</td>
+                        <td>Security Context, Capabilities</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Red</strong></td>
+                        <td>¿Con quién hablas?</td>
+                        <td>Network Policies</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Checklist de Seguridad</h2>
+                <ul>
+                    <li><strong>☐ RBAC habilitado</strong> en todos los clusters</li>
+                    <li><strong>☐ Secrets encriptados</strong> en reposo (etcd)</li>
+                    <li><strong>☐ Service Accounts</strong> por aplicación con RBAC mínimo</li>
+                    <li><strong>☐ Security Context</strong> runAsNonRoot en Pods</li>
+                    <li><strong>☐ Capabilities</strong> droped, solo necesarias agregadas</li>
+                    <li><strong>☐ Pod Security Standards</strong> enforced en namespaces</li>
+                    <li><strong>☐ Network Policies</strong> configuradas</li>
+                    <li><strong>☐ Auditoría</strong> habilitada en API server</li>
+                </ul>
+            </section>
+
+            <!-- FAQ -->
+            <section>
+                <h2>Preguntas Frecuentes: Seguridad</h2>
+                <ul>
+                    <li><strong>¿Cuál es la diferencia entre Role y ClusterRole?</strong> Role es namespace, ClusterRole es global.</li>
+                    <li><strong>¿Privileged mode es seguro?</strong> No, solo para componentes de infraestructura. Nunca para apps.</li>
+                    <li><strong>¿Qué es el principio de menor privilegio?</strong> Dar solo permisos necesarios, denegar todo lo demás.</li>
+                    <li><strong>¿Cómo habilito encriptación de secrets?</strong> Configura EncryptionConfiguration en kube-apiserver.</li>
+                </ul>
+            </section>
+
+            <!-- EXERCISE 1 -->
+            <section>
+                <h2>Ejercicio 1: RBAC Básico</h2>
+                <p><strong>Objetivo:</strong> Crear Role, RoleBinding y verificar permisos.</p>
+                <ul>
+                    <li>Crea un Role que solo pueda listar Pods</li>
+                    <li>Crea un RoleBinding vinculando Role a un usuario</li>
+                    <li>Verifica permisos con <code>kubectl auth can-i</code></li>
+                    <li>Intenta una acción no permitida (delete pod)</li>
+                    <li>¿Qué error recibes?</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> Role creado, permisos verificados, acciones denegadas
+                </div>
+            </section>
+
+            <!-- EXERCISE 2 -->
+            <section>
+                <h2>Ejercicio 2: Service Accounts con RBAC</h2>
+                <p><strong>Objetivo:</strong> Crear Service Account con permisos limitados.</p>
+                <ul>
+                    <li>Crea un Service Account para una aplicación</li>
+                    <li>Crea un Role que solo pueda leer ConfigMaps</li>
+                    <li>Vincula Role a Service Account con RoleBinding</li>
+                    <li>Crea un Pod que use el Service Account</li>
+                    <li>Verifica que solo pueda acceder a ConfigMaps</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> Service Account con permisos mínimos funcionando
+                </div>
+            </section>
+
+            <!-- EXERCISE 3 -->
+            <section>
+                <h2>Ejercicio 3: Security Context</h2>
+                <p><strong>Objetivo:</strong> Aplicar restricciones de seguridad a Pods.</p>
+                <ul>
+                    <li>Crea un Pod que intenta ejecutarse como root</li>
+                    <li>Añade <code>runAsNonRoot: true</code> en securityContext</li>
+                    <li>Observa que se rechaza si UID=0 en imagen</li>
+                    <li>Especifica <code>runAsUser: 1000</code></li>
+                    <li>Verifica dentro del Pod: <code>id</code></li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> Pod ejecuta como usuario no-root, seguridad mejorada
+                </div>
+            </section>
+
+            <!-- EXERCISE 4 -->
+            <section>
+                <h2>Ejercicio 4: Capabilities y ReadOnly</h2>
+                <p><strong>Objetivo:</strong> Aplicar restricciones avanzadas de seguridad.</p>
+                <ul>
+                    <li>Crea Pod con <code>readOnlyRootFilesystem: true</code></li>
+                    <li>Monta emptyDir para directorios escribibles (/tmp, /var/log)</li>
+                    <li>Drop ALL capabilities</li>
+                    <li>Agrega solo NET_BIND_SERVICE si es necesario</li>
+                    <li>Verifica que la app funciona con restricciones</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> Pod con restricciones máximas, aún funcional
+                </div>
+            </section>
+
+            <!-- EXERCISE 5 -->
+            <section>
+                <h2>Ejercicio 5: Auditoría de Acceso</h2>
+                <p><strong>Objetivo:</strong> Verificar y auditar acceso de usuarios.</p>
+                <ul>
+                    <li>Lista todos los Roles y RoleBindings en el cluster</li>
+                    <li>Identifica quién puede hacer qué</li>
+                    <li>Busca permisos excesivos (admin, cluster-admin)</li>
+                    <li>Revisa Service Accounts con automountServiceAccountToken</li>
+                    <li>Propón mejoras de seguridad basadas en tus hallazgos</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> Entiende postura de seguridad actual, identifica mejoras
+                </div>
+            </section>
+
+            <!-- RESOURCES -->
+            <section>
+                <h2>Recursos Recomendados</h2>
+                <ul>
+                    <li><strong>Documentación oficial:</strong> kubernetes.io/docs/concepts/security/</li>
+                    <li><strong>RBAC:</strong> kubernetes.io/docs/reference/access-authn-authz/rbac/</li>
+                    <li><strong>Security Context:</strong> kubernetes.io/docs/tasks/configure-pod-container/security-context/</li>
+                    <li><strong>Herramientas:</strong> Falco, OPA/Gatekeeper, Sealed Secrets, HashiCorp Vault</li>
+                    <li><strong>Certificación CKA:</strong> Incluye preguntas sobre RBAC y Security Context</li>
+                </ul>
+            </section>
+
+            <!-- RESUMEN FINAL -->
+            <section>
+                <h2>Resumen Final: Seguridad en Kubernetes</h2>
+                <ul>
+                    <li><strong>Autenticación:</strong> Certificados X.509, Tokens, OIDC - ¿Quién eres?</li>
+                    <li><strong>Autorización (RBAC):</strong> Role/ClusterRole, RoleBinding - ¿Qué puedes hacer?</li>
+                    <li><strong>Service Accounts:</strong> Identidad para Pods, RBAC con least privilege</li>
+                    <li><strong>Security Context:</strong> Restricciones de ejecución (UID, capabilities, readOnly)</li>
+                    <li><strong>Encriptación:</strong> Secrets en reposo, auditoría de acceso</li>
+                    <li><strong>Defensa en profundidad:</strong> Múltiples capas de seguridad combinadas</li>
+                </ul>
+            </section>
+
+            <!-- CLOSING -->
+            <section>
+                <h1>¿Preguntas?</h1>
+                <p style="font-size: 0.9em; margin-top: 2em;">Módulo 7: Seguridad en Kubernetes</p>
+                <p style="font-size: 0.75em; margin-top: 1em;">Kubernetes - RBAC, Service Accounts, Security Context y Autenticación</p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            center: false,
+            transition: 'slide',
+            width: 1200,
+            height: 800,
+            slideNumber: true,
+            margin: 0.1,
+            minScale: 0.2,
+            maxScale: 2.0
+        });
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

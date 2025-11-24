@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 5: Almacenamiento Completo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #1e88e5; }
+        .reveal h1 { font-size: 2em; margin-bottom: 0.4em; }
+        .reveal h2 { font-size: 1.4em; margin-bottom: 0.4em; }
+        .reveal h3 { font-size: 1.1em; margin-bottom: 0.3em; }
+        .reveal p { font-size: 0.6em; margin: 0.2em 0; }
+        .reveal strong { color: #1e88e5; font-weight: bold; }
+        .reveal pre { background: #f8f8f8; border: 1px solid #ddd; width: 100%; padding: 0.4em; margin: 0.3em 0; font-size: 0.45em; }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; font-size: 0.85em; }
+        .reveal ul { font-size: 0.55em; text-align: left; margin-left: 0.5em; }
+        .reveal li { margin: 0.08em 0; }
+        .reveal table { font-size: 0.5em; width: 100%; border-collapse: collapse; margin: 0.3em 0; }
+        .reveal table th, .reveal table td { border: 1px solid #ddd; padding: 0.08em; text-align: left; }
+        .reveal table th { background-color: #f0f0f0; color: #1e88e5; font-weight: bold; }
+        .highlight-box { background-color: #e3f2fd; border-left: 4px solid #1e88e5; padding: 0.3em; margin: 0.3em 0; font-size: 0.5em; }
+        .warning-box { background-color: #fff3e0; border-left: 4px solid #f57c00; padding: 0.3em; margin: 0.3em 0; font-size: 0.5em; }
+        .two-column { display: flex; gap: 2em; }
+        .two-column > div { flex: 1; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- PORTADA -->
+            <section>
+                <h1>Módulo 5: Almacenamiento</h1>
+                <h2 style="color: #1e88e5;">Volúmenes, PV, PVC, StorageClasses, StatefulSets</h2>
+                <p style="font-size: 0.7em; margin-top: 1em;">Gestión completa de almacenamiento persistente en Kubernetes</p>
+            </section>
+
+            <!-- ÍNDICE -->
+            <section>
+                <h2>Contenidos del Módulo (80+ slides)</h2>
+                <ul>
+                    <li>Introducción: volúmenes y ciclo de vida</li>
+                    <li>11 tipos de volúmenes (emptyDir, configMap, cloud)</li>
+                    <li>PersistentVolumes: concepto y configuración</li>
+                    <li>PersistentVolumeClaims: solicitud de almacenamiento</li>
+                    <li>StorageClasses: provisioning dinámico</li>
+                    <li>StatefulSets: aplicaciones con estado</li>
+                    <li>Snapshots y backup</li>
+                    <li>Troubleshooting y mejores prácticas</li>
+                </ul>
+            </section>
+
+            <!-- CONCEPTOS BASICOS -->
+            <section>
+                <h2>¿Qué es un Volumen?</h2>
+                <p><strong>Abstracción de almacenamiento</strong> que persiste durante la vida de un Pod</p>
+                <ul>
+                    <li>Compartir datos entre contenedores del mismo Pod</li>
+                    <li>Acceder a datos del nodo host</li>
+                    <li>Almacenar datos temporales (cache, logs)</li>
+                    <li>Inyectar configuración (ConfigMaps, Secrets)</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Ciclo de vida:</strong> Nace con Pod → Muere con Pod (excepto PVs)
+                </div>
+            </section>
+
+            <section>
+                <h2>Volúmenes vs PersistentVolumes</h2>
+                <table>
+                    <tr>
+                        <th>Característica</th>
+                        <th>Volumen</th>
+                        <th>PersistentVolume</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Alcance</strong></td>
+                        <td>Un Pod</td>
+                        <td>Cluster entero</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ciclo de vida</strong></td>
+                        <td>Pod (efímero)</td>
+                        <td>Cluster (persistente)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Creación</strong></td>
+                        <td>En spec del Pod</td>
+                        <td>Por administrador</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Acceso</strong></td>
+                        <td>Contenedores del Pod</td>
+                        <td>Múltiples Pods</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Datos</strong></td>
+                        <td>Se pierden con Pod</td>
+                        <td>Persisten siempre</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Ciclo de Vida Conceptual</h2>
+                <div class="highlight-box">
+                    <strong>Pod con Volumen:</strong><br>
+                    Pod creado → Volumen creado → Datos en volumen → Pod eliminado → Volumen eliminado
+                </div>
+                <br>
+                <div class="highlight-box">
+                    <strong>Pod con PV:</strong><br>
+                    PV creado → PVC creado → Pod usa PVC → Pod eliminado → PVC/PV persisten
+                </div>
+            </section>
+
+            <!-- TIPOS DE VOLUMENES -->
+            <section>
+                <h2>Tipos de Volúmenes (Parte 1)</h2>
+                <ul>
+                    <li><strong>emptyDir:</strong> Directorio vacío, se borra con Pod</li>
+                    <li><strong>hostPath:</strong> Ruta en el nodo host</li>
+                    <li><strong>configMap:</strong> Inyectar archivos de configuración</li>
+                    <li><strong>secret:</strong> Inyectar datos sensibles encriptados</li>
+                    <li><strong>downwardAPI:</strong> Información y metadatos del Pod</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Tipos de Volúmenes (Parte 2)</h2>
+                <ul>
+                    <li><strong>persistentVolumeClaim:</strong> Conexión a PersistentVolume</li>
+                    <li><strong>nfs:</strong> Network File System (compartido)</li>
+                    <li><strong>gcePersistentDisk:</strong> Google Cloud Storage</li>
+                    <li><strong>awsElasticBlockStore:</strong> AWS EBS</li>
+                    <li><strong>azureDisk/azureFile:</strong> Azure Storage</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>emptyDir: Almacenamiento Temporal</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: temp-storage-pod
+spec:
+  volumes:
+  - name: scratch          # Directorio vacío
+    emptyDir:
+      sizeLimit: 500Mi     # Límite máximo
+
+  containers:
+  - name: writer
+    image: alpine:latest
+    command: ["sh", "-c", "echo 'data' > /scratch/file.txt && sleep 3600"]
+    volumeMounts:
+    - name: scratch
+      mountPath: /scratch
+
+  - name: reader
+    image: alpine:latest
+    command: ["sh", "-c", "cat /scratch/file.txt"]
+    volumeMounts:
+    - name: scratch
+      mountPath: /scratch
+      # Ambos contenedores comparten datos</code></pre>
+            </section>
+
+            <section>
+                <h2>hostPath: Acceso al Nodo Host</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: host-access-pod
+spec:
+  volumes:
+  - name: docker-sock
+    hostPath:
+      path: /var/run/docker.sock
+      type: Socket
+
+  - name: node-logs
+    hostPath:
+      path: /var/log
+      type: Directory
+
+  containers:
+  - name: privileged-app
+    image: docker:latest
+    volumeMounts:
+    - name: docker-sock
+      mountPath: /var/run/docker.sock
+    - name: node-logs
+      mountPath: /host-logs
+      readOnly: true</code></pre>
+                <div class="warning-box">
+                    <strong>Cuidado:</strong> hostPath puede exponer archivos del nodo
+                </div>
+            </section>
+
+            <section>
+                <h2>configMap: Inyectar Configuración</h2>
+                <pre><code class="language-yaml"># 1. Crear ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  app.conf: |
+    server:
+      port: 8080
+      host: 0.0.0.0
+    logging:
+      level: INFO
+
+---
+# 2. Usar en Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-pod
+spec:
+  volumes:
+  - name: config
+    configMap:
+      name: app-config
+      defaultMode: 0644
+
+  containers:
+  - name: app
+    image: myapp:1.0
+    volumeMounts:
+    - name: config
+      mountPath: /etc/config</code></pre>
+            </section>
+
+            <section>
+                <h2>secret: Datos Sensibles Encriptados</h2>
+                <pre><code class="language-yaml"># 1. Crear Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secrets
+type: Opaque
+stringData:
+  db_password: "my-secret-password"
+  api_key: "sk-1234567890"
+
+---
+# 2. Usar en Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secret-pod
+spec:
+  volumes:
+  - name: secrets
+    secret:
+      secretName: db-secrets
+      defaultMode: 0400  # Solo lectura
+
+  containers:
+  - name: app
+    image: myapp:1.0
+    volumeMounts:
+    - name: secrets
+      mountPath: /etc/secrets
+      readOnly: true
+    env:
+    - name: DB_PASS
+      valueFrom:
+        secretKeyRef:
+          name: db-secrets
+          key: db_password</code></pre>
+            </section>
+
+            <section>
+                <h2>downwardAPI: Metadatos del Pod</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: metadata-pod
+  labels:
+    app: myapp
+    env: production
+spec:
+  volumes:
+  - name: podinfo
+    downwardAPI:
+      items:
+      - path: "pod-name"
+        fieldRef:
+          fieldPath: metadata.name
+      - path: "pod-namespace"
+        fieldRef:
+          fieldPath: metadata.namespace
+      - path: "pod-labels"
+        fieldRef:
+          fieldPath: metadata.labels
+
+  containers:
+  - name: app
+    image: app:1.0
+    volumeMounts:
+    - name: podinfo
+      mountPath: /podinfo
+    # Ahora /podinfo contiene nombre, namespace, labels del Pod</code></pre>
+            </section>
+
+            <!-- PERSISTENT VOLUMES -->
+            <section>
+                <h2>PersistentVolume: Concepto</h2>
+                <ul>
+                    <li><strong>Recurso de cluster:</strong> Creado por administrador</li>
+                    <li><strong>Abstracción:</strong> Cloud (AWS, GCP, Azure), NFS, local</li>
+                    <li><strong>Ciclo de vida:</strong> Independiente de Pods</li>
+                    <li><strong>Reclamación:</strong> Los usuarios solicitan mediante PVC</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Patrón:</strong> Admin crea PV → Usuario crea PVC → Pod usa PVC → Datos persisten
+                </div>
+            </section>
+
+            <section>
+                <h2>PersistentVolume: Definición</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-database
+spec:
+  capacity:
+    storage: 10Gi          # Tamaño disponible
+
+  accessModes:
+    - ReadWriteOnce        # Un nodo puede escribir
+
+  persistentVolumeReclaimPolicy: Retain  # Qué hacer con datos
+
+  storageClassName: fast-ssd
+
+  hostPath:
+    path: /mnt/data
+    type: Directory
+
+---
+# Otro ejemplo con AWS EBS
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-aws
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: aws-gp3
+  awsElasticBlockStore:
+    volumeID: vol-xxxxx
+    fsType: ext4</code></pre>
+            </section>
+
+            <section>
+                <h2>AccessModes: Modos de Acceso</h2>
+                <table>
+                    <tr>
+                        <th>Modo</th>
+                        <th>Abreviatura</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td><strong>ReadWriteOnce</strong></td>
+                        <td>RWO</td>
+                        <td>Un nodo lectura+escritura</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ReadOnlyMany</strong></td>
+                        <td>ROX</td>
+                        <td>Múltiples nodos solo lectura</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ReadWriteMany</strong></td>
+                        <td>RWX</td>
+                        <td>Múltiples nodos lectura+escritura</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ReadWriteOncePod</strong></td>
+                        <td>RWOP</td>
+                        <td>Un Pod solamente (K8s 1.22+)</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Reclaim Policy: Ciclo de Vida Datos</h2>
+                <table>
+                    <tr>
+                        <th>Política</th>
+                        <th>Comportamiento</th>
+                        <th>Caso de Uso</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Retain</strong></td>
+                        <td>Mantener datos, PV no reclaimable</td>
+                        <td>Datos críticos, BD</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Delete</strong></td>
+                        <td>Eliminar volumen y datos</td>
+                        <td>Temporal, scratch</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Recycle</strong></td>
+                        <td>Limpiar (deprecated)</td>
+                        <td>No usar (obsoleto)</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>PersistentVolumeClaim: Solicitud</h2>
+                <pre><code class="language-yaml"># 1. Usuario crea PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+
+  storageClassName: fast-ssd
+
+  resources:
+    requests:
+      storage: 10Gi  # Cantidad solicitada
+
+---
+# 2. Pod usa PVC
+apiVersion: v1
+kind: Pod
+metadata:
+  name: database-pod
+spec:
+  volumes:
+  - name: db-storage
+    persistentVolumeClaim:
+      claimName: database-claim
+
+  containers:
+  - name: postgres
+    image: postgres:15
+    volumeMounts:
+    - name: db-storage
+      mountPath: /var/lib/postgresql/data</code></pre>
+            </section>
+
+            <section>
+                <h2>Binding: Conexión PVC a PV</h2>
+                <div class="highlight-box">
+                    <strong>Proceso:</strong><br>
+                    1. Usuario crea PVC con 10Gi<br>
+                    2. Kubernetes busca PV que coincida (10Gi, RWO)<br>
+                    3. Bind automático cuando características coinciden<br>
+                    4. PVC y PV están "bound"<br>
+                    5. Pod puede usar el almacenamiento
+                </div>
+            </section>
+
+            <!-- STORAGE CLASSES -->
+            <section>
+                <h2>StorageClass: Provisioning Dinámico</h2>
+                <ul>
+                    <li><strong>Automatización:</strong> Crear PVs bajo demanda</li>
+                    <li><strong>Tipos:</strong> fast (SSD), standard (HDD), cold (archive)</li>
+                    <li><strong>Provisioners:</strong> Cloud, NFS, local</li>
+                    <li><strong>Parámetros:</strong> IOPS, throughput, encriptación, etc</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Ventaja:</strong> No requiere crear PVs manualmente
+                </div>
+            </section>
+
+            <section>
+                <h2>StorageClass: AWS EBS</h2>
+                <pre><code class="language-yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: aws-gp3
+provisioner: ebs.csi.aws.com
+parameters:
+  type: gp3              # General Purpose
+  iops: "3000"           # IOPS
+  throughput: "125"      # MB/s
+  encrypted: "true"
+  kms_key_id: "arn:aws:kms:..."
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+
+---
+# PVC usa StorageClass
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dynamic-storage
+spec:
+  storageClassName: aws-gp3
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  # PV se crea automáticamente</code></pre>
+            </section>
+
+            <section>
+                <h2>StorageClass: Google Cloud</h2>
+                <pre><code class="language-yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gce-ssd
+provisioner: pd.csi.storage.gke.io
+parameters:
+  type: pd-ssd
+  replication-type: regional-pd
+  fstype: ext4
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gce-standard
+provisioner: pd.csi.storage.gke.io
+parameters:
+  type: pd-standard
+  replication-type: regional-pd</code></pre>
+            </section>
+
+            <section>
+                <h2>StorageClass: Azure</h2>
+                <pre><code class="language-yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: azure-premium
+provisioner: disk.csi.azure.com
+parameters:
+  skuName: Premium_LRS    # Premium Locally Redundant
+  cachingMode: ReadOnly
+  kind: Managed
+allowVolumeExpansion: true
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: azure-standard
+provisioner: disk.csi.azure.com
+parameters:
+  skuName: Standard_LRS   # Standard Locally Redundant
+  kind: Managed</code></pre>
+            </section>
+
+            <section>
+                <h2>VolumeBindingMode: Cuándo Hacer Bind</h2>
+                <ul>
+                    <li><strong>Immediate:</strong> Bind cuando PVC creado (default)</li>
+                    <li><strong>WaitForFirstConsumer:</strong> Bind cuando Pod lo usa</li>
+                </ul>
+                <pre><code class="language-yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: smart-binding
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+# Ventaja: asegura localidad (mismo AZ que Pod)
+# Mejor para performance y costo</code></pre>
+            </section>
+
+            <section>
+                <h2>AllowVolumeExpansion: Crecer Volúmenes</h2>
+                <pre><code class="language-yaml"># 1. StorageClass que permite expansión
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: expandable
+provisioner: ebs.csi.aws.com
+allowVolumeExpansion: true
+
+---
+# 2. Crear PVC con 10Gi
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grow-storage
+spec:
+  storageClassName: expandable
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+# 3. Después, expandir a 20Gi
+# kubectl patch pvc grow-storage -p '{"spec":{"resources":{"requests":{"storage":"20Gi"}}}}'</code></pre>
+            </section>
+
+            <!-- STATEFULSETS -->
+            <section>
+                <h2>StatefulSet: Aplicaciones con Estado</h2>
+                <ul>
+                    <li><strong>Identidad estable:</strong> mysql-0, mysql-1, mysql-2</li>
+                    <li><strong>PVC por Pod:</strong> Cada uno con su volumen</li>
+                    <li><strong>Escalado ordenado:</strong> Uno a la vez (no paralelo)</li>
+                    <li><strong>Actualización ordenada:</strong> De atrás hacia adelante</li>
+                    <li><strong>Headless Service:</strong> DNS predecible</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Ideal para:</strong> PostgreSQL, MySQL, MongoDB, Cassandra, Elasticsearch
+                </div>
+            </section>
+
+            <section>
+                <h2>StatefulSet: Ejemplo Completo</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  clusterIP: None        # Headless Service
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  serviceName: postgres  # Obligatorio
+  replicas: 3
+  selector:
+    matchLabels:
+      app: postgres
+
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: fast-ssd
+      resources:
+        requests:
+          storage: 20Gi</code></pre>
+            </section>
+
+            <section>
+                <h2>Headless Service: DNS Predecible</h2>
+                <pre><code class="language-bash"># Con Headless Service
+# DNS automático:
+# postgres-0.postgres.default.svc.cluster.local
+# postgres-1.postgres.default.svc.cluster.local
+# postgres-2.postgres.default.svc.cluster.local
+
+# Beneficio: Replicación de BD sabe qué nodo es cuál
+# PostgreSQL Streaming Replication:
+#   postgres-0: Primary
+#   postgres-1: Standby 1
+#   postgres-2: Standby 2
+
+# Nslookup desde Pod:
+# nslookup postgres-0.postgres.default.svc.cluster.local
+# Address: 10.244.1.10</code></pre>
+            </section>
+
+            <section>
+                <h2>volumeClaimTemplates: PVC Automática</h2>
+                <div class="highlight-box">
+                    <strong>Patrón:</strong><br>
+                    1. StatefulSet con 3 replicas<br>
+                    2. volumeClaimTemplate define PVC<br>
+                    3. Automáticamente crea:<br>
+                    - postgres-data-0 → bound a PV<br>
+                    - postgres-data-1 → bound a PV<br>
+                    - postgres-data-2 → bound a PV
+                </div>
+            </section>
+
+            <section>
+                <h2>Escalado StatefulSet</h2>
+                <pre><code class="language-bash"># Ver StatefulSet
+kubectl get statefulset
+kubectl describe statefulset postgres
+
+# Ver PVCs asociadas
+kubectl get pvc
+# postgres-data-0, postgres-data-1, postgres-data-2
+
+# Escalar a 5 réplicas
+kubectl scale statefulset postgres --replicas=5
+# Crea: postgres-3, postgres-4
+# Crea: postgres-data-3, postgres-data-4
+
+# Desescalar a 1
+kubectl scale statefulset postgres --replicas=1
+# Elimina: postgres-2, postgres-1
+# PERO NO elimina PVCs (datos persisten)</code></pre>
+            </section>
+
+            <!-- SNAPSHOTS Y BACKUP -->
+            <section>
+                <h2>VolumeSnapshot: Backup Rápido</h2>
+                <pre><code class="language-yaml"># 1. VolumeSnapshotClass (como StorageClass)
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: csi-snapclass
+driver: ebs.csi.aws.com
+deletionPolicy: Delete
+
+---
+# 2. Tomar snapshot de un volumen
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: database-snapshot
+spec:
+  volumeSnapshotClassName: csi-snapclass
+  source:
+    persistentVolumeClaimName: db-claim
+
+---
+# 3. Restaurar desde snapshot
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: restored-db
+spec:
+  storageClassName: fast-ssd
+  dataSource:
+    name: database-snapshot
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi</code></pre>
+            </section>
+
+            <section>
+                <h2>NFS: Almacenamiento Compartido (RWX)</h2>
+                <pre><code class="language-yaml"># PersistentVolume con NFS
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-shared
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany      # RWX
+  nfs:
+    server: nfs.example.com
+    path: "/exported/data"
+    readOnly: false
+
+---
+# PVC para NFS
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-storage
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: ""   # Manual binding</code></pre>
+            </section>
+
+            <section>
+                <h2>Local Storage: Performance Alto</h2>
+                <pre><code class="language-yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-fast
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-pv-1
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-fast
+  local:
+    path: /mnt/fast-disk
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - worker-node-1</code></pre>
+            </section>
+
+            <!-- MONITOREO -->
+            <section>
+                <h2>Monitoreo de Almacenamiento</h2>
+                <pre><code class="language-bash"># Ver PVs
+kubectl get pv
+kubectl describe pv pv-name
+
+# Ver PVCs
+kubectl get pvc -A
+kubectl describe pvc claim-name -n namespace
+
+# Ver StorageClasses
+kubectl get storageclass
+kubectl describe storageclass fast-ssd
+
+# Ver VolumeSnapshots
+kubectl get volumesnapshot -A
+kubectl describe volumesnapshot snap-name
+
+# Uso de espacio en Pod
+kubectl exec pod-name -- df -h /mount/path
+
+# Eventos de volumen
+kubectl get events --field-selector reason=FailedMount</code></pre>
+            </section>
+
+            <!-- TROUBLESHOOTING -->
+            <section>
+                <h2>Troubleshooting: PVC Stuck Pending</h2>
+                <pre><code class="language-bash"># Ver estado detallado
+kubectl describe pvc my-claim
+
+# Problemas comunes:
+# 1. StorageClass no existe
+kubectl get storageclass
+# → Crear faltante
+
+# 2. Nodo sin espacio
+kubectl describe nodes | grep Allocatable
+# → Agregar nodos
+
+# 3. AccessMode incompatible
+# → Cambiar accMode o usar compatible
+
+# Soluciones:
+kubectl create -f storageclass.yaml
+kubectl scale nodes --replicas=5</code></pre>
+            </section>
+
+            <section>
+                <h2>Troubleshooting: Pod No Monta Volumen</h2>
+                <pre><code class="language-bash"># Ver eventos de Pod
+kubectl describe pod pod-name
+# Buscar: "FailedMount", "MultiplePodUses", "Permission denied"
+
+# Verificar PVC existe y está bound
+kubectl get pvc pvc-name
+# STATUS debe ser "Bound"
+
+# Verificar permisos
+kubectl exec pod-name -- ls -la /mount/path
+
+# Ver logs de kubelet en nodo
+ssh worker-node
+journalctl -u kubelet -n 50 | grep "mount\|volume"</code></pre>
+            </section>
+
+            <section>
+                <h2>Troubleshooting: Volumen Lleno</h2>
+                <pre><code class="language-bash"># Monitorear uso
+kubectl exec pod-name -- du -sh /data/*
+
+# Ver qué está usando espacio
+kubectl exec pod-name -- find /data -size +100M
+
+# Soluciones:
+# 1. Limpiar archivos antiguos
+kubectl exec pod-name -- rm -rf /data/old-logs
+
+# 2. Expandir volumen (si permitido)
+kubectl patch pvc claim-name \
+  -p '{"spec":{"resources":{"requests":{"storage":"100Gi"}}}}'
+
+# 3. Escalar cluster (agregar nodos)</code></pre>
+            </section>
+
+            <!-- BEST PRACTICES -->
+            <section>
+                <h2>Best Practices: Configuración</h2>
+                <ul>
+                    <li><strong>✓ Define requests:</strong> Ayuda a scheduling</li>
+                    <li><strong>✓ Usa StorageClass:</strong> Provisioning automático</li>
+                    <li><strong>✓ Reclaim Policy:</strong> Retain para datos críticos</li>
+                    <li><strong>✓ AccessModes:</strong> Correctos para tu caso (RWO, RWX)</li>
+                    <li><strong>✓ Snapshots:</strong> Para backup y recuperación</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Best Practices: Aplicaciones Stateful</h2>
+                <ul>
+                    <li><strong>✓ Usa StatefulSet:</strong> No Deployment para BD</li>
+                    <li><strong>✓ Headless Service:</strong> DNS predecible</li>
+                    <li><strong>✓ volumeClaimTemplates:</strong> PVC automática</li>
+                    <li><strong>✓ Replicación:</strong> Para HA (maestro-esclavo)</li>
+                    <li><strong>✓ Health checks:</strong> Liveness y readiness</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Best Practices: Seguridad</h2>
+                <ul>
+                    <li><strong>✓ Encriptar datos:</strong> En reposo y en tránsito</li>
+                    <li><strong>✓ RBAC para volúmenes:</strong> Control de acceso</li>
+                    <li><strong>✓ Secrets:</strong> Para credenciales (no ConfigMaps)</li>
+                    <li><strong>✓ Auditoría:</strong> Quién accedió qué volumen</li>
+                    <li><strong>✓ Limpiar datos:</strong> Antes de eliminar PVC</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Best Practices: Performance</h2>
+                <ul>
+                    <li><strong>✓ Usa SSD:</strong> Para BD (StorageClass gp3/Premium)</li>
+                    <li><strong>✓ Local storage:</strong> Para máxima performance</li>
+                    <li><strong>✓ IOPS/Throughput:</strong> Configura según carga</li>
+                    <li><strong>✓ Monitorea uso:</strong> Alertas en 80% capacidad</li>
+                    <li><strong>✓ VolumeBindingMode:</strong> WaitForFirstConsumer para localidad</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Comparativa: Tipos de Almacenamiento</h2>
+                <table>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Persistencia</th>
+                        <th>Performance</th>
+                        <th>Caso de Uso</th>
+                    </tr>
+                    <tr>
+                        <td><strong>emptyDir</strong></td>
+                        <td>No</td>
+                        <td>Alto</td>
+                        <td>Caché, temp</td>
+                    </tr>
+                    <tr>
+                        <td><strong>hostPath</strong></td>
+                        <td>Sí (local)</td>
+                        <td>Alto</td>
+                        <td>Dev, logging</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cloud Disk</strong></td>
+                        <td>Sí</td>
+                        <td>Alto</td>
+                        <td>BD, producción</td>
+                    </tr>
+                    <tr>
+                        <td><strong>NFS</strong></td>
+                        <td>Sí</td>
+                        <td>Medio</td>
+                        <td>Compartido, RWX</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Checklist: Almacenamiento Producción</h2>
+                <ul>
+                    <li><strong>☐ StorageClass:</strong> Definido (fast, standard, archive)</li>
+                    <li><strong>☐ PV Reclaim:</strong> Retain para datos críticos</li>
+                    <li><strong>☐ Snapshots:</strong> Diarios o más frecuentes</li>
+                    <li><strong>☐ Monitoreo:</strong> Alertas en 80% capacidad</li>
+                    <li><strong>☐ Backup externo:</strong> Fuera del cluster</li>
+                    <li><strong>☐ Encriptación:</strong> En reposo</li>
+                    <li><strong>☐ Testing restore:</strong> Validar backups</li>
+                    <li><strong>☐ Documentación:</strong> Políticas de retención</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Ejercicio Práctico</h2>
+                <pre><code class="language-bash"># 1. Crear StorageClass
+kubectl apply -f - <<'EOF'
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: exercise-storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+EOF
+
+# 2. Crear PVC
+kubectl apply -f - <<'EOF'
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: exercise-claim
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  storageClassName: exercise-storage
+  resources:
+    requests:
+      storage: 5Gi
+EOF
+
+# 3. Ver estado
+kubectl get pvc
+kubectl describe pvc exercise-claim</code></pre>
+            </section>
+
+            <section>
+                <h2>Resumen: Almacenamiento en Kubernetes</h2>
+                <ul>
+                    <li><strong>Volúmenes:</strong> Temporales, compartidos en Pod</li>
+                    <li><strong>PV/PVC:</strong> Modelo manual (admin/usuario)</li>
+                    <li><strong>StorageClass:</strong> Provisioning automático y dinámico</li>
+                    <li><strong>StatefulSet:</strong> Apps con estado, identidad estable</li>
+                    <li><strong>Snapshots:</strong> Backup y recuperación rápida</li>
+                    <li><strong>Security:</strong> Encriptación, RBAC, auditoría</li>
+                    <li><strong>Monitoring:</strong> Alertas y previsión de capacidad</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Próximos Pasos</h2>
+                <ul>
+                    <li><strong>1. Crear StorageClass:</strong> Para tu infraestructura (AWS/GCP/Azure)</li>
+                    <li><strong>2. Implementar snapshots:</strong> Backup automático diario</li>
+                    <li><strong>3. Configurar alertas:</strong> Monitoreo de capacidad</li>
+                    <li><strong>4. Documentar políticas:</strong> Retención, restauración</li>
+                    <li><strong>5. Testear DR:</strong> Restauración desde backup</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Meta:</strong> Almacenamiento seguro, escalable, con disaster recovery
+                </div>
+            </section>
+
+            <!-- FAQ -->
+            <section>
+                <h2>Preguntas Frecuentes: Almacenamiento</h2>
+                <ul>
+                    <li><strong>¿Pierdo datos si elimino una PVC?</strong> Depende de la reclaim policy. Retain mantiene datos, Delete los elimina.</li>
+                    <li><strong>¿Puedo cambiar el tamaño de un volumen?</strong> Sí, si allowVolumeExpansion: true en StorageClass.</li>
+                    <li><strong>¿StatefulSet vs Deployment para BD?</strong> StatefulSet: identidad estable y PVC permanente. Deployment: stateless.</li>
+                    <li><strong>¿Cómo respalda Kubernetes los datos?</strong> VolumeSnapshots o herramientas externas (Velero, Kasten).</li>
+                </ul>
+            </section>
+
+            <!-- EXERCISE 1 -->
+            <section>
+                <h2>Ejercicio 1: Tipos de Volúmenes</h2>
+                <p><strong>Objetivo:</strong> Crear y usar diferentes tipos de volúmenes.</p>
+                <ul>
+                    <li>Crea un ConfigMap con datos de configuración</li>
+                    <li>Crea un Secret con credenciales</li>
+                    <li>Crea un Pod que monte ambos como volúmenes</li>
+                    <li>Verifica que los datos están disponibles dentro del contenedor</li>
+                    <li>¿Qué pasa si cambias el ConfigMap? ¿Se actualiza en el Pod?</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> Pod con ConfigMap y Secret montados, datos accesibles
+                </div>
+            </section>
+
+            <!-- EXERCISE 2 -->
+            <section>
+                <h2>Ejercicio 2: StorageClass Dinámico</h2>
+                <p><strong>Objetivo:</strong> Crear StorageClass y provisioning automático de PV.</p>
+                <ul>
+                    <li>Define un StorageClass (usa local o no-provisioner)</li>
+                    <li>Crea 3 PVCs que usen el StorageClass</li>
+                    <li>Verifica que se crean PVs automáticamente</li>
+                    <li>Crea un Pod que use una PVC y escribe datos</li>
+                    <li>Elimina el Pod, luego crea otro que use la misma PVC. ¿Están los datos?</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> PVs provisioned automáticamente, datos persistentes entre Pods
+                </div>
+            </section>
+
+            <!-- EXERCISE 3 -->
+            <section>
+                <h2>Ejercicio 3: StatefulSet con Almacenamiento</h2>
+                <p><strong>Objetivo:</strong> Crear aplicación stateful con volúmenes persistentes.</p>
+                <ul>
+                    <li>Define un StorageClass</li>
+                    <li>Crea un StatefulSet con 3 replicas</li>
+                    <li>Define volumeClaimTemplates en el StatefulSet</li>
+                    <li>Verifica que se crean mysql-0, mysql-1, mysql-2 con PVCs asociadas</li>
+                    <li>Escala el StatefulSet. ¿Cuántas PVCs nuevas se crean?</li>
+                    <li>Desescala. ¿Se eliminan las PVCs?</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> StatefulSet con PVCs automáticas, escalado ordenado
+                </div>
+            </section>
+
+            <!-- EXERCISE 4 -->
+            <section>
+                <h2>Ejercicio 4: Snapshots y Restore</h2>
+                <p><strong>Objetivo:</strong> Usar snapshots para backup y recuperación.</p>
+                <ul>
+                    <li>Crea un PVC y un Pod que escribe datos</li>
+                    <li>Toma un VolumeSnapshot del PVC</li>
+                    <li>Escribe más datos en el Pod original</li>
+                    <li>Crea una nueva PVC restaurada desde el snapshot</li>
+                    <li>Monta la PVC restaurada. ¿Qué datos ves?</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> Snapshot captura estado en un momento, restauración funciona
+                </div>
+            </section>
+
+            <!-- EXERCISE 5 -->
+            <section>
+                <h2>Ejercicio 5: Troubleshooting Almacenamiento</h2>
+                <p><strong>Objetivo:</strong> Diagnosticar y resolver problemas comunes.</p>
+                <ul>
+                    <li>Crea una PVC pero sin especificar un StorageClass existente</li>
+                    <li>Crea un Pod que intente usar la PVC. ¿Qué error ves?</li>
+                    <li>Describe la PVC para investigar</li>
+                    <li>Arregla el problema (crea el StorageClass o cambia la PVC)</li>
+                    <li>Verifica que el Pod ahora puede montar el volumen</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> Identifica problemas, entiende errores, implementa soluciones
+                </div>
+            </section>
+
+            <!-- RESOURCES -->
+            <section>
+                <h2>Recursos Recomendados</h2>
+                <ul>
+                    <li><strong>Documentación oficial:</strong> kubernetes.io/docs/concepts/storage/</li>
+                    <li><strong>API Reference:</strong> PersistentVolume, PersistentVolumeClaim, StorageClass</li>
+                    <li><strong>Herramientas:</strong> Velero (backup), Kasten (DR), Longhorn (storage distribuido)</li>
+                    <li><strong>Certificación:</strong> CKA incluye preguntas sobre almacenamiento y StatefulSets</li>
+                    <li><strong>Community:</strong> kubernetes.slack.com #storage</li>
+                </ul>
+            </section>
+
+            <!-- RESUMEN FINAL -->
+            <section>
+                <h2>Resumen Final: Almacenamiento en Kubernetes</h2>
+                <ul>
+                    <li><strong>Volúmenes:</strong> Abstracción del almacenamiento, efímeros o persistentes</li>
+                    <li><strong>PV/PVC:</strong> Modelo de admin (PV) vs usuario (PVC)</li>
+                    <li><strong>StorageClass:</strong> Automatización y provisioning dinámico</li>
+                    <li><strong>StatefulSet:</strong> Identidad estable + volúmenes persistentes por Pod</li>
+                    <li><strong>Snapshots:</strong> Backup rápido y recuperación en momentos específicos</li>
+                    <li><strong>Monitoreo:</strong> Alertas, capacidad, health checks</li>
+                </ul>
+            </section>
+
+            <!-- CLOSING -->
+            <section>
+                <h1>¿Preguntas?</h1>
+                <p style="font-size: 0.9em; margin-top: 2em;">Módulo 5: Almacenamiento Completo</p>
+                <p style="font-size: 0.75em; margin-top: 1em;">Kubernetes - Gestión de volúmenes, PV, PVC, StorageClasses y StatefulSets</p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            center: false,
+            transition: 'slide',
+            width: 1200,
+            height: 800,
+            slideNumber: true,
+            margin: 0.1,
+            minScale: 0.2,
+            maxScale: 2.0
+        });
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

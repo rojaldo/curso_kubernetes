@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 8: Observabilidad en Kubernetes</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #1e88e5; }
+        .reveal h1 { font-size: 2em; margin-bottom: 0.4em; }
+        .reveal h2 { font-size: 1.4em; margin-bottom: 0.4em; }
+        .reveal h3 { font-size: 1.1em; margin-bottom: 0.3em; color: #1e88e5; }
+        .reveal p { font-size: 0.6em; margin: 0.2em 0; color: #555555; }
+        .reveal strong { color: #1e88e5; font-weight: bold; }
+        .reveal pre { background: #f8f8f8; border: 1px solid #ddd; width: 100%; padding: 0.4em; margin: 0.4em 0; font-size: 0.45em; }
+        .reveal pre code { color: #333333; }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; font-size: 0.85em; }
+        .reveal ul { font-size: 0.55em; text-align: left; margin-left: 0.5em; }
+        .reveal li { margin: 0.12em 0; color: #555555; }
+        .reveal table { font-size: 0.5em; width: 100%; border-collapse: collapse; margin: 0.4em 0; }
+        .reveal table th, .reveal table td { border: 1px solid #ddd; padding: 0.12em; text-align: left; }
+        .reveal table th { background-color: #f0f0f0; color: #1e88e5; font-weight: bold; }
+        .highlight-box { background-color: #e3f2fd; border-left: 4px solid #1e88e5; padding: 0.3em; margin: 0.3em 0; font-size: 0.5em; }
+        .warning-box { background-color: #fff3e0; border-left: 4px solid #f57c00; padding: 0.3em; margin: 0.3em 0; font-size: 0.5em; }
+        .two-column { display: flex; gap: 2em; }
+        .two-column > div { flex: 1; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Portada -->
+            <section>
+                <h1>Módulo 8: Observabilidad</h1>
+                <h2 style="color: #1e88e5;">Logging, Monitoring, Health Checks</h2>
+                <p style="font-size: 0.7em; margin-top: 1em;">Visibilidad completa de aplicaciones en Kubernetes</p>
+            </section>
+
+            <!-- Introducción -->
+            <section>
+                <h2>¿Qué es Observabilidad?</h2>
+                <ul>
+                    <li><strong>Logging:</strong> Registrar eventos y errores</li>
+                    <li><strong>Monitoring:</strong> Medir métricas (CPU, memoria, requests)</li>
+                    <li><strong>Tracing:</strong> Seguir requests distribuidos</li>
+                    <li><strong>Health Checks:</strong> Determinar estado de aplicación</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Objetivo:</strong> Entender qué está pasando en tiempo real
+                </div>
+            </section>
+
+            <!-- LOGGING -->
+            <section>
+                <h2>Logging: ¿Por qué es crítico?</h2>
+                <ul>
+                    <li><strong>Debugging:</strong> Encontrar causa raíz de problemas</li>
+                    <li><strong>Auditoría:</strong> Rastrear acciones de usuarios/sistemas</li>
+                    <li><strong>Compliance:</strong> Cumplir requisitos regulatorios</li>
+                    <li><strong>Performance:</strong> Identificar cuellos de botella</li>
+                    <li><strong>Seguridad:</strong> Detectar intrusions y comportamiento anómalo</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Desafíos de Logging en Kubernetes</h2>
+                <ul>
+                    <li><strong>Contenedores efímeros:</strong> Logs desaparecen cuando muere Pod</li>
+                    <li><strong>Múltiples nodos:</strong> Logs distribuidos en el cluster</li>
+                    <li><strong>Múltiples contenedores:</strong> Coordinación de logs</li>
+                    <li><strong>Volumen:</strong> Miles de logs/segundo de aplicaciones</li>
+                </ul>
+                <p><strong>Solución:</strong> Agregación centralizada de logs</p>
+            </section>
+
+            <section>
+                <h2>Ver Logs de Pod</h2>
+                <pre><code class="language-bash"># Logs del contenedor más reciente
+kubectl logs pod-name
+
+# Logs en tiempo real (follow)
+kubectl logs pod-name -f
+
+# Ver logs de contenedor específico
+kubectl logs pod-name -c container-name
+
+# Logs de Pod anterior (si se reinició)
+kubectl logs pod-name --previous
+
+# Últimas 100 líneas
+kubectl logs pod-name --tail=100
+
+# Desde hace 1 hora
+kubectl logs pod-name --since=1h</code></pre>
+            </section>
+
+            <section>
+                <h2>Logs de Deployment</h2>
+                <pre><code class="language-bash"># Logs de todos los Pods del Deployment
+kubectl logs deployment/my-app
+
+# Logs con follow
+kubectl logs deployment/my-app --tail=50 -f
+
+# Con labels para filtrar
+kubectl logs -l app=myapp -f</code></pre>
+            </section>
+
+            <section>
+                <h2>Estrategia: Logging Estándar</h2>
+                <p><strong>Best Practice:</strong> Escribir a stdout/stderr</p>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: app-logger
+spec:
+  containers:
+  - name: app
+    image: myapp:latest
+    # Kubernetes automáticamente captura stdout/stderr
+    # No requiere configuración adicional</code></pre>
+                <p><strong>Ventajas:</strong> Simple, eficiente, fácil de agregar</p>
+            </section>
+
+            <section>
+                <h2>Ubicación de Logs en Nodo</h2>
+                <pre><code class="language-bash"># En el worker node
+/var/log/pods/<namespace>_<pod-name>_<uid>/<container-name>/
+
+# Ejemplo
+/var/log/pods/default_myapp-abc123_uuid/myapp/</code></pre>
+            </section>
+
+            <section>
+                <h2>Estrategia: Sidecar Logging</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: app-with-sidecar
+spec:
+  containers:
+  # Contenedor principal
+  - name: app
+    image: myapp:latest
+    volumeMounts:
+    - name: log-volume
+      mountPath: /var/log/app
+
+  # Sidecar para procesar logs
+  - name: log-processor
+    image: fluentd:latest
+    volumeMounts:
+    - name: log-volume
+      mountPath: /var/log/app
+
+  volumes:
+  - name: log-volume
+    emptyDir: {}</code></pre>
+            </section>
+
+            <section>
+                <h2>Logs a Nivel de Cluster</h2>
+                <pre><code class="language-bash"># Logs del kubelet
+journalctl -u kubelet -f
+
+# Logs del kube-apiserver
+kubectl logs -n kube-system pod/kube-apiserver-node1
+
+# Logs del scheduler
+kubectl logs -n kube-system -l component=kube-scheduler
+
+# Audit logs (API server)
+/var/log/kubernetes/audit.log</code></pre>
+            </section>
+
+            <section>
+                <h2>Eventos de Kubernetes</h2>
+                <pre><code class="language-bash"># Ver eventos del cluster
+kubectl get events
+
+# Con más detalle
+kubectl describe pod myapp
+
+# Namespace específico
+kubectl get events -n production
+
+# Ordenado por tiempo
+kubectl get events --sort-by='.lastTimestamp'</code></pre>
+            </section>
+
+            <section>
+                <h2>Stack EFK (Elasticsearch, Fluentd, Kibana)</h2>
+                <ul>
+                    <li><strong>Fluentd:</strong> Recolecta logs de nodos (DaemonSet)</li>
+                    <li><strong>Elasticsearch:</strong> Almacena logs (búsqueda y análisis)</li>
+                    <li><strong>Kibana:</strong> Visualización e interfaz web</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Flujo:</strong> Pod logs → Fluentd → Elasticsearch ← Kibana
+                </div>
+            </section>
+
+            <section>
+                <h2>Instalación EFK con Helm</h2>
+                <pre><code class="language-bash"># Agregar repositorio
+helm repo add elastic https://helm.elastic.co
+helm repo update
+
+# 1. Elasticsearch
+helm install elasticsearch elastic/elasticsearch \
+  --namespace logging --create-namespace \
+  --set replicas=3
+
+# 2. Kibana
+helm install kibana elastic/kibana \
+  --namespace logging \
+  --set elasticsearch.hosts=elasticsearch:9200
+
+# 3. Fluent-bit
+helm install fluent-bit fluent/fluent-bit \
+  --namespace logging</code></pre>
+            </section>
+
+            <section>
+                <h2>Configuración Fluentd (DaemonSet)</h2>
+                <pre><code class="language-yaml">apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+  namespace: logging
+spec:
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      serviceAccountName: fluentd
+      containers:
+      - name: fluentd
+        image: fluent/fluentd-kubernetes-daemonset
+        env:
+        - name: FLUENT_ELASTICSEARCH_HOST
+          value: elasticsearch
+        - name: FLUENT_ELASTICSEARCH_PORT
+          value: "9200"</code></pre>
+            </section>
+
+            <section>
+                <h2>Best Practices: Logging</h2>
+                <ul>
+                    <li><strong>Logs a stdout/stderr:</strong> Kubernetes lo captura automáticamente</li>
+                    <li><strong>Niveles apropiados:</strong> ERROR, WARN, INFO, DEBUG</li>
+                    <li><strong>Formato JSON:</strong> Más fácil de parsear y buscar</li>
+                    <li><strong>Agregar contexto:</strong> Pod name, namespace, container, request ID</li>
+                    <li><strong>NO loguear datos sensibles:</strong> Passwords, tokens, keys</li>
+                    <li><strong>Retención:</strong> Basada en compliance (30, 90, 365 días)</li>
+                </ul>
+            </section>
+
+            <!-- MONITORING -->
+            <section>
+                <h2>Monitoring: Métricas Clave</h2>
+                <ul>
+                    <li><strong>CPU usage:</strong> Utilización de procesador</li>
+                    <li><strong>Memory usage:</strong> Utilización de RAM</li>
+                    <li><strong>Network I/O:</strong> Ancho de banda</li>
+                    <li><strong>Application metrics:</strong> Requests, latencia, errores</li>
+                    <li><strong>Disk I/O:</strong> Performance de almacenamiento</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Metrics Server</h2>
+                <pre><code class="language-bash"># Verificar si está instalado
+kubectl get deployment metrics-server -n kube-system
+
+# Instalar (si falta)
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+# Ver métricas de nodos
+kubectl top nodes
+
+# Métricas de Pods
+kubectl top pods
+
+# Pods ordenados por CPU
+kubectl top pods --sort-by=cpu</code></pre>
+            </section>
+
+            <section>
+                <h2>Prometheus y Grafana</h2>
+                <ul>
+                    <li><strong>Prometheus:</strong> Base de datos time-series para métricas</li>
+                    <li><strong>Grafana:</strong> Visualización de métricas con dashboards</li>
+                    <li><strong>AlertManager:</strong> Manejo de alertas</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Stack:</strong> Prometheus scraping → Grafana visualiza
+                </div>
+            </section>
+
+            <section>
+                <h2>Instalación Prometheus con Helm</h2>
+                <pre><code class="language-bash"># Agregar repositorio
+helm repo add prometheus-community \
+  https://prometheus-community.github.io/helm-charts
+helm repo update
+
+# Instalar stack completo
+helm install prometheus \
+  prometheus-community/kube-prometheus-stack \
+  --namespace monitoring --create-namespace
+
+# Acceder a Grafana
+kubectl port-forward -n monitoring \
+  svc/prometheus-grafana 3000:80
+
+# URL: http://localhost:3000
+# User: admin / Password: prom-operator</code></pre>
+            </section>
+
+            <section>
+                <h2>Prometheus: Configuración</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+
+    scrape_configs:
+    - job_name: 'kubernetes-apiservers'
+      kubernetes_sd_configs:
+      - role: endpoints
+      scheme: https
+
+    - job_name: 'kubernetes-nodes'
+      kubernetes_sd_configs:
+      - role: node
+      scheme: https</code></pre>
+            </section>
+
+            <section>
+                <h2>Exponer Métricas: Prometheus Client</h2>
+                <pre><code class="language-python"># Python - Prometheus client
+from prometheus_client import Counter, Histogram, start_http_server
+import time
+
+# Definir métricas
+request_count = Counter('app_requests_total', 'Total requests')
+request_latency = Histogram('app_request_latency_seconds', 'Request latency')
+
+# Iniciar servidor en puerto 8000
+start_http_server(8000)
+
+# Usar métricas
+with request_latency.time():
+    request_count.inc()
+    time.sleep(0.1)</code></pre>
+            </section>
+
+            <section>
+                <h2>Pod con Prometheus Metrics</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: metrics-app
+  annotations:
+    # Prometheus scrape automático
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8000"
+    prometheus.io/path: "/metrics"
+spec:
+  containers:
+  - name: app
+    image: myapp:latest
+    ports:
+    - name: metrics
+      containerPort: 8000</code></pre>
+            </section>
+
+            <section>
+                <h2>Alertas: PrometheusRule</h2>
+                <pre><code class="language-yaml">apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: app-alerts
+  namespace: monitoring
+spec:
+  groups:
+  - name: app.rules
+    interval: 30s
+    rules:
+    # CPU alto
+    - alert: PodHighCPU
+      expr: sum(rate(container_cpu_usage_seconds_total[5m])) by (pod) > 0.8
+      for: 5m
+      annotations:
+        summary: "Pod {{ $labels.pod }} CPU > 80%"
+
+    # Memoria alta
+    - alert: PodHighMemory
+      expr: sum(container_memory_usage_bytes) by (pod) > 1073741824
+      for: 5m
+      annotations:
+        summary: "Pod {{ $labels.pod }} memoria > 1Gi"</code></pre>
+            </section>
+
+            <section>
+                <h2>AlertManager: Notificaciones</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+data:
+  alertmanager.yml: |
+    global:
+      resolve_timeout: 5m
+      slack_api_url: 'https://hooks.slack.com/services/YOUR/WEBHOOK'
+
+    route:
+      receiver: 'default'
+      group_by: ['alertname', 'cluster']
+
+      routes:
+      # Critical a PagerDuty
+      - match:
+          severity: critical
+        receiver: pagerduty
+
+      # Warnings a Slack
+      - match:
+          severity: warning
+        receiver: slack</code></pre>
+            </section>
+
+            <section>
+                <h2>Custom Metrics</h2>
+                <p><strong>Tipos:</strong> Pod Metrics, External Metrics, Object Metrics</p>
+                <pre><code class="language-yaml">apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api
+  minReplicas: 2
+  maxReplicas: 20
+  metrics:
+  # Custom metric: requests/segundo
+  - type: Pods
+    pods:
+      metric:
+        name: http_requests_per_second
+      target:
+        type: AverageValue
+        averageValue: "1000"</code></pre>
+            </section>
+
+            <section>
+                <h2>Best Practices: Monitoring</h2>
+                <ul>
+                    <li><strong>Métricas vitales:</strong> CPU, memoria, network, disk</li>
+                    <li><strong>SLI/SLO:</strong> Indicadores y objetivos de nivel de servicio</li>
+                    <li><strong>Alertas significativas:</strong> Evitar "alert fatigue"</li>
+                    <li><strong>Documentar alertas:</strong> Qué hacer en cada alerta</li>
+                    <li><strong>Retención:</strong> Prometheus 15 días, long-term: Thanos, InfluxDB</li>
+                    <li><strong>Multi-layer:</strong> Infraestructura, Kubernetes, aplicación</li>
+                </ul>
+            </section>
+
+            <!-- HEALTH CHECKS -->
+            <section>
+                <h2>Health Checks: Conceptos</h2>
+                <ul>
+                    <li><strong>Liveness:</strong> ¿Está corriendo? → Restart si falla</li>
+                    <li><strong>Readiness:</strong> ¿Está listo para tráfico? → Remover de LB si falla</li>
+                    <li><strong>Startup:</strong> ¿Terminó de iniciarse? → Esperar antes de chequear</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Sin health checks:</strong> Kubernetes asume Pod running = sano ✗
+                </div>
+            </section>
+
+            <section>
+                <h2>Liveness Probe: HTTP</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: app-liveness
+spec:
+  containers:
+  - name: app
+    image: myapp:latest
+    ports:
+    - containerPort: 8080
+
+    livenessProbe:
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 30    # Esperar 30s
+      periodSeconds: 10          # Chequear cada 10s
+      timeoutSeconds: 5
+      failureThreshold: 3        # Restart después de 3 fallos</code></pre>
+                <p><strong>Uso:</strong> Detectar deadlock, OOM, proceso muerto</p>
+            </section>
+
+            <section>
+                <h2>Liveness Probe: TCP y Exec</h2>
+                <pre><code class="language-yaml"># TCP probe
+livenessProbe:
+  tcpSocket:
+    port: 8080
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+---
+# Exec probe (comando custom)
+livenessProbe:
+  exec:
+    command:
+    - /bin/sh
+    - -c
+    - curl -f http://localhost:8080/health || exit 1
+  initialDelaySeconds: 30
+  periodSeconds: 10</code></pre>
+            </section>
+
+            <section>
+                <h2>Readiness Probe</h2>
+                <pre><code class="language-yaml">readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8080
+  initialDelaySeconds: 10    # Esperar menos
+  periodSeconds: 5           # Chequear más frecuente
+  timeoutSeconds: 3
+  failureThreshold: 2
+  # Status codes 200-399 = éxito
+  # 503 = no listo</code></pre>
+                <p><strong>Diferencia con Liveness:</strong> NO reinicia, solo remueve de LB</p>
+            </section>
+
+            <section>
+                <h2>Readiness: Chequear Dependencias</h2>
+                <pre><code class="language-yaml">readinessProbe:
+  exec:
+    command:
+    - /bin/sh
+    - -c
+    - |
+      # Verificar DB conectada
+      timeout 3 /app/check_db.sh || exit 1
+      # Verificar cache cargado
+      curl -f http://localhost:8080/cache/status || exit 1
+  initialDelaySeconds: 5
+  periodSeconds: 5</code></pre>
+            </section>
+
+            <section>
+                <h2>Startup Probe</h2>
+                <p><strong>Uso:</strong> Aplicaciones que tardan en iniciar</p>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: slow-startup-app
+spec:
+  containers:
+  - name: app
+    image: legacy-app:latest
+    ports:
+    - containerPort: 8080
+
+    # Esperar hasta 120s para iniciar
+    startupProbe:
+      httpGet:
+        path: /health
+        port: 8080
+      failureThreshold: 12      # 12 × 10 = 120 segundos
+      periodSeconds: 10</code></pre>
+            </section>
+
+            <section>
+                <h2>Startup + Liveness + Readiness</h2>
+                <pre><code class="language-yaml">    # Startup: esperar hasta 120s
+    startupProbe:
+      httpGet:
+        path: /health
+        port: 8080
+      failureThreshold: 12
+      periodSeconds: 10
+
+    # Liveness: chequear cada 10s
+    livenessProbe:
+      httpGet:
+        path: /health
+        port: 8080
+      periodSeconds: 10
+
+    # Readiness: chequear cada 5s
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8080
+      periodSeconds: 5</code></pre>
+            </section>
+
+            <section>
+                <h2>Timeline: Startup → Liveness → Readiness</h2>
+                <ul>
+                    <li><strong>0-120s:</strong> Startup probe chequea (máx 12 fallos)</li>
+                    <li><strong>Si todos fallan:</strong> RESTART Pod</li>
+                    <li><strong>Si éxito:</strong> Liveness probe activa (cada 10s)</li>
+                    <li><strong>Si éxito:</strong> Readiness probe activa (cada 5s)</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Parámetros: httpGet vs tcpSocket vs exec</h2>
+                <table>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Cuándo usar</th>
+                        <th>Ventaja</th>
+                    </tr>
+                    <tr>
+                        <td><strong>httpGet</strong></td>
+                        <td>Aplicaciones HTTP</td>
+                        <td>Chequea lógica real</td>
+                    </tr>
+                    <tr>
+                        <td><strong>tcpSocket</strong></td>
+                        <td>TCP (no HTTP)</td>
+                        <td>Simple, rápido</td>
+                    </tr>
+                    <tr>
+                        <td><strong>exec</strong></td>
+                        <td>Lógica compleja</td>
+                        <td>Flexible, custom</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Parámetros Comunes</h2>
+                <table>
+                    <tr>
+                        <th>Parámetro</th>
+                        <th>Descripción</th>
+                        <th>Defecto</th>
+                    </tr>
+                    <tr>
+                        <td><strong>initialDelaySeconds</strong></td>
+                        <td>Segundos antes de primer chequeo</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>periodSeconds</strong></td>
+                        <td>Intervalo entre chequeos</td>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <td><strong>timeoutSeconds</strong></td>
+                        <td>Timeout del probe</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><strong>failureThreshold</strong></td>
+                        <td>Fallos antes de acción</td>
+                        <td>3</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Best Practices: Health Checks (1/2)</h2>
+                <ul>
+                    <li><strong>Endpoints de health:</strong> /health (liveness), /ready (readiness)</li>
+                    <li><strong>Liveness conservador:</strong> Solo restart si realmente muerto</li>
+                    <li><strong>NO chequear dependencias en liveness:</strong> Fallos = crashes</li>
+                    <li><strong>Readiness más estricto:</strong> Chequear dependencias, caché, datos</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Best Practices: Health Checks (2/2)</h2>
+                <ul>
+                    <li><strong>initialDelaySeconds > tiempo real de startup:</strong> Evitar falsos fallos</li>
+                    <li><strong>timeoutSeconds < 1s:</strong> Fallos rápidos</li>
+                    <li><strong>periodSeconds: 10-30s:</strong> Balance entre overhead y velocidad</li>
+                    <li><strong>Diferentes endpoints:</strong> NO reutilizar /health para readiness</li>
+                    <li><strong>Startup para apps lentas:</strong> Evita restarts durante startup</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Impacto de Readiness en Service</h2>
+                <ul>
+                    <li><strong>Pod con Readiness=true:</strong> Incluida en endpoints del Service</li>
+                    <li><strong>Pod con Readiness=false:</strong> REMOVIDA de endpoints</li>
+                    <li><strong>Resultado:</strong> Tráfico solo a Pods listos</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Importante:</strong> Readiness afecta si recibe tráfico, Liveness solo controla restarts
+                </div>
+            </section>
+
+            <!-- Resumen -->
+            <section>
+                <h2>Tres Pilares de Observabilidad</h2>
+                <table>
+                    <tr>
+                        <th>Pilar</th>
+                        <th>¿Qué?</th>
+                        <th>¿Cómo?</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Logging</strong></td>
+                        <td>Eventos y errores</td>
+                        <td>stdout/stderr, EFK, Loki</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Monitoring</strong></td>
+                        <td>Métricas y performance</td>
+                        <td>Prometheus, Grafana, Datadog</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Health Checks</strong></td>
+                        <td>Estado de aplicación</td>
+                        <td>Liveness, Readiness, Startup</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Checklist de Observabilidad</h2>
+                <ul>
+                    <li><strong>☐ Logs centralizados</strong> (ELK, Loki, Splunk)</li>
+                    <li><strong>☐ Logs en stdout/stderr</strong> (no a disco)</li>
+                    <li><strong>☐ Prometheus + Grafana</strong> instalados</li>
+                    <li><strong>☐ Metrics Server</strong> activo</li>
+                    <li><strong>☐ Alertas configuradas</strong> (CPU, memoria, disponibilidad)</li>
+                    <li><strong>☐ Health checks implementados</strong> (liveness, readiness)</li>
+                    <li><strong>☐ Dashboards útiles</strong> (cluster, pods, aplicación)</li>
+                </ul>
+            </section>
+
+            <!-- FAQ -->
+            <section>
+                <h2>Preguntas Frecuentes: Observabilidad</h2>
+                <ul>
+                    <li><strong>¿Cuál es la diferencia entre Liveness y Readiness?</strong> Liveness reinicia, Readiness solo remueve del LB.</li>
+                    <li><strong>¿Dónde van los logs de Kubernetes?</strong> stdout/stderr de contenedor, capturados por kubelet.</li>
+                    <li><strong>¿Cuánto tiempo retiene Prometheus?</strong> Por defecto 15 días, usar Thanos para long-term.</li>
+                    <li><strong>¿Qué métrica es más importante?</strong> Depende de app, pero CPU, memoria, latencia son fundamentales.</li>
+                </ul>
+            </section>
+
+            <!-- EXERCISE 1 -->
+            <section>
+                <h2>Ejercicio 1: Logging y kubectl logs</h2>
+                <p><strong>Objetivo:</strong> Dominar kubectl logs y entender ubicación de logs.</p>
+                <ul>
+                    <li>Crea un Pod que escribe logs a stdout</li>
+                    <li>Obtén logs con <code>kubectl logs</code></li>
+                    <li>Prueba opciones: -f (follow), --tail, --previous, --since</li>
+                    <li>Ver logs de todos los Pods en un Deployment</li>
+                    <li>Verifica ubicación física de logs en worker node</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> Entiende cómo acceder a logs en Kubernetes
+                </div>
+            </section>
+
+            <!-- EXERCISE 2 -->
+            <section>
+                <h2>Ejercicio 2: Health Checks Básicos</h2>
+                <p><strong>Objetivo:</strong> Implementar Liveness y Readiness probes.</p>
+                <ul>
+                    <li>Crea un Pod con HTTP Liveness probe</li>
+                    <li>Crea otro con Readiness probe</li>
+                    <li>Mata la aplicación dentro del Pod</li>
+                    <li>Observa que Kubernetes lo reinicia (liveness) o lo remueve del servicio (readiness)</li>
+                    <li>Verifica eventos con <code>kubectl describe pod</code></li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> Health checks funcionan, Kubernetes reacciona automáticamente
+                </div>
+            </section>
+
+            <!-- EXERCISE 3 -->
+            <section>
+                <h2>Ejercicio 3: Metrics Server y kubectl top</h2>
+                <p><strong>Objetivo:</strong> Ver métricas de uso de recursos.</p>
+                <ul>
+                    <li>Verifica que Metrics Server esté instalado</li>
+                    <li>Usa <code>kubectl top nodes</code> para ver nodos</li>
+                    <li>Usa <code>kubectl top pods</code> para ver Pods</li>
+                    <li>Ordena por CPU: <code>--sort-by=cpu</code></li>
+                    <li>Identifica Pods que usan más recursos</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> Puedes ver métricas de recursos en tiempo real
+                </div>
+            </section>
+
+            <!-- EXERCISE 4 -->
+            <section>
+                <h2>Ejercicio 4: Prometheus y Grafana Básico</h2>
+                <p><strong>Objetivo:</strong> Instalar y explorar Prometheus + Grafana.</p>
+                <ul>
+                    <li>Instala Prometheus con Helm (kube-prometheus-stack)</li>
+                    <li>Accede a Grafana con port-forward</li>
+                    <li>Explora dashboards pre-instalados (Kubernetes, Nodes, Pods)</li>
+                    <li>Crea una consulta PromQL simple (ej: CPU usage)</li>
+                    <li>Crea una alerta básica (CPU > 80%)</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> Stack de monitoring funcionando, alertas configuradas
+                </div>
+            </section>
+
+            <!-- EXERCISE 5 -->
+            <section>
+                <h2>Ejercicio 5: Implementar Métricas en Aplicación</h2>
+                <p><strong>Objetivo:</strong> Exponer métricas custom de aplicación.</p>
+                <ul>
+                    <li>Escribe una pequeña app con Prometheus client library</li>
+                    <li>Expone métricas en /metrics (puerto 8000)</li>
+                    <li>Añade annotations en Pod para scraping automático</li>
+                    <li>Verifica en Prometheus que las métricas se recolectan</li>
+                    <li>Crea gráfico en Grafana de tus métricas custom</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Resultado esperado:</strong> Métricas custom visibles en Grafana
+                </div>
+            </section>
+
+            <!-- RESOURCES -->
+            <section>
+                <h2>Recursos Recomendados</h2>
+                <ul>
+                    <li><strong>Documentación oficial:</strong> kubernetes.io/docs/tasks/debug-application-cluster/</li>
+                    <li><strong>Logging:</strong> kubernetes.io/docs/concepts/cluster-administration/logging/</li>
+                    <li><strong>Health checks:</strong> kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/</li>
+                    <li><strong>Herramientas:</strong> Prometheus, Grafana, ELK, Loki, Datadog, New Relic</li>
+                    <li><strong>Certificación CKA:</strong> Incluye troubleshooting con logs y describe</li>
+                </ul>
+            </section>
+
+            <!-- RESUMEN FINAL -->
+            <section>
+                <h2>Resumen Final: Observabilidad en Kubernetes</h2>
+                <ul>
+                    <li><strong>Logging:</strong> stdout/stderr capturados automáticamente, EFK para agregación</li>
+                    <li><strong>Monitoring:</strong> Prometheus recolecta, Grafana visualiza, AlertManager notifica</li>
+                    <li><strong>Health Checks:</strong> Liveness (reinicia), Readiness (tráfico), Startup (espera)</li>
+                    <li><strong>Métricas:</strong> Custom metrics con Prometheus client, escalado automático con HPA</li>
+                    <li><strong>Observabilidad completa:</strong> Logs + Métricas + Health = visibilidad total</li>
+                </ul>
+            </section>
+
+            <!-- CLOSING -->
+            <section>
+                <h1>¿Preguntas?</h1>
+                <p style="font-size: 0.9em; margin-top: 2em;">Módulo 8: Observabilidad en Kubernetes</p>
+                <p style="font-size: 0.75em; margin-top: 1em;">Kubernetes - Logging, Monitoring, Health Checks y Métricas</p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            center: false,
+            transition: 'slide',
+            width: 1200,
+            height: 800,
+            slideNumber: true,
+            margin: 0.1,
+            minScale: 0.2,
+            maxScale: 2.0
+        });
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

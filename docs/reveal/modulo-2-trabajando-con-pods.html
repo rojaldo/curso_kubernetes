@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 2: Trabajando con Pods</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #1e88e5; }
+
+        /* Encabezados */
+        .reveal h1 { font-size: 2em; margin-bottom: 0.5em; }
+        .reveal h2 { font-size: 1.4em; margin-bottom: 0.5em; }
+        .reveal h3 { font-size: 1.1em; margin-bottom: 0.3em; color: #1e88e5; }
+
+        /* Párrafos y énfasis */
+        .reveal p { font-size: 0.6em; margin: 0.3em 0; color: #555555; }
+        .reveal strong { color: #1e88e5; font-weight: bold; }
+
+        /* Código */
+        .reveal pre { background: #f8f8f8; border: 1px solid #ddd; width: 100%; padding: 0.5em; margin: 0.5em 0; font-size: 0.45em; }
+        .reveal pre code { color: #333333; }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; }
+
+        /* Listas */
+        .reveal ul { font-size: 0.55em; text-align: left; margin-left: 0.5em; }
+        .reveal li { margin: 0.3em 0; color: #555555; }
+
+        /* Tablas */
+        .reveal table { font-size: 0.5em; width: 100%; border-collapse: collapse; margin: 0.5em 0; }
+        .reveal table th, .reveal table td { border: 1px solid #ddd; padding: 0.3em; text-align: left; }
+        .reveal table th { background-color: #f0f0f0; color: #1e88e5; font-weight: bold; }
+
+        /* Dos columnas */
+        .two-column { display: flex; gap: 2em; }
+        .two-column > div { flex: 1; }
+
+        /* Highlight boxes */
+        .highlight-box { background-color: #e3f2fd; border-left: 4px solid #1e88e5; padding: 0.5em; margin: 0.5em 0; }
+        .warning-box { background-color: #fff3e0; border-left: 4px solid #f57c00; padding: 0.5em; margin: 0.5em 0; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Slide 1: Title -->
+            <section>
+                <h1>Módulo 2</h1>
+                <h2 style="color: #1e88e5;">Trabajando con Pods</h2>
+                <p style="font-size: 0.8em; margin-top: 1em;">La unidad fundamental de despliegue en Kubernetes</p>
+            </section>
+
+            <!-- Slide 2: Anatomía de un Pod -->
+            <section>
+                <h2>Anatomía de un Pod</h2>
+                <p>Un Pod encapsula:</p>
+                <ul>
+                    <li>Uno o más contenedores</li>
+                    <li>Almacenamiento compartido (volúmenes)</li>
+                    <li>Una dirección IP única</li>
+                    <li>Opciones de ejecución de contenedores</li>
+                </ul>
+                <div class="highlight-box" style="font-size: 0.7em;">
+                    <strong>Importante:</strong> Aunque puedes tener múltiples contenedores en un Pod, la mayoría de casos usan un contenedor por Pod.
+                </div>
+            </section>
+
+            <!-- Slide 3: Componentes del Pod -->
+            <section>
+                <h2>Componentes Principales</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Metadata:</strong> Nombre, labels, annotations, namespace, UID</li>
+                    <li><strong>Spec:</strong> Contenedores, volúmenes, restart policy, DNS policy, service account</li>
+                    <li><strong>Status:</strong> Phase (Pending, Running, Succeeded, Failed, Unknown), condiciones, IPs</li>
+                </ul>
+                <p style="font-size: 0.65em; margin-top: 1em;"><strong>Namespaces compartidos:</strong></p>
+                <ul style="font-size: 0.65em;">
+                    <li>Network: Los contenedores comparten IP y puertos</li>
+                    <li>IPC: Shared memory y comunicación inter-proceso</li>
+                    <li>UTS: Hostname compartido</li>
+                </ul>
+            </section>
+
+            <!-- Slide 4: Pod básico - YAML -->
+            <section>
+                <h2>Pod Básico - YAML</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-simple
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.21
+    ports:
+    - containerPort: 80</code></pre>
+                <p style="font-size: 0.65em; margin-top: 0.5em;">Esto crea un Pod con un contenedor nginx que escucha en puerto 80</p>
+            </section>
+
+            <!-- Slide 5: Pod con recursos -->
+            <section>
+                <h2>Pod con Configuración de Recursos</h2>
+                <pre><code class="language-yaml">spec:
+  containers:
+  - name: nginx
+    image: nginx:1.21
+    resources:
+      requests:         # Mínimo garantizado
+        memory: "128Mi"
+        cpu: "250m"
+      limits:           # Máximo permitido
+        memory: "256Mi"
+        cpu: "500m"
+    env:
+    - name: ENVIRONMENT
+      value: "production"</code></pre>
+                <p style="font-size: 0.65em;"><strong>Importante:</strong> Los <code>requests</code> se usan para scheduling, los <code>limits</code> para restricción de recursos</p>
+            </section>
+
+            <!-- Slide 6: Pod completo con health checks -->
+            <section>
+                <h2>Pod Completo - Health Checks</h2>
+                <pre><code class="language-yaml">spec:
+  containers:
+  - name: webapp
+    image: myapp:2.0
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 10
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8080
+      initialDelaySeconds: 10
+      periodSeconds: 5</code></pre>
+            </section>
+
+            <!-- Slide 7: Health Checks - Explicación -->
+            <section>
+                <h2>Tipos de Health Checks</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Liveness Probe:</strong> ¿Está el contenedor vivo?
+                        <ul style="font-size: 0.9em;">
+                            <li>Reinicia el contenedor si falla</li>
+                            <li>Detecta contenedores zombies</li>
+                        </ul>
+                    </li>
+                    <li><strong>Readiness Probe:</strong> ¿Está listo para tráfico?
+                        <ul style="font-size: 0.9em;">
+                            <li>Remueve del Service si falla</li>
+                            <li>Controla cuándo recibe tráfico</li>
+                        </ul>
+                    </li>
+                    <li><strong>Startup Probe:</strong> Permite tiempo de inicio
+                        <ul style="font-size: 0.9em;">
+                            <li>Para apps con inicio lento</li>
+                            <li>Deshabilita liveness/readiness durante startup</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 8: Pod con volúmenes -->
+            <section>
+                <h2>Pod con Volúmenes y Security</h2>
+                <pre><code class="language-yaml">spec:
+  containers:
+  - name: app
+    image: myapp:1.0
+    volumeMounts:
+    - name: config
+      mountPath: /etc/config
+      readOnly: true
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 2000
+
+  volumes:
+  - name: config
+    configMap:
+      name: app-config</code></pre>
+            </section>
+
+            <!-- Slide 9: Campos importantes del spec -->
+            <section>
+                <h2>Campos Importantes del Spec</h2>
+                <table style="font-size: 0.6em;">
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>restartPolicy</td>
+                        <td>Always, OnFailure, Never</td>
+                    </tr>
+                    <tr>
+                        <td>nodeSelector</td>
+                        <td>Selecciona nodos por labels</td>
+                    </tr>
+                    <tr>
+                        <td>imagePullPolicy</td>
+                        <td>Always, IfNotPresent, Never</td>
+                    </tr>
+                    <tr>
+                        <td>dnsPolicy</td>
+                        <td>ClusterFirst, Default, None</td>
+                    </tr>
+                    <tr>
+                        <td>serviceAccountName</td>
+                        <td>Service account a usar</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- Slide 10: Crear Pods con kubectl -->
+            <section>
+                <h2>Crear Pods - kubectl</h2>
+                <pre><code class="language-bash"># Desde archivo YAML
+kubectl apply -f pod.yaml
+
+# Crear imperativo
+kubectl run nginx --image=nginx
+
+# Con variables de entorno
+kubectl run myapp --image=busybox --env="KEY=value"
+
+# Dry-run (ver YAML sin crear)
+kubectl run nginx --image=nginx --dry-run=client -o yaml</code></pre>
+            </section>
+
+            <!-- Slide 11: Listar y ver Pods -->
+            <section>
+                <h2>Listar y Ver Pods</h2>
+                <pre><code class="language-bash"># Listar con información
+kubectl get pods -o wide
+
+# Todos los namespaces
+kubectl get pods -A
+
+# Mostrar labels
+kubectl get pods --show-labels
+
+# Filtrar por labels
+kubectl get pods -l app=nginx
+
+# Ver detalles
+kubectl describe pod nginx
+kubectl get pod nginx -o yaml</code></pre>
+            </section>
+
+            <!-- Slide 12: Modificar y eliminar Pods -->
+            <section>
+                <h2>Modificar y Eliminar Pods</h2>
+                <pre><code class="language-bash"># Editar en editor
+kubectl edit pod nginx
+
+# Patch específico
+kubectl patch pod nginx -p '{"spec":{"containers":[...]}}'
+
+# Eliminar
+kubectl delete pod nginx
+
+# Por label
+kubectl delete pods -l app=nginx
+
+# Forzar eliminación inmediata
+kubectl delete pod nginx --grace-period=0 --force</code></pre>
+            </section>
+
+            <!-- Slide 13: Debugging - Ver logs -->
+            <section>
+                <h2>Debugging - Logs de Contenedores</h2>
+                <pre><code class="language-bash"># Ver logs
+kubectl logs pod-name
+
+# Seguir logs (tail -f)
+kubectl logs -f pod-name
+
+# Logs previos (si el contenedor crasheó)
+kubectl logs pod-name --previous
+
+# Últimas N líneas
+kubectl logs pod-name --tail=100
+
+# Desde hace X tiempo
+kubectl logs pod-name --since=1h</code></pre>
+            </section>
+
+            <!-- Slide 14: Debugging - Ejecutar comandos -->
+            <section>
+                <h2>Debugging - Ejecutar Comandos</h2>
+                <pre><code class="language-bash"># Ejecutar comando
+kubectl exec pod-name -- ls -la /app
+
+# Shell interactivo
+kubectl exec -it pod-name -- /bin/bash
+
+# En contenedor específico
+kubectl exec -it pod-name -c container-name -- sh
+
+# Ver procesos
+kubectl exec pod-name -- ps aux
+
+# Verificar conectividad DNS
+kubectl exec pod-name -- nslookup service.namespace.svc.cluster.local</code></pre>
+            </section>
+
+            <!-- Slide 15: Ciclo de vida del Pod -->
+            <section>
+                <h2>Ciclo de Vida del Pod</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Pending:</strong> Pod creado, esperando scheduling
+                        <ul><li>Descargando imágenes, creando contenedores</li></ul>
+                    </li>
+                    <li><strong>Running:</strong> Pod asignado a nodo, contenedores iniciados
+                        <ul><li>Ejecutándose normalmente</li></ul>
+                    </li>
+                    <li><strong>Succeeded:</strong> Todos los contenedores completados exitosamente
+                        <ul><li>Típico de Jobs</li></ul>
+                    </li>
+                    <li><strong>Failed:</strong> Al menos un contenedor terminó con error
+                        <ul><li>Exit code != 0</li></ul>
+                    </li>
+                    <li><strong>Unknown:</strong> Estado no puede determinarse
+                        <ul><li>Pérdida de comunicación con el nodo</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 16: Estados de contenedores -->
+            <section>
+                <h2>Estados de los Contenedores</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Waiting:</strong> Esperando para iniciar
+                        <ul><li>Descargando imagen, aplicando Secrets</li></ul>
+                    </li>
+                    <li><strong>Running:</strong> Ejecutándose sin problemas
+                        <ul><li>PostStart hook completado (si existe)</li></ul>
+                    </li>
+                    <li><strong>Terminated:</strong> Ha terminado de ejecutarse
+                        <ul><li>Exitosamente o con error</li></ul>
+                    </li>
+                </ul>
+                <pre style="font-size: 0.6em;"><code class="language-bash"># Ver fase del Pod
+kubectl get pod nginx -o jsonpath='{.status.phase}'
+
+# Ver estado de contenedores
+kubectl get pod nginx -o jsonpath='{.status.containerStatuses[*].state}'</code></pre>
+            </section>
+
+            <!-- Slide 17: Pod Conditions -->
+            <section>
+                <h2>Pod Conditions</h2>
+                <table style="font-size: 0.65em;">
+                    <tr>
+                        <th>Condition</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>PodScheduled</td>
+                        <td>Pod ha sido programado a un nodo</td>
+                    </tr>
+                    <tr>
+                        <td>Initialized</td>
+                        <td>Init containers han completado</td>
+                    </tr>
+                    <tr>
+                        <td>ContainersReady</td>
+                        <td>Todos los contenedores están listos</td>
+                    </tr>
+                    <tr>
+                        <td>Ready</td>
+                        <td>Pod puede servir requests</td>
+                    </tr>
+                </table>
+                <p style="font-size: 0.65em; margin-top: 0.5em;"><strong>Ver condiciones:</strong></p>
+                <pre style="font-size: 0.6em;"><code>kubectl describe pod nginx | grep Conditions -A 10</code></pre>
+            </section>
+
+            <!-- Slide 18: Estados comunes - Running y Ready -->
+            <section>
+                <h2>Estados Comunes - Running y Ready</h2>
+                <pre style="font-size: 0.7em;"><code>NAME    READY   STATUS    RESTARTS   AGE
+nginx   1/1     Running   0          5m</code></pre>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>STATUS: Running</strong> = Pod ejecutándose</li>
+                    <li><strong>READY: 1/1</strong> = 1 de 1 contenedores listo</li>
+                    <li><strong>RESTARTS: 0</strong> = No ha tenido reinicios</li>
+                </ul>
+                <p style="font-size: 0.65em; margin-top: 0.8em;"><strong>Este es el estado ideal para un Pod</strong></p>
+            </section>
+
+            <!-- Slide 19: Estados comunes - ImagePullBackOff -->
+            <section>
+                <h2>Estados Comunes - ImagePullBackOff</h2>
+                <pre style="font-size: 0.7em;"><code>NAME    READY   STATUS             RESTARTS   AGE
+webapp  0/1     ImagePullBackOff   0          2m</code></pre>
+                <p style="font-size: 0.7em;"><strong>Causa:</strong> No puede descargar la imagen</p>
+                <p style="font-size: 0.7em;"><strong>Soluciones:</strong></p>
+                <ul style="font-size: 0.65em;">
+                    <li>Verificar nombre de imagen correcto</li>
+                    <li>Verificar acceso al registry (credenciales)</li>
+                    <li>Verificar imagePullSecrets si es registry privado</li>
+                </ul>
+                <pre style="font-size: 0.6em;"><code>kubectl describe pod webapp</code></pre>
+            </section>
+
+            <!-- Slide 20: Estados comunes - CrashLoopBackOff -->
+            <section>
+                <h2>Estados Comunes - CrashLoopBackOff</h2>
+                <pre style="font-size: 0.7em;"><code>NAME    READY   STATUS             RESTARTS   AGE
+webapp  0/1     CrashLoopBackOff   5          10m</code></pre>
+                <p style="font-size: 0.7em;"><strong>Significado:</strong></p>
+                <ul style="font-size: 0.65em;">
+                    <li>Contenedor inicia pero crashea inmediatamente</li>
+                    <li>Kubernetes lo reinicia automáticamente</li>
+                    <li>Backoff exponencial entre reintentos</li>
+                </ul>
+                <p style="font-size: 0.7em; margin-top: 0.8em;"><strong>Debugging:</strong></p>
+                <pre style="font-size: 0.6em;"><code>kubectl logs webapp --previous
+kubectl describe pod webapp</code></pre>
+            </section>
+
+            <!-- Slide 21: Estados comunes - Pending -->
+            <section>
+                <h2>Estados Comunes - Pending</h2>
+                <pre style="font-size: 0.7em;"><code>NAME    READY   STATUS    RESTARTS   AGE
+webapp  0/1     Pending   0          30s</code></pre>
+                <p style="font-size: 0.7em;"><strong>Causas comunes:</strong></p>
+                <ul style="font-size: 0.65em;">
+                    <li>Espera de scheduling (no hay nodos disponibles)</li>
+                    <li>Recursos insuficientes (CPU, memoria)</li>
+                    <li>PVC sin bound</li>
+                </ul>
+                <p style="font-size: 0.7em; margin-top: 0.8em;"><strong>Ver razón exacta:</strong></p>
+                <pre style="font-size: 0.6em;"><code>kubectl describe pod webapp
+# Ver sección "Events:" para detalles</code></pre>
+            </section>
+
+            <!-- Slide 22: Evicted - Sin recursos -->
+            <section>
+                <h2>Estados Comunes - Evicted</h2>
+                <pre style="font-size: 0.7em;"><code>NAME    READY   STATUS    RESTARTS   AGE
+webapp  0/1     Evicted   0          1h</code></pre>
+                <p style="font-size: 0.7em;"><strong>Causa:</strong> Nodo sin recursos (memoria, disco)</p>
+                <p style="font-size: 0.7em;">Pod fue desalojado para liberar recursos</p>
+                <p style="font-size: 0.7em; margin-top: 0.8em;"><strong>Soluciones:</strong></p>
+                <ul style="font-size: 0.65em;">
+                    <li>Aumentar memoria/disco del nodo</li>
+                    <li>Reducir requests/limits del Pod</li>
+                    <li>Agregar más nodos al cluster</li>
+                </ul>
+            </section>
+
+            <!-- Slide 23: Best Practices - Pods básicos -->
+            <section>
+                <h2>Best Practices - Pods Básicos</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Siempre define recursos:</strong>
+                        <ul><li>Requests y limits para CPU y memoria</li></ul>
+                    </li>
+                    <li><strong>Usa health checks apropiados:</strong>
+                        <ul><li>Liveness para detectar contenedores muertos</li>
+                            <li>Readiness para controlar tráfico</li></ul>
+                    </li>
+                    <li><strong>Configura restart policies:</strong>
+                        <ul><li>Always: servicios de larga duración</li>
+                            <li>OnFailure: jobs</li></ul>
+                    </li>
+                    <li><strong>Usa labels consistentemente:</strong>
+                        <ul><li>Facilita selección y organización</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 24: Best Practices - No usar Pods directos -->
+            <section>
+                <h2>Best Practice Crítica</h2>
+                <div class="warning-box" style="font-size: 0.75em;">
+                    <strong>⚠️ No uses Pods directamente en producción</strong>
+                </div>
+                <p style="font-size: 0.7em;">Usa controladores en su lugar:</p>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Deployment:</strong> Para aplicaciones stateless</li>
+                    <li><strong>StatefulSet:</strong> Para aplicaciones stateful</li>
+                    <li><strong>DaemonSet:</strong> Un Pod por nodo</li>
+                    <li><strong>Job/CronJob:</strong> Para tareas batch</li>
+                </ul>
+                <p style="font-size: 0.7em; margin-top: 0.5em;"><strong>Razón:</strong> Los Pods directos no se auto-recuperan. Los controladores proporcionan auto-healing y escalado.</p>
+            </section>
+
+            <!-- Slide 25: Pods Multi-contenedor - Cuándo usarlos -->
+            <section>
+                <h2>Pods Multi-contenedor - Cuándo Usarlos</h2>
+                <p style="font-size: 0.7em;">Usa múltiples contenedores en un Pod cuando:</p>
+                <ul style="font-size: 0.7em;">
+                    <li>Los contenedores DEBEN ejecutarse en el mismo nodo</li>
+                    <li>Necesitan compartir el mismo ciclo de vida</li>
+                    <li>Comparten volúmenes/recursos</li>
+                    <li>Se comunican vía localhost</li>
+                    <li>Uno extiende la funcionalidad del otro</li>
+                </ul>
+                <div class="highlight-box" style="font-size: 0.65em; margin-top: 0.5em;">
+                    Si los contenedores pueden ejecutarse independientemente, usa Pods separados.
+                </div>
+            </section>
+
+            <!-- Slide 26: Patrón Sidecar -->
+            <section>
+                <h2>Patrón Sidecar</h2>
+                <p style="font-size: 0.7em;">El contenedor sidecar extiende el principal sin que lo sepa.</p>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Logging:</strong> Procesa y envía logs</li>
+                    <li><strong>Monitoring:</strong> Exporta métricas</li>
+                    <li><strong>Proxies:</strong> Inyecta proxies (envoy)</li>
+                    <li><strong>Adaptadores:</strong> Traduce formatos</li>
+                </ul>
+                <pre style="font-size: 0.6em;"><code class="language-yaml">spec:
+  containers:
+  - name: main-app
+    image: myapp:1.0
+  - name: sidecar
+    image: fluentd:v1.14</code></pre>
+            </section>
+
+            <!-- Slide 27: Ejemplo Sidecar - Logging -->
+            <section>
+                <h2>Ejemplo Sidecar - Logging</h2>
+                <pre style="font-size: 0.55em;"><code class="language-yaml">spec:
+  volumes:
+  - name: shared-logs
+    emptyDir: {}
+  containers:
+  # App principal
+  - name: nginx
+    image: nginx:1.21
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /var/log/nginx
+  # Sidecar - log shipper
+  - name: log-shipper
+    image: fluent/fluentd:v1.14
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /var/log/nginx
+      readOnly: true
+    env:
+    - name: FLUENTD_ELASTICSEARCH_HOST
+      value: "elasticsearch.logging.svc.cluster.local"</code></pre>
+            </section>
+
+            <!-- Slide 28: Ejemplo Sidecar - Git Sync -->
+            <section>
+                <h2>Ejemplo Sidecar - Git Sync</h2>
+                <pre style="font-size: 0.55em;"><code class="language-yaml">spec:
+  containers:
+  # Servidor web
+  - name: nginx
+    image: nginx:1.21
+    volumeMounts:
+    - name: html
+      mountPath: /usr/share/nginx/html
+      readOnly: true
+  # Sidecar - sincroniza desde Git
+  - name: git-sync
+    image: k8s.gcr.io/git-sync:v3.1.6
+    volumeMounts:
+    - name: html
+      mountPath: /tmp/git
+    env:
+    - name: GIT_SYNC_REPO
+      value: "https://github.com/example/website.git"
+    - name: GIT_SYNC_PERIOD
+      value: "60s"</code></pre>
+            </section>
+
+            <!-- Slide 29: Patrón Ambassador -->
+            <section>
+                <h2>Patrón Ambassador</h2>
+                <p style="font-size: 0.7em;">El container ambassador actúa como proxy para el contenedor principal.</p>
+                <ul style="font-size: 0.7em;">
+                    <li>Simplifica conexión con servicios externos</li>
+                    <li>Traduce/encapsula protocolos</li>
+                    <li>Maneja complejidad de red</li>
+                </ul>
+                <p style="font-size: 0.7em; margin-top: 0.8em;"><strong>Casos de uso:</strong></p>
+                <ul style="font-size: 0.65em;">
+                    <li>Proxy de base de datos</li>
+                    <li>API gateways</li>
+                    <li>Service mesh (Envoy)</li>
+                    <li>Rate limiting</li>
+                </ul>
+            </section>
+
+            <!-- Slide 30: Ejemplo Ambassador - DB Proxy -->
+            <section>
+                <h2>Ejemplo Ambassador - DB Proxy</h2>
+                <pre style="font-size: 0.55em;"><code class="language-yaml">spec:
+  containers:
+  # App - se conecta a localhost
+  - name: application
+    image: myapp:1.0
+    env:
+    - name: DATABASE_HOST
+      value: "127.0.0.1"
+    - name: DATABASE_PORT
+      value: "5432"
+  # Ambassador - proxy de BD
+  - name: cloudsql-proxy
+    image: gcr.io/cloudsql-docker/gce-proxy:1.33.2
+    command:
+    - "/cloud_sql_proxy"
+    - "-instances=my-project:us-central1:my-database=tcp:5432"</code></pre>
+            </section>
+
+            <!-- Slide 31: Ejemplo Ambassador - Envoy Proxy -->
+            <section>
+                <h2>Ejemplo Ambassador - Envoy Proxy</h2>
+                <pre style="font-size: 0.55em;"><code class="language-yaml">spec:
+  containers:
+  # App
+  - name: application
+    image: myapp:1.0
+    env:
+    - name: HTTP_PROXY
+      value: "http://127.0.0.1:8001"
+  # Ambassador - Envoy
+  - name: envoy
+    image: envoyproxy/envoy:v1.24.0
+    ports:
+    - containerPort: 8001  # Proxy port
+    volumeMounts:
+    - name: envoy-config
+      mountPath: /etc/envoy</code></pre>
+            </section>
+
+            <!-- Slide 32: Patrón Adapter -->
+            <section>
+                <h2>Patrón Adapter</h2>
+                <p style="font-size: 0.7em;">El contenedor adapter transforma la salida del principal a formato estándar.</p>
+                <ul style="font-size: 0.7em;">
+                    <li>Normaliza/estandariza outputs</li>
+                    <li>Traduce formatos de datos</li>
+                    <li>Convierte logs a formato estándar</li>
+                    <li>Convierte métricas a Prometheus format</li>
+                </ul>
+                <p style="font-size: 0.7em; margin-top: 0.8em;"><strong>Beneficio:</strong> Principales no necesitan conocer formato estándar</p>
+            </section>
+
+            <!-- Slide 33: Ejemplo Adapter - Log Format -->
+            <section>
+                <h2>Ejemplo Adapter - Log Format</h2>
+                <pre style="font-size: 0.55em;"><code class="language-yaml">spec:
+  containers:
+  # App - logs en formato custom
+  - name: application
+    image: legacy-app:1.0
+    volumeMounts:
+    - name: logs
+      mountPath: /var/log/app
+  # Adapter - convierte a JSON
+  - name: log-adapter
+    image: busybox:1.35
+    volumeMounts:
+    - name: logs
+      mountPath: /var/log/app
+    command:
+    - sh
+    - -c
+    - 'tail -f /var/log/app/application.log | while read line; do echo "{\"message\":\"$line\"}"; done'</code></pre>
+            </section>
+
+            <!-- Slide 34: Comunicación entre contenedores -->
+            <section>
+                <h2>Comunicación entre Contenedores</h2>
+                <p style="font-size: 0.7em;">Comparten el mismo namespace de red:</p>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>localhost (127.0.0.1):</strong> Comunicación rápida, mismo Pod</li>
+                    <li><strong>Volúmenes compartidos:</strong> Archivos, logs, datos</li>
+                    <li><strong>Unix sockets:</strong> Muy rápido, bajo overhead</li>
+                    <li><strong>Shared Memory:</strong> Extremadamente rápido</li>
+                </ul>
+                <div class="highlight-box" style="font-size: 0.65em; margin-top: 0.5em;">
+                    <strong>Ventaja:</strong> No hay aislamiento de red entre contenedores del mismo Pod
+                </div>
+            </section>
+
+            <!-- Slide 35: Ejemplo - Comunicación vía localhost -->
+            <section>
+                <h2>Ejemplo - Comunicación vía localhost</h2>
+                <pre style="font-size: 0.6em;"><code class="language-yaml">spec:
+  containers:
+  # Backend - puerto 8080
+  - name: backend
+    image: backend-api:1.0
+    ports:
+    - containerPort: 8080
+  # Frontend - se conecta a localhost:8080
+  - name: frontend
+    image: frontend-app:1.0
+    env:
+    - name: BACKEND_URL
+      value: "http://localhost:8080"
+    ports:
+    - containerPort: 80</code></pre>
+                <p style="font-size: 0.65em; margin-top: 0.3em;">El frontend accede al backend a través de <code>localhost</code> en el mismo Pod</p>
+            </section>
+
+            <!-- Slide 36: Ejemplo - Comunicación vía volumen -->
+            <section>
+                <h2>Ejemplo - Comunicación vía Volumen</h2>
+                <pre style="font-size: 0.55em;"><code class="language-yaml">spec:
+  volumes:
+  - name: shared-data
+    emptyDir: {}
+  containers:
+  # Producer
+  - name: producer
+    image: busybox:1.35
+    volumeMounts:
+    - name: shared-data
+      mountPath: /data
+    command: ['sh', '-c', 'while true; do echo "Data" >> /data/stream.log; sleep 5; done']
+  # Consumer
+  - name: consumer
+    image: busybox:1.35
+    volumeMounts:
+    - name: shared-data
+      mountPath: /data
+      readOnly: true
+    command: ['sh', '-c', 'tail -f /data/stream.log']</code></pre>
+            </section>
+
+            <!-- Slide 37: Volúmenes compartidos - Tipos -->
+            <section>
+                <h2>Volúmenes Compartidos - Tipos Comunes</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>emptyDir:</strong> Directorio vacío, destruido con el Pod
+                        <ul><li>Ideal para datos temporales entre contenedores</li></ul>
+                    </li>
+                    <li><strong>configMap:</strong> Configuración como archivos
+                        <ul><li>Solo lectura, compartir configuración</li></ul>
+                    </li>
+                    <li><strong>secret:</strong> Datos sensibles como archivos
+                        <ul><li>Solo lectura, compartir credenciales</li></ul>
+                    </li>
+                    <li><strong>persistentVolumeClaim:</strong> Almacenamiento persistente
+                        <ul><li>Sobrevive reinicios del Pod</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 38: Ejemplo - emptyDir para caché -->
+            <section>
+                <h2>Ejemplo - emptyDir para Caché</h2>
+                <pre style="font-size: 0.6em;"><code class="language-yaml">spec:
+  volumes:
+  - name: cache
+    emptyDir:
+      medium: Memory  # Usa RAM en lugar de disco
+      sizeLimit: 1Gi  # Límite de 1GB
+  containers:
+  - name: app
+    image: myapp:1.0
+    volumeMounts:
+    - name: cache
+      mountPath: /tmp/cache
+    resources:
+      limits:
+        memory: "2Gi"  # Debe ser > sizeLimit</code></pre>
+                <p style="font-size: 0.65em; margin-top: 0.3em;">Caché en memoria para acceso ultra-rápido</p>
+            </section>
+
+            <!-- Slide 39: Best Practices - Multi-contenedor -->
+            <section>
+                <h2>Best Practices - Multi-contenedor</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Mantén sidecars ligeros:</strong>
+                        <ul><li>Limita CPU y memoria</li></ul>
+                    </li>
+                    <li><strong>Define recursos para TODOS los contenedores:</strong>
+                        <ul><li>El total cuenta para scheduling</li></ul>
+                    </li>
+                    <li><strong>Usa volúmenes apropiados:</strong>
+                        <ul><li>emptyDir para temp, ConfigMaps para config</li></ul>
+                    </li>
+                    <li><strong>Health checks individuales:</strong>
+                        <ul><li>Un contenedor fallido afecta todo el Pod</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 40: Init Containers - Propósito -->
+            <section>
+                <h2>Init Containers - Propósito</h2>
+                <p style="font-size: 0.7em;">Contenedores especiales que se ejecutan ANTES de los principales.</p>
+                <ul style="font-size: 0.7em;">
+                    <li>Se ejecutan hasta completarse antes de los principales</li>
+                    <li>Se ejecutan en orden secuencial</li>
+                    <li>Si uno falla, Kubernetes reinicia el Pod</li>
+                    <li>Comparten volúmenes con los principales</li>
+                </ul>
+                <p style="font-size: 0.7em; margin-top: 0.8em;"><strong>Diferencia con contenedores normales:</strong></p>
+                <ul style="font-size: 0.65em;">
+                    <li>No soportan liveness/readiness probes</li>
+                    <li>Ejecutan hasta completarse (no corren continuamente)</li>
+                    <li>Pueden usar más recursos temporalmente</li>
+                </ul>
+            </section>
+
+            <!-- Slide 41: Casos de uso - Init Containers -->
+            <section>
+                <h2>Casos de Uso - Init Containers</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Esperar dependencias:</strong> Esperar BD, servicios externos</li>
+                    <li><strong>Setup de configuración:</strong> Generar archivos, procesar templates</li>
+                    <li><strong>Clonar repositorios:</strong> Git clone, descargar código/assets</li>
+                    <li><strong>Migraciones:</strong> Ejecutar scripts de base de datos</li>
+                    <li><strong>Seguridad:</strong> Cambiar permisos, generar certificados</li>
+                    <li><strong>Registrar el Pod:</strong> Service discovery, notificaciones</li>
+                </ul>
+            </section>
+
+            <!-- Slide 42: Init Container - Sintaxis -->
+            <section>
+                <h2>Init Container - Sintaxis</h2>
+                <pre style="font-size: 0.65em;"><code class="language-yaml">spec:
+  # Init containers
+  initContainers:
+  - name: init-first
+    image: busybox:1.35
+    command: ['sh', '-c', 'echo Init 1']
+  - name: init-second
+    image: busybox:1.35
+    command: ['sh', '-c', 'echo Init 2']
+  # Contenedores principales
+  containers:
+  - name: main-app
+    image: myapp:1.0</code></pre>
+                <p style="font-size: 0.65em; margin-top: 0.3em;"><code>init-first</code> se ejecuta completamente, luego <code>init-second</code>, luego <code>main-app</code></p>
+            </section>
+
+            <!-- Slide 43: Ejemplo - Esperar dependencias -->
+            <section>
+                <h2>Ejemplo - Esperar Dependencias</h2>
+                <pre style="font-size: 0.55em;"><code class="language-yaml">spec:
+  initContainers:
+  - name: wait-for-mysql
+    image: busybox:1.35
+    command:
+    - 'sh'
+    - '-c'
+    - |
+      until nslookup mysql.default.svc.cluster.local; do
+        echo "MySQL not ready..."
+        sleep 2
+      done
+      echo "MySQL is ready!"
+  containers:
+  - name: myapp
+    image: myapp:1.0
+    env:
+    - name: MYSQL_HOST
+      value: "mysql.default.svc.cluster.local"</code></pre>
+            </section>
+
+            <!-- Slide 44: Ejemplo - Clonar Git -->
+            <section>
+                <h2>Ejemplo - Clonar Git</h2>
+                <pre style="font-size: 0.55em;"><code class="language-yaml">spec:
+  volumes:
+  - name: workdir
+    emptyDir: {}
+  initContainers:
+  - name: git-clone
+    image: alpine/git:latest
+    args:
+    - clone
+    - --branch=main
+    - https://github.com/example/website.git
+    - /work-dir
+    volumeMounts:
+    - name: workdir
+      mountPath: /work-dir
+  containers:
+  - name: web-server
+    image: nginx:1.21
+    volumeMounts:
+    - name: workdir
+      mountPath: /usr/share/nginx/html</code></pre>
+            </section>
+
+            <!-- Slide 45: Ejemplo - Migración de BD -->
+            <section>
+                <h2>Ejemplo - Migración de Base de Datos</h2>
+                <pre style="font-size: 0.55em;"><code class="language-yaml">spec:
+  initContainers:
+  - name: db-migration
+    image: migrate/migrate:v4.15.2
+    command:
+    - migrate
+    - -path=/migrations
+    - -database=postgres://user:password@postgres:5432/mydb
+    - up
+    volumeMounts:
+    - name: migrations
+      mountPath: /migrations
+  containers:
+  - name: application
+    image: myapp:1.0</code></pre>
+                <p style="font-size: 0.65em; margin-top: 0.3em;">Se ejecuta antes de que la app principal inicie</p>
+            </section>
+
+            <!-- Slide 46: Orden de ejecución - Init Containers -->
+            <section>
+                <h2>Orden de Ejecución</h2>
+                <pre style="font-size: 0.65em;">Pod creado
+  ↓
+Init Container 1 (debe completarse)
+  ↓ ✓ Success
+Init Container 2 (debe completarse)
+  ↓ ✓ Success
+Init Container N (debe completarse)
+  ↓ ✓ Success
+Main Containers (paralelo)</pre>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Secuencial estricto:</strong> Uno a la vez, en orden</li>
+                    <li><strong>Debe completarse:</strong> Exit code 0</li>
+                    <li><strong>Si falla:</strong> Reinicia todo el Pod</li>
+                </ul>
+            </section>
+
+            <!-- Slide 47: Monitorear Init Containers -->
+            <section>
+                <h2>Monitorear Init Containers</h2>
+                <pre style="font-size: 0.6em;"><code class="language-bash"># Ver status
+kubectl describe pod myapp-pod
+
+# Ver logs de init container
+kubectl logs myapp-pod -c init-myservice
+
+# Ver estado de todos
+kubectl logs myapp-pod --all-containers=true --prefix=true
+
+# Ver eventos
+kubectl get events --field-selector involvedObject.name=myapp-pod</code></pre>
+                <p style="font-size: 0.65em; margin-top: 0.5em;"><code>kubectl describe</code> mostrará qué init container está ejecutándose o falló</p>
+            </section>
+
+            <!-- Slide 48: Best Practices - Init Containers -->
+            <section>
+                <h2>Best Practices - Init Containers</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Mantén init containers ligeros:</strong>
+                        <ul><li>Usa imágenes pequeñas (busybox, alpine)</li></ul>
+                    </li>
+                    <li><strong>Implementa timeouts:</strong>
+                        <ul><li>No esperes indefinidamente</li></ul>
+                    </li>
+                    <li><strong>Logging detallado:</strong>
+                        <ul><li>Log cada paso importante para debugging</li></ul>
+                    </li>
+                    <li><strong>Idempotencia:</strong>
+                        <ul><li>Deben funcionar múltiples veces</li></ul>
+                    </li>
+                    <li><strong>Manejo de errores:</strong>
+                        <ul><li>Exit codes apropiados (0 = éxito)</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 49: Debugging - Port Forwarding -->
+            <section>
+                <h2>Debugging - Port Forwarding</h2>
+                <pre style="font-size: 0.65em;"><code class="language-bash"># Forward puerto del Pod a localhost
+kubectl port-forward pod/nginx 8080:80
+
+# Múltiples puertos
+kubectl port-forward pod/myapp 8080:80 9090:9000
+
+# Forward de Service
+kubectl port-forward service/myapp 8080:80
+
+# En background
+kubectl port-forward pod/myapp 8080:80 > /dev/null 2>&1 &</code></pre>
+                <p style="font-size: 0.65em; margin-top: 0.5em;">Acceder en navegador: <code>http://localhost:8080</code></p>
+            </section>
+
+            <!-- Slide 50: Uso práctico - Port Forwarding -->
+            <section>
+                <h2>Uso Práctico - Port Forwarding</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Aplicación web:</strong>
+                        <pre style="font-size: 0.65em;">kubectl port-forward pod/webapp 8080:80
+open http://localhost:8080</pre>
+                    </li>
+                    <li><strong>Base de datos:</strong>
+                        <pre style="font-size: 0.65em;">kubectl port-forward pod/postgres-0 5432:5432
+psql -h localhost -p 5432 -U user -d mydb</pre>
+                    </li>
+                    <li><strong>Prometheus/Grafana:</strong>
+                        <pre style="font-size: 0.65em;">kubectl port-forward -n monitoring pod/prometheus-0 9090:9090
+kubectl port-forward -n monitoring svc/grafana 3000:3000</pre>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 51: Problema - Pod en Pending -->
+            <section>
+                <h2>Troubleshooting - Pod en Pending</h2>
+                <pre style="font-size: 0.65em;"><code class="language-bash"># Ver detalles
+kubectl describe pod pending-pod
+
+# Ver recursos disponibles
+kubectl top nodes
+
+# Ver uso de recursos
+kubectl top pods --sort-by=memory</code></pre>
+                <p style="font-size: 0.7em;"><strong>Causas comunes:</strong></p>
+                <ul style="font-size: 0.65em;">
+                    <li>Recursos insuficientes (CPU, memoria)</li>
+                    <li>No hay nodos disponibles</li>
+                    <li>PVC sin bind</li>
+                    <li>Taints en nodos</li>
+                </ul>
+            </section>
+
+            <!-- Slide 52: Problema - ImagePullBackOff -->
+            <section>
+                <h2>Troubleshooting - ImagePullBackOff</h2>
+                <pre style="font-size: 0.65em;"><code class="language-bash"># Ver error exacto
+kubectl describe pod image-pull-pod
+
+# Verificar nombre de imagen
+kubectl get pod image-pull-pod -o jsonpath='{.spec.containers[*].image}'</code></pre>
+                <p style="font-size: 0.7em;"><strong>Soluciones:</strong></p>
+                <ul style="font-size: 0.65em;">
+                    <li>Corregir nombre de imagen</li>
+                    <li>Crear imagePullSecret para registry privado</li>
+                    <li>Verificar credenciales</li>
+                </ul>
+            </section>
+
+            <!-- Slide 53: Problema - CrashLoopBackOff -->
+            <section>
+                <h2>Troubleshooting - CrashLoopBackOff</h2>
+                <pre style="font-size: 0.65em;"><code class="language-bash"># Ver logs del crash
+kubectl logs crash-pod --previous
+
+# Ver código de salida
+kubectl get pod crash-pod -o jsonpath='{.status.containerStatuses[0].lastState.terminated.exitCode}'</code></pre>
+                <p style="font-size: 0.7em;"><strong>Causas comunes:</strong></p>
+                <ul style="font-size: 0.65em;">
+                    <li><strong>137:</strong> OOMKilled (aumentar memory limits)</li>
+                    <li><strong>1:</strong> Error de aplicación (revisar logs)</li>
+                    <li><strong>Aumentar memory limit si es OOMKilled</strong></li>
+                </ul>
+            </section>
+
+            <!-- Slide 54: Problema - Pod no recibe tráfico -->
+            <section>
+                <h2>Troubleshooting - Pod no Recibe Tráfico</h2>
+                <pre style="font-size: 0.6em;"><code class="language-bash"># Verificar readiness
+kubectl describe pod not-ready-pod
+
+# Ver endpoints del Service
+kubectl get endpoints myapp-service
+
+# Verificar labels coinciden
+kubectl get pod not-ready-pod --show-labels
+kubectl get service myapp-service -o jsonpath='{.spec.selector}'</code></pre>
+                <p style="font-size: 0.65em;"><strong>Causa:</strong> Pod no está Ready o labels no coinciden con Service selector</p>
+            </section>
+
+            <!-- Slide 55: Problema - Problemas de red/DNS -->
+            <section>
+                <h2>Troubleshooting - Red/DNS</h2>
+                <pre style="font-size: 0.6em;"><code class="language-bash"># Verificar DNS desde Pod
+kubectl exec myapp -- nslookup kubernetes.default
+
+# Probar conectividad
+kubectl run test --image=busybox:1.35 --rm -it -- sh
+> ping 10.244.1.5
+> telnet service 80
+
+# Ver CoreDNS
+kubectl get pods -n kube-system -l k8s-app=kube-dns</code></pre>
+            </section>
+
+            <!-- Slide 56: Problema - Volúmenes -->
+            <section>
+                <h2>Troubleshooting - Volúmenes</h2>
+                <pre style="font-size: 0.6em;"><code class="language-bash"># Verificar PVC está bound
+kubectl get pvc
+
+# Ver detalles de error
+kubectl describe pod pod-with-volume
+
+# Ver eventos de volumen
+kubectl get events --field-selector reason=FailedMount
+
+# Verificar permisos
+kubectl exec pod-with-volume -- ls -la /mount/path</code></pre>
+            </section>
+
+            <!-- Slide 57: Problema - ConfigMap/Secret no encontrado -->
+            <section>
+                <h2>Troubleshooting - ConfigMap/Secret</h2>
+                <pre style="font-size: 0.6em;"><code class="language-bash"># Listar ConfigMaps
+kubectl get configmaps
+
+# Ver en todos los namespaces
+kubectl get configmaps --all-namespaces
+
+# Ver contenido
+kubectl describe configmap my-config
+
+# Verificar en Pod
+kubectl get pod config-pod -o yaml | grep configMap</code></pre>
+            </section>
+
+            <!-- Slide 58: Herramientas avanzadas de debugging -->
+            <section>
+                <h2>Herramientas Avanzadas de Debugging</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>kubectl debug (1.23+):</strong>
+                        <pre style="font-size: 0.65em;">kubectl debug -it pod-name --image=busybox</pre>
+                    </li>
+                    <li><strong>stern (logs de múltiples pods):</strong>
+                        <pre style="font-size: 0.65em;">stern myapp
+stern --selector app=myapp</pre>
+                    </li>
+                    <li><strong>nicolaka/netshoot (imagen de debugging completa):</strong>
+                        <pre style="font-size: 0.65em;">kubectl run -it netshoot --image=nicolaka/netshoot -- sh</pre>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 59: Checklist de troubleshooting -->
+            <section>
+                <h2>Checklist de Troubleshooting</h2>
+                <ul style="font-size: 0.65em;">
+                    <li>1. <code>kubectl get pod</code> - Ver estado general</li>
+                    <li>2. <code>kubectl describe pod</code> - Ver eventos y detalles</li>
+                    <li>3. <code>kubectl logs pod --all-containers</code> - Ver logs</li>
+                    <li>4. <code>kubectl logs pod --previous</code> - Logs de crash anterior</li>
+                    <li>5. <code>kubectl get events</code> - Ver eventos del sistema</li>
+                    <li>6. <code>kubectl top pod</code> - Uso de recursos</li>
+                    <li>7. <code>kubectl exec -it pod -- sh</code> - Debugging interactivo</li>
+                    <li>8. <code>kubectl describe node</code> - Estado del nodo</li>
+                </ul>
+            </section>
+
+            <!-- Slide 60: Logging Estructurado -->
+            <section>
+                <h2>Best Practice - Logging Estructurado</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Usa JSON en logs:</strong>
+                        <ul style="font-size: 0.65em;">
+                            <li>Facilita parsing y análisis</li>
+                            <li>Mejor con sistemas ELK, Loki, Splunk</li>
+                        </ul>
+                    </li>
+                    <li><strong>Incluye información útil:</strong>
+                        <ul style="font-size: 0.65em;">
+                            <li>Request IDs, transaction IDs</li>
+                            <li>Timestamps, niveles (DEBUG, INFO, WARN, ERROR)</li>
+                            <li>Stack traces en errores</li>
+                        </ul>
+                    </li>
+                    <li><strong>Ejemplo:</strong>
+                        <pre style="font-size: 0.6em;">{"timestamp":"2024-01-15T10:30:45Z","level":"ERROR","requestId":"abc123","message":"Database connection failed"}</pre>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 61: Health Checks Bien Implementados -->
+            <section>
+                <h2>Best Practice - Health Checks</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Readiness:</strong> Verifica dependencias
+                        <ul style="font-size: 0.65em;">
+                            <li>BD, caché, servicios externos</li>
+                            <li>Controla cuándo recibe tráfico</li>
+                        </ul>
+                    </li>
+                    <li><strong>Liveness:</strong> Verifica estado de la app
+                        <ul style="font-size: 0.65em;">
+                            <li>Detecta deadlocks, starvation</li>
+                            <li>Reinicia si no responde</li>
+                        </ul>
+                    </li>
+                    <li><strong>No compartas la misma ruta:</strong>
+                        <ul style="font-size: 0.65em;">
+                            <li><code>/health</code> para readiness (rápido)</li>
+                            <li><code>/healthz</code> para liveness (profundo)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 62: Monitoreo Proactivo -->
+            <section>
+                <h2>Best Practice - Monitoreo Proactivo</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Prometheus + Grafana:</strong>
+                        <ul style="font-size: 0.65em;">
+                            <li>Métricas en tiempo real</li>
+                            <li>Dashboards visuales</li>
+                        </ul>
+                    </li>
+                    <li><strong>Logs centralizados:</strong>
+                        <ul style="font-size: 0.65em;">
+                            <li>ELK Stack, Loki, Splunk</li>
+                            <li>Búsqueda y análisis de logs</li>
+                        </ul>
+                    </li>
+                    <li><strong>Alertas:</strong>
+                        <ul style="font-size: 0.65em;">
+                            <li>CPU/memoria alta</li>
+                            <li>Pod crashes, timeouts</li>
+                            <li>Errores en logs</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 63: Debugging en Desarrollo -->
+            <section>
+                <h2>Best Practice - Debugging en Desarrollo</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Entornos locales:</strong>
+                        <ul style="font-size: 0.65em;">
+                            <li>Minikube, Kind, Docker Desktop</li>
+                            <li>Prueba antes de producción</li>
+                        </ul>
+                    </li>
+                    <li><strong>Ambiente similar a producción:</strong>
+                        <ul style="font-size: 0.65em;">
+                            <li>Mismas versiones, configuraciones</li>
+                            <li>Mismas restricciones de seguridad</li>
+                        </ul>
+                    </li>
+                    <li><strong>Herramientas de debugging remoto:</strong>
+                        <ul style="font-size: 0.65em;">
+                            <li>Delve (Go), node-inspect (Node.js)</li>
+                            <li>Cuando sea necesario</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 64: Resumen - Creación y Gestión -->
+            <section>
+                <h2>Resumen - Creación y Gestión de Pods</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Crea con kubectl apply -f pod.yaml o kubectl run</strong></li>
+                    <li><strong>Define siempre recursos (requests/limits)</strong></li>
+                    <li><strong>Implementa health checks (liveness, readiness)</strong></li>
+                    <li><strong>Usa labels para selección y organización</strong></li>
+                    <li><strong>Monitorea states y conditions del Pod</strong></li>
+                    <li><strong>Usa kubectl logs, exec, describe para debugging</strong></li>
+                </ul>
+            </section>
+
+            <!-- Slide 65: Resumen - Multi-contenedor y Patrones -->
+            <section>
+                <h2>Resumen - Multi-contenedor y Patrones</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Sidecar:</strong> Extiende funcionalidad (logging, monitoring)</li>
+                    <li><strong>Ambassador:</strong> Proxy y simplifica conexiones</li>
+                    <li><strong>Adapter:</strong> Normaliza outputs a formato estándar</li>
+                    <li><strong>Comparten namespace de red:</strong> localhost rápido</li>
+                    <li><strong>Volúmenes compartidos:</strong> emptyDir, configMaps, secrets</li>
+                    <li><strong>Define recursos para TODOS los contenedores</strong></li>
+                </ul>
+            </section>
+
+            <!-- Slide 66: Resumen - Init Containers -->
+            <section>
+                <h2>Resumen - Init Containers</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Se ejecutan antes de los principales:</strong> Orden secuencial</li>
+                    <li><strong>Casos de uso:</strong> Esperar dependencias, setup, migraciones</li>
+                    <li><strong>Deben completarse:</strong> Exit code 0 requerido</li>
+                    <li><strong>Si fallan:</strong> Reinicia el Pod completo</li>
+                    <li><strong>Comparten volúmenes:</strong> Con contenedores principales</li>
+                    <li><strong>Mantén ligeros:</strong> Busybox, Alpine para imágenes pequeñas</li>
+                </ul>
+            </section>
+
+            <!-- Slide 67: Resumen - Debugging -->
+            <section>
+                <h2>Resumen - Debugging</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>kubectl logs:</strong> Ver salida de contenedores</li>
+                    <li><strong>kubectl exec:</strong> Ejecutar comandos, acceso interactivo</li>
+                    <li><strong>kubectl describe:</strong> Ver eventos y detalles</li>
+                    <li><strong>kubectl port-forward:</strong> Acceder a puertos sin Service</li>
+                    <li><strong>kubectl top:</strong> Monitorear recursos</li>
+                    <li><strong>Herramientas:</strong> stern, kubectl debug, nicolaka/netshoot</li>
+                </ul>
+            </section>
+
+            <!-- Slide 68: Casos Comunes de Error y Soluciones -->
+            <section>
+                <h2>Casos Comunes - Error Reference</h2>
+                <table style="font-size: 0.6em;">
+                    <tr>
+                        <th>Estado</th>
+                        <th>Causa</th>
+                        <th>Solución</th>
+                    </tr>
+                    <tr>
+                        <td>ImagePullBackOff</td>
+                        <td>Imagen no disponible</td>
+                        <td>Verificar nombre, credenciales</td>
+                    </tr>
+                    <tr>
+                        <td>CrashLoopBackOff</td>
+                        <td>App crashea</td>
+                        <td>Ver logs --previous</td>
+                    </tr>
+                    <tr>
+                        <td>Pending</td>
+                        <td>Recursos insuficientes</td>
+                        <td>Ver top nodes, reducir requests</td>
+                    </tr>
+                    <tr>
+                        <td>Not Ready</td>
+                        <td>Readiness probe falla</td>
+                        <td>Verificar dependencias</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- Slide 69: Recursos Recomendados -->
+            <section>
+                <h2>Recursos Recomendados</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Documentación oficial:</strong>
+                        <ul style="font-size: 0.65em;">
+                            <li>kubernetes.io/docs/concepts/workloads/pods/</li>
+                        </ul>
+                    </li>
+                    <li><strong>Herramientas:</strong>
+                        <ul style="font-size: 0.65em;">
+                            <li>kubectl (CLI principal)</li>
+                            <li>stern (logs mejorados)</li>
+                            <li>Lens (UI visual)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Práctica:</strong>
+                        <ul style="font-size: 0.65em;">
+                            <li>Crear Pods en minikube/kind</li>
+                            <li>Experimentar con diferentes configuraciones</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 70: Siguientes pasos - Después de Pods -->
+            <section>
+                <h2>Siguientes Pasos - Después de Pods</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Módulo 3:</strong> Controllers y Workloads (Deployment, StatefulSet, DaemonSet, Job)</li>
+                    <li><strong>Módulo 4:</strong> Servicios y Networking (cómo exponer Pods)</li>
+                    <li><strong>Módulo 5:</strong> Almacenamiento (PersistentVolumes, PersistentVolumeClaims)</li>
+                    <li><strong>Módulo 6:</strong> ConfigMaps y Secrets (gestión de configuración)</li>
+                </ul>
+                <div class="highlight-box" style="font-size: 0.65em; margin-top: 0.8em;">
+                    Los Pods son la base, pero raramente los usarás directamente en producción sin un controlador.
+                </div>
+            </section>
+
+            <!-- Slide 71: Repaso Final - Conceptos Clave -->
+            <section>
+                <h2>Repaso Final - Conceptos Clave</h2>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>Pod:</strong> Unidad más pequeña en Kubernetes (uno o más contenedores)</li>
+                    <li><strong>Namespace compartido:</strong> Contenedores en un Pod comparten IP y localhost</li>
+                    <li><strong>Ciclo de vida:</strong> Pending → Running → Succeeded/Failed</li>
+                    <li><strong>Health checks:</strong> Liveness y readiness para confiabilidad</li>
+                    <li><strong>Patrones multi-contenedor:</strong> Sidecar, ambassador, adapter</li>
+                    <li><strong>Init containers:</strong> Setup antes de contenedores principales</li>
+                </ul>
+            </section>
+
+            <!-- Slide 72: Preguntas Frecuentes -->
+            <section>
+                <h2>Preguntas Frecuentes - FAQ</h2>
+                <ul style="font-size: 0.65em;">
+                    <li><strong>¿Cuándo usar múltiples contenedores en un Pod?</strong>
+                        <ul><li>Solo cuando están estrechamente acoplados y necesitan compartir recursos</li></ul>
+                    </li>
+                    <li><strong>¿Debo usar Pods directamente?</strong>
+                        <ul><li>No en producción. Usa Deployments, StatefulSets, Jobs</li></ul>
+                    </li>
+                    <li><strong>¿Qué diferencia hay entre requests y limits?</strong>
+                        <ul><li>Requests = mínimo garantizado (scheduling)</li>
+                            <li>Limits = máximo permitido (restricción)</li></ul>
+                    </li>
+                    <li><strong>¿Cómo debuggear un Pod que crashea?</strong>
+                        <ul><li>kubectl logs --previous para ver el crash</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 73: Ejercicio Práctico 1 -->
+            <section>
+                <h2>Ejercicio 1 - Pod Básico</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Crear y gestionar un Pod básico</p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear Pod nginx con kubectl run</li>
+                    <li>Verificar que está Running</li>
+                    <li>Port-forward al puerto 8080</li>
+                    <li>Acceder en navegador</li>
+                    <li>Ver logs con kubectl logs</li>
+                    <li>Ejecutar comando dentro del Pod</li>
+                    <li>Eliminar el Pod</li>
+                </ol>
+            </section>
+
+            <!-- Slide 74: Ejercicio Práctico 2 -->
+            <section>
+                <h2>Ejercicio 2 - Pod con Recursos</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Crear Pod con recursos y health checks</p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear YAML con:
+                        <ul><li>Resources: requests y limits</li>
+                            <li>Liveness probe HTTP</li>
+                            <li>Readiness probe HTTP</li></ul>
+                    </li>
+                    <li>Aplicar con kubectl apply</li>
+                    <li>Verificar health checks con describe</li>
+                    <li>Ver métricas con kubectl top</li>
+                </ol>
+            </section>
+
+            <!-- Slide 75: Ejercicio Práctico 3 -->
+            <section>
+                <h2>Ejercicio 3 - Multi-contenedor</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Crear Pod con patrón sidecar</p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear Pod con:
+                        <ul><li>Contenedor principal (app)</li>
+                            <li>Sidecar (logging)</li>
+                            <li>Volumen compartido</li></ul>
+                    </li>
+                    <li>Ver logs de ambos contenedores</li>
+                    <li>Ejecutar comandos en cada uno</li>
+                    <li>Verificar comunicación vía localhost</li>
+                </ol>
+            </section>
+
+            <!-- Slide 76: Ejercicio Práctico 4 -->
+            <section>
+                <h2>Ejercicio 4 - Init Containers</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Usar init containers para setup</p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear Pod con:
+                        <ul><li>Init container (descarga archivo)</li>
+                            <li>Contenedor principal (usa archivo)</li>
+                            <li>Volumen compartido</li></ul>
+                    </li>
+                    <li>Verificar orden de ejecución</li>
+                    <li>Ver logs de init container</li>
+                    <li>Verificar archivo en contenedor principal</li>
+                </ol>
+            </section>
+
+            <!-- Slide 77: Ejercicio Práctico 5 -->
+            <section>
+                <h2>Ejercicio 5 - Debugging</h2>
+                <p style="font-size: 0.7em;"><strong>Objetivo:</strong> Practicar técnicas de debugging</p>
+                <ol style="font-size: 0.65em;">
+                    <li>Crear Pod que crashea (bad image/command)</li>
+                    <li>Usar kubectl logs --previous para ver error</li>
+                    <li>Ver status con describe</li>
+                    <li>Debuggear con exec si es posible</li>
+                    <li>Usar kubectl debug para debugging</li>
+                    <li>Reparar y verificar</li>
+                </ol>
+            </section>
+
+            <!-- Slide 78: Checklist - Antes de Producción -->
+            <section>
+                <h2>Checklist - Antes de Producción</h2>
+                <ul style="font-size: 0.65em;">
+                    <li>☐ Define requests y limits para todos los contenedores</li>
+                    <li>☐ Configura liveness y readiness probes</li>
+                    <li>☐ Usa labels apropiados para selección</li>
+                    <li>☐ Implementa logging estructurado (JSON)</li>
+                    <li>☐ Usa un controlador (Deployment, not Pod directo)</li>
+                    <li>☐ Configura RBAC y security context</li>
+                    <li>☐ Prueba en entorno similar a producción</li>
+                    <li>☐ Monitorea métricas y logs</li>
+                    <li>☐ Documenta configuración especial</li>
+                </ul>
+            </section>
+
+            <!-- Slide 79: Referencias y Links -->
+            <section>
+                <h2>Referencias y Links</h2>
+                <ul style="font-size: 0.65em;">
+                    <li><strong>Documentación:</strong>
+                        <ul><li>kubernetes.io/docs/concepts/workloads/pods/</li></ul>
+                    </li>
+                    <li><strong>Tutoriales:</strong>
+                        <ul><li>kubernetes.io/docs/tasks/run-application/</li></ul>
+                    </li>
+                    <li><strong>YAML Reference:</strong>
+                        <ul><li>kubernetes.io/docs/reference/kubernetes-api/pod-v1/</li></ul>
+                    </li>
+                    <li><strong>Herramientas:</strong>
+                        <ul><li>kubectl - CLI oficial</li>
+                            <li>stern - logs mejorados</li>
+                            <li>Lens - UI visual</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 80: Conclusión -->
+            <section>
+                <h2>Conclusión</h2>
+                <p style="font-size: 0.75em;"><strong>Ahora sabes:</strong></p>
+                <ul style="font-size: 0.7em;">
+                    <li>✓ Crear y gestionar Pods</li>
+                    <li>✓ Entender ciclo de vida y estados</li>
+                    <li>✓ Implementar health checks</li>
+                    <li>✓ Diseñar Pods multi-contenedor</li>
+                    <li>✓ Usar init containers para setup</li>
+                    <li>✓ Debuggear problemas comunes</li>
+                    <li>✓ Seguir best practices</li>
+                </ul>
+                <p style="font-size: 0.7em; margin-top: 1em;"><strong>Próximo:</strong> Módulo 3 - Controllers y Workloads</p>
+            </section>
+
+            <!-- Slide 81: Gracias -->
+            <section>
+                <h1 style="font-size: 2em; color: #1e88e5;">Preguntas?</h1>
+                <p style="font-size: 0.8em; margin-top: 2em;">Módulo 2: Trabajando con Pods</p>
+                <p style="font-size: 0.7em; color: #999;">Unidad fundamental de despliegue en Kubernetes</p>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            width: 1200,
+            height: 800,
+            margin: 0.1,
+            minScale: 0.2,
+            maxScale: 2.0,
+            slideNumber: true,
+            transition: 'slide'
+        });
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

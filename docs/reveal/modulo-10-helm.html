@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 10: Helm</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #1e88e5; }
+        .reveal h1 { font-size: 1.4em; margin-bottom: 0.4em; }
+        .reveal h2 { font-size: 1.0em; margin-bottom: 0.4em; }
+        .reveal h3 { font-size: 0.8em; margin-bottom: 0.3em; }
+        .reveal p { font-size: 0.5em; margin: 0.2em 0; }
+        .reveal strong { color: #1e88e5; font-weight: bold; }
+        .reveal pre { background: #f8f8f8; border: 1px solid #ddd; width: 100%; padding: 0.4em; margin: 0.4em 0; font-size: 0.31em; }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; font-size: 0.85em; }
+        .reveal ul { font-size: 0.42em; text-align: left; margin-left: 0.5em; }
+        .reveal li { margin: 0.12em 0; }
+        .reveal table { font-size: 0.36em; width: 100%; border-collapse: collapse; margin: 0.4em 0; }
+        .reveal table th, .reveal table td { border: 1px solid #ddd; padding: 0.12em; text-align: left; }
+        .reveal table th { background-color: #f0f0f0; color: #1e88e5; font-weight: bold; }
+        .highlight-box { background-color: #e3f2fd; border-left: 4px solid #1e88e5; padding: 0.3em; margin: 0.3em 0; font-size: 0.40em; }
+        .warning-box { background-color: #fff3e0; border-left: 4px solid #f57c00; padding: 0.3em; margin: 0.3em 0; font-size: 0.40em; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Portada -->
+            <section>
+                <h1>Módulo 10: Helm</h1>
+                <h2 style="color: #1e88e5;">Package Manager para Kubernetes</h2>
+                <p style="font-size: 0.7em; margin-top: 1em;">Charts, valores, templates y gestión de releases</p>
+            </section>
+
+            <!-- Introducción -->
+            <section>
+                <h2>¿Qué es Helm?</h2>
+                <ul>
+                    <li><strong>Package Manager</strong> de Kubernetes (como apt, pip, npm)</li>
+                    <li><strong>Simplifica despliegues:</strong> Múltiples YAML → una línea de comando</li>
+                    <li><strong>Parametrización:</strong> Mismo Chart para dev, staging, prod</li>
+                    <li><strong>Versionamiento:</strong> Historial de releases, rollback automático</li>
+                    <li><strong>Reutilización:</strong> Compartir Charts en repositorios</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Problemas que Resuelve Helm</h2>
+                <table>
+                    <tr>
+                        <th>Sin Helm</th>
+                        <th>Con Helm</th>
+                    </tr>
+                    <tr>
+                        <td>20+ YAML files</td>
+                        <td>helm install chart-name</td>
+                    </tr>
+                    <tr>
+                        <td>Valores hardcodeados</td>
+                        <td>Parametrizados (--set, values.yaml)</td>
+                    </tr>
+                    <tr>
+                        <td>Editar múltiples archivos para upgrade</td>
+                        <td>helm upgrade release</td>
+                    </tr>
+                    <tr>
+                        <td>Rollback manual = restaurar YAML</td>
+                        <td>helm rollback release</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Componentes Clave</h2>
+                <table>
+                    <tr>
+                        <th>Componente</th>
+                        <th>Descripción</th>
+                        <th>Analogía</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Chart</strong></td>
+                        <td>Template/Blueprint de app</td>
+                        <td>RPM, .deb package</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Release</strong></td>
+                        <td>Instancia en vivo de un Chart</td>
+                        <td>Installed package</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Repository</strong></td>
+                        <td>Colección de Charts</td>
+                        <td>apt, npm registry</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Values</strong></td>
+                        <td>Parámetros de configuración</td>
+                        <td>Config file</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- Instalación -->
+            <section>
+                <h2>Instalación de Helm</h2>
+                <pre><code class="language-bash"># Linux/Mac: Descargar e instalar
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# Windows: Con Chocolatey
+choco install kubernetes-helm
+
+# Verificar instalación
+helm version
+# version.BuildInfo{Version:"v3.12.0"}</code></pre>
+            </section>
+
+            <section>
+                <h2>Configuración Inicial</h2>
+                <pre><code class="language-bash"># Helm usa el contexto actual de kubectl
+kubectl config current-context
+
+# Cambiar contexto si es necesario
+kubectl config use-context production-cluster
+
+# Agregar repositorio oficial
+helm repo add stable https://charts.helm.sh/stable
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+# Actualizar índice local
+helm repo update
+
+# Ver repositorios
+helm repo list</code></pre>
+            </section>
+
+            <!-- Buscar e Instalar Charts -->
+            <section>
+                <h2>Buscar Charts</h2>
+                <pre><code class="language-bash"># Buscar Chart por nombre
+helm search repo nginx
+
+# Ver todas las versiones
+helm search repo postgresql --versions
+
+# Ver metadatos del Chart
+helm show chart bitnami/postgresql
+
+# Ver valores por defecto
+helm show values bitnami/postgresql
+
+# Ver README
+helm show readme bitnami/postgresql</code></pre>
+            </section>
+
+            <section>
+                <h2>Instalación Básica</h2>
+                <pre><code class="language-bash"># Instalación simple con valores por defecto
+helm install my-nginx bitnami/nginx
+
+# Instalar en namespace específico
+helm install my-app myrepo/myapp -n production --create-namespace
+
+# Ver releases instaladas
+helm list
+
+# Ver status de release
+helm status my-nginx
+
+# Ver valores usados
+helm get values my-nginx</code></pre>
+            </section>
+
+            <section>
+                <h2>Instalación con Valores Personalizados</h2>
+                <pre><code class="language-bash"># Opción 1: --set para valores individuales
+helm install my-nginx bitnami/nginx \
+  --set replicaCount=3 \
+  --set image.tag="1.25.0" \
+  --set service.type=LoadBalancer
+
+# Opción 2: Desde archivo
+helm install my-nginx bitnami/nginx -f values.yaml
+
+# Opción 3: Múltiples archivos (mergean)
+helm install my-app myrepo/myapp \
+  -f values-base.yaml \
+  -f values-prod.yaml
+
+# Opción 4: --set-string para valores complejos
+helm install my-app myrepo/myapp \
+  --set-string config.url="jdbc:postgresql://localhost:5432/mydb"</code></pre>
+            </section>
+
+            <!-- Actualizar y Rollback -->
+            <section>
+                <h2>Actualizar Release</h2>
+                <pre><code class="language-bash"># Upgrade a nueva versión
+helm upgrade my-nginx bitnami/nginx \
+  --set replicaCount=5
+
+# Upgrade con nuevo archivo values
+helm upgrade my-app myrepo/myapp -f values-prod-new.yaml
+
+# Ver historial de cambios
+helm history my-nginx
+
+# Rollback a versión anterior
+helm rollback my-nginx 1
+
+# Rollback a versión específica
+helm rollback my-nginx 2
+
+# Desinstalar release
+helm uninstall my-nginx</code></pre>
+            </section>
+
+            <!-- Chart Structure -->
+            <section>
+                <h2>Estructura de un Chart</h2>
+                <pre><code class="language-text">my-chart/
+├── Chart.yaml          # Metadatos
+├── values.yaml         # Valores por defecto
+├── README.md           # Documentación
+├── templates/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   ├── configmap.yaml
+│   ├── _helpers.tpl    # Helpers reutilizables
+│   └── NOTES.txt       # Notas post-instalación
+├── charts/             # Subcharts (dependencias)
+└── .helmignore</code></pre>
+            </section>
+
+            <section>
+                <h2>Chart.yaml: Metadatos</h2>
+                <pre><code class="language-yaml">apiVersion: v2           # v2 = Helm 3
+name: myapp
+version: 1.2.3           # Versión del Chart
+appVersion: "2.0.1"      # Versión de la app
+
+type: application        # application o library
+description: "My app"
+keywords: ["myapp", "web"]
+
+home: https://github.com/user/myapp
+license: Apache-2.0
+
+maintainers:
+  - name: John Doe
+    email: john@example.com
+
+# Dependencias (subcharts)
+dependencies:
+  - name: postgresql
+    version: "11.0.0"
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled</code></pre>
+            </section>
+
+            <section>
+                <h2>values.yaml: Configuración</h2>
+                <pre><code class="language-yaml"># Réplicas y imagen
+replicaCount: 3
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  tag: "1.24.0"
+
+# Servicio
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+# Recursos
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+# Escalado automático
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70</code></pre>
+            </section>
+
+            <!-- Templates -->
+            <section>
+                <h2>Templates: Sintaxis Básica</h2>
+                <pre><code class="language-yaml"># Variables simples
+name: {{ .Values.app.name }}
+
+# Condicionales
+{{ if .Values.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+...
+{{ end }}
+
+# Loops
+ports:
+{{ range .Values.containers }}
+  - name: {{ .name }}
+    port: {{ .port }}
+{{ end }}
+
+# Funciones y pipelines
+app: {{ .Values.app.name | lower }}
+version: {{ .Chart.Version | quote }}</code></pre>
+            </section>
+
+            <section>
+                <h2>Template: Deployment Ejemplo</h2>
+                <pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Chart.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 8080
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}</code></pre>
+            </section>
+
+            <section>
+                <h2>_helpers.tpl: Macros Reutilizables</h2>
+                <pre><code class="language-yaml">{{- define "myapp.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 }}
+{{- end }}
+
+{{- define "myapp.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 }}
+{{- end }}
+{{- end }}
+
+{{- define "myapp.labels" -}}
+helm.sh/chart: {{ include "myapp.chart" . }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
+{{- end }}</code></pre>
+            </section>
+
+            <!-- Dependencias/Subcharts -->
+            <section>
+                <h2>Subcharts: Dependencias</h2>
+                <pre><code class="language-yaml"># En Chart.yaml
+dependencies:
+  - name: postgresql
+    version: "11.0.0"
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+    alias: db
+
+  - name: redis
+    version: "17.0.0"
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled</code></pre>
+                <pre><code class="language-bash"># Descargar dependencias
+helm dependency update ./myapp
+
+# Listar dependencias
+helm dependency list ./myapp</code></pre>
+            </section>
+
+            <section>
+                <h2>Configurar Subcharts</h2>
+                <pre><code class="language-yaml"># En values.yaml, configurar subcharts
+postgresql:
+  enabled: true
+  auth:
+    username: myapp
+    password: changeme
+    database: myapp_db
+  primary:
+    persistence:
+      enabled: true
+      size: 10Gi
+
+redis:
+  enabled: true
+  auth:
+    enabled: true
+    password: changeme
+  replica:
+    replicaCount: 2</code></pre>
+            </section>
+
+            <!-- Validación y Testing -->
+            <section>
+                <h2>Validación de Charts</h2>
+                <pre><code class="language-bash"># Validar sintaxis del Chart
+helm lint ./myapp
+
+# Ver YAML generado (sin instalar)
+helm template my-release ./myapp
+
+# Dry-run: simular instalación
+helm install my-release ./myapp --dry-run --debug
+
+# Ver si el Chart sería válido en el cluster
+helm template my-release ./myapp | kubeval</code></pre>
+            </section>
+
+            <!-- Best Practices -->
+            <section>
+                <h2>Best Practices: Charts</h2>
+                <ul>
+                    <li><strong>Estructura clara:</strong> Nombres consistentes, documentación completa</li>
+                    <li><strong>Valores bien organizados:</strong> Agrupados lógicamente (app, db, cache)</li>
+                    <li><strong>Valores parametrizados:</strong> Evitar hardcoding en templates</li>
+                    <li><strong>Helpers para evitar repetición:</strong> _helpers.tpl</li>
+                    <li><strong>Seguridad:</strong> No incluir secretos en values.yaml por defecto</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Best Practices: Repositorios</h2>
+                <ul>
+                    <li><strong>Usar Charts de repositorios confiables:</strong> Bitnami, oficiales</li>
+                    <li><strong>Versionear values.yaml en Git:</strong> values-prod.yaml, values-staging.yaml</li>
+                    <li><strong>Usar valores en lugar de editar templates:</strong> Mantener Chart limpio</li>
+                    <li><strong>Documentar custom values:</strong> Por qué, impacto, cuándo cambiar</li>
+                    <li><strong>Probar antes de producción:</strong> helm lint, helm template, test</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Best Practices: Despliegue</h2>
+                <ul>
+                    <li><strong>Usar namespaces:</strong> helm install -n production --create-namespace</li>
+                    <li><strong>Mantener Helm actualizado:</strong> Nueva versiones = seguridad</li>
+                    <li><strong>Combinar con GitOps:</strong> ArgoCD/Flux observa cambios en Git</li>
+                    <li><strong>Usar Semantic Versioning:</strong> MAJOR.MINOR.PATCH en Chart.version</li>
+                    <li><strong>Mantener CHANGELOG.md:</strong> Registro de cambios</li>
+                </ul>
+            </section>
+
+            <!-- Ejemplo Práctico -->
+            <section>
+                <h2>Ejemplo Práctico: Desplegar PostgreSQL</h2>
+                <pre><code class="language-bash"># 1. Buscar chart
+helm search repo postgresql
+
+# 2. Ver valores disponibles
+helm show values bitnami/postgresql | head -20
+
+# 3. Crear values-prod.yaml
+cat > values-prod.yaml <<EOF
+auth:
+  username: myapp
+  password: changeme
+  database: myapp_db
+primary:
+  persistence:
+    enabled: true
+    size: 50Gi
+EOF</code></pre>
+            </section>
+
+            <section>
+                <h2>Ejemplo: Desplegar PostgreSQL (cont.)</h2>
+                <pre><code class="language-bash"># 4. Instalar en producción
+helm install postgres bitnami/postgresql \
+  -n production \
+  --create-namespace \
+  -f values-prod.yaml
+
+# 5. Verificar instalación
+helm list -n production
+kubectl get pods -n production
+
+# 6. Conectar desde aplicación
+# Host: postgres-postgresql
+# Port: 5432
+# Database: myapp_db
+# User: myapp</code></pre>
+            </section>
+
+            <!-- Helm 3 vs Helm 2 -->
+            <section>
+                <h2>Helm 3 vs Helm 2</h2>
+                <table>
+                    <tr>
+                        <th>Aspecto</th>
+                        <th>Helm 2</th>
+                        <th>Helm 3</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Tiller</strong></td>
+                        <td>Server-side component</td>
+                        <td>Removido (más seguro)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Storage</strong></td>
+                        <td>Etcd o ConfigMaps</td>
+                        <td>ConfigMaps o Secrets</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Permissions</strong></td>
+                        <td>Requería cluster-admin</td>
+                        <td>No requiere permisos especiales</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Seguridad</strong></td>
+                        <td>Menor (Tiller)</td>
+                        <td>Mayor (client-only)</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Flujo de Helm 3</h2>
+                <ul>
+                    <li><strong>1. Cliente Helm:</strong> Lee Chart local o repositorio</li>
+                    <li><strong>2. Template Engine:</strong> Procesa Go templates, sustituye valores</li>
+                    <li><strong>3. Genera YAML:</strong> Manifests puros de Kubernetes</li>
+                    <li><strong>4. Kubectl API:</strong> Envía a API server (sin Tiller)</li>
+                    <li><strong>5. Almacenamiento:</strong> ConfigMap/Secret con historial de release</li>
+                    <li><strong>6. Kubelet:</strong> Ejecuta Pods</li>
+                </ul>
+            </section>
+
+            <!-- Comandos Útiles -->
+            <section>
+                <h2>Comandos Útiles (Resumen)</h2>
+                <table>
+                    <tr>
+                        <th>Tarea</th>
+                        <th>Comando</th>
+                    </tr>
+                    <tr>
+                        <td>Buscar Chart</td>
+                        <td>helm search repo nginx</td>
+                    </tr>
+                    <tr>
+                        <td>Instalar</td>
+                        <td>helm install my-app bitnami/nginx</td>
+                    </tr>
+                    <tr>
+                        <td>Actualizar</td>
+                        <td>helm upgrade my-app bitnami/nginx</td>
+                    </tr>
+                    <tr>
+                        <td>Rollback</td>
+                        <td>helm rollback my-app 1</td>
+                    </tr>
+                    <tr>
+                        <td>Ver releases</td>
+                        <td>helm list -A</td>
+                    </tr>
+                    <tr>
+                        <td>Desinstalar</td>
+                        <td>helm uninstall my-app</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- Checklist -->
+            <section>
+                <h2>Checklist: Helm en Producción</h2>
+                <ul>
+                    <li><strong>☐ Helm instalado</strong> y versión actualizada</li>
+                    <li><strong>☐ Repositorios</strong> agregados y actualizados</li>
+                    <li><strong>☐ Charts validados</strong> con helm lint</li>
+                    <li><strong>☐ values.yaml versionado</strong> en Git por ambiente</li>
+                    <li><strong>☐ Releases desplegadas</strong> en namespaces separados</li>
+                    <li><strong>☐ Histórico de releases</strong> para rollbacks rápidos</li>
+                    <li><strong>☐ GitOps integrado</strong> (ArgoCD/Flux) opcional</li>
+                </ul>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            center: false,
+            transition: 'slide',
+            width: 960,
+            height: 700
+        });
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

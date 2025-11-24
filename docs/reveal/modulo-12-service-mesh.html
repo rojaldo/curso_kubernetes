@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 12: Service Mesh</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #1e88e5; }
+        .reveal h1 { font-size: 1.4em; margin-bottom: 0.4em; }
+        .reveal h2 { font-size: 1.0em; margin-bottom: 0.4em; }
+        .reveal h3 { font-size: 0.8em; margin-bottom: 0.3em; }
+        .reveal p { font-size: 0.5em; margin: 0.2em 0; }
+        .reveal strong { color: #1e88e5; font-weight: bold; }
+        .reveal pre { background: #f8f8f8; border: 1px solid #ddd; width: 100%; padding: 0.4em; margin: 0.3em 0; font-size: 0.31em; }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; font-size: 0.85em; }
+        .reveal ul { font-size: 0.42em; text-align: left; margin-left: 0.5em; }
+        .reveal li { margin: 0.10em 0; }
+        .reveal table { font-size: 0.35em; width: 100%; border-collapse: collapse; margin: 0.3em 0; }
+        .reveal table th, .reveal table td { border: 1px solid #ddd; padding: 0.10em; text-align: left; }
+        .reveal table th { background-color: #f0f0f0; color: #1e88e5; font-weight: bold; }
+        .highlight-box { background-color: #e3f2fd; border-left: 4px solid #1e88e5; padding: 0.3em; margin: 0.3em 0; font-size: 0.38em; }
+        .warning-box { background-color: #fff3e0; border-left: 4px solid #f57c00; padding: 0.3em; margin: 0.3em 0; font-size: 0.38em; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>Módulo 12: Service Mesh</h1>
+                <h2 style="color: #1e88e5;">Istio, Linkerd, Traffic Management</h2>
+                <p style="font-size: 0.7em; margin-top: 1em;">Gestión avanzada de comunicación entre servicios</p>
+            </section>
+
+            <section>
+                <h2>¿Qué es Service Mesh?</h2>
+                <ul>
+                    <li><strong>Capa de abstracción:</strong> Gestiona comunicación entre microservicios</li>
+                    <li><strong>Sidecar proxies:</strong> Inyecta proxy en cada Pod</li>
+                    <li><strong>Control plane:</strong> Configura y monitorea proxies</li>
+                    <li><strong>Características:</strong> Traffic management, security, observability</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Flujo:</strong> Pod A → Sidecar → Pod B ← Sidecar
+                </div>
+            </section>
+
+            <section>
+                <h2>Arquitectura Service Mesh</h2>
+                <ul>
+                    <li><strong>Data Plane:</strong> Proxies Envoy en cada Pod (tráfico real)</li>
+                    <li><strong>Control Plane:</strong> Configura proxies, monitorea, políticas</li>
+                    <li><strong>Mutual TLS:</strong> Encriptación Pod-to-Pod automática</li>
+                    <li><strong>Load Balancing:</strong> Smart LB entre servicios</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Istio vs Linkerd</h2>
+                <table>
+                    <tr>
+                        <th>Aspecto</th>
+                        <th>Istio</th>
+                        <th>Linkerd</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Complejidad</strong></td>
+                        <td>Alta (mucho config)</td>
+                        <td>Simple, enfocado</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Performance</strong></td>
+                        <td>Bueno (C++)</td>
+                        <td>Excelente (Rust, ligero)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Features</strong></td>
+                        <td>Muchos (todo)</td>
+                        <td>Esenciales (ligero)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Curva aprendizaje</strong></td>
+                        <td>Empinada</td>
+                        <td>Suave</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Instalación Istio</h2>
+                <pre><code class="language-bash"># Descargar Istio
+curl -L https://istio.io/downloadIstio | sh -
+cd istio-x.y.z
+
+# Instalar
+./bin/istioctl install --set profile=demo -y
+
+# Inyectar sidecar en namespace
+kubectl label namespace default istio-injection=enabled
+
+# Verificar
+kubectl get pods -n istio-system</code></pre>
+            </section>
+
+            <section>
+                <h2>Instalación Linkerd</h2>
+                <pre><code class="language-bash"># Instalar Linkerd CLI
+curl https://run.linkerd.io/install | sh
+
+# Instalar en cluster
+linkerd install | kubectl apply -f -
+
+# Inyectar en namespace
+kubectl annotate namespace default \
+  linkerd.io/inject=enabled
+
+# Verificar
+kubectl get pods -n linkerd</code></pre>
+            </section>
+
+            <section>
+                <h2>Virtual Service: Routing</h2>
+                <pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: myapp
+spec:
+  hosts:
+  - myapp.svc.cluster.local
+  http:
+  # Versión A: 80% del tráfico
+  - match:
+    - uri:
+        prefix: /api
+    route:
+    - destination:
+        host: myapp
+        subset: v1
+      weight: 80
+    # Versión B: 20% del tráfico
+    - destination:
+        host: myapp
+        subset: v2
+      weight: 20</code></pre>
+            </section>
+
+            <section>
+                <h2>Destination Rule: Load Balancing</h2>
+                <pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: myapp
+spec:
+  host: myapp.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      http:
+        http1MaxPendingRequests: 100
+        maxRequestsPerConnection: 2
+    outlierDetection:
+      consecutive5xxErrors: 5
+      interval: 30s
+      baseEjectionTime: 30s
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2</code></pre>
+            </section>
+
+            <section>
+                <h2>Mutual TLS: Encriptación Automática</h2>
+                <pre><code class="language-yaml">apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+spec:
+  mtls:
+    mode: STRICT  # Requiere mTLS obligatorio
+
+# Resultado: Todo tráfico Pod-to-Pod encriptado
+# Certificates rotadas automáticamente</code></pre>
+                <p><strong>Beneficio:</strong> Seguridad sin cambiar código</p>
+            </section>
+
+            <section>
+                <h2>Request Routing: Ejemplo Práctico</h2>
+                <pre><code class="language-yaml"># Enviar tráfico a diferentes versiones
+# basado en headers
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: ratings
+spec:
+  hosts:
+  - ratings
+  http:
+  - match:
+    - headers:
+        user-agent:
+          regex: ".*Chrome.*"
+    route:
+    - destination:
+        host: ratings
+        subset: v2
+  - route:
+    - destination:
+        host: ratings
+        subset: v1</code></pre>
+            </section>
+
+            <section>
+                <h2>Fault Injection: Testing</h2>
+                <pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: ratings
+spec:
+  hosts:
+  - ratings
+  http:
+  # Inyectar fallas: 10% error
+  - fault:
+      abort:
+        percentage: 10
+        httpStatus: 500
+      # O delays: 5000ms en 1%
+      delay:
+        percentage: 1
+        fixedDelay: 5000ms
+    route:
+    - destination:
+        host: ratings</code></pre>
+                <p><strong>Uso:</strong> Probar resilencia sin romper nada</p>
+            </section>
+
+            <section>
+                <h2>Circuit Breaker: Resiliencia</h2>
+                <pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: mysql
+spec:
+  host: mysql
+  trafficPolicy:
+    outlierDetection:
+      # Sacar Pod si 5 errores en 30s
+      consecutive5xxErrors: 5
+      interval: 30s
+      # Mantener sacado 30s
+      baseEjectionTime: 30s
+      # Máximo 50% de instancias pueden estar sacadas
+      maxEjectionPercent: 50</code></pre>
+                <p><strong>Efecto:</strong> Previene cascada de fallos</p>
+            </section>
+
+            <section>
+                <h2>Rate Limiting: Throttling</h2>
+                <pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: api
+spec:
+  hosts:
+  - api
+  http:
+  - route:
+    - destination:
+        host: api
+    timeout: 30s
+    retries:
+      attempts: 3
+      perTryTimeout: 10s
+
+# Limitar a 1000 req/seg
+# Requiere EnvoyFilter o external rate limiter</code></pre>
+            </section>
+
+            <section>
+                <h2>Observabilidad: Metrics</h2>
+                <ul>
+                    <li><strong>Prometheus:</strong> Métricas automáticas de tráfico</li>
+                    <li><strong>Kiali:</strong> Visualización de service mesh (topology)</li>
+                    <li><strong>Jaeger:</strong> Distributed tracing</li>
+                    <li><strong>Grafana:</strong> Dashboards de métricas</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Ventaja:</strong> Observabilidad automática, sin cambiar código
+                </div>
+            </section>
+
+            <section>
+                <h2>Kiali: Visualización</h2>
+                <pre><code class="language-bash"># Instalar Kiali (incluido con Istio demo)
+# Acceder a Kiali
+kubectl port-forward -n istio-system \
+  svc/kiali 20000:20000
+
+# URL: http://localhost:20000
+# Ver topología de servicios en tiempo real</code></pre>
+            </section>
+
+            <section>
+                <h2>Jaeger: Distributed Tracing</h2>
+                <pre><code class="language-bash"># Acceder a Jaeger
+kubectl port-forward -n istio-system \
+  svc/jaeger 16686:16686
+
+# URL: http://localhost:16686
+# Ver traces de requests distribuidos</code></pre>
+            </section>
+
+            <section>
+                <h2>Cuando Usar Service Mesh</h2>
+                <ul>
+                    <li><strong>✓ Usar cuando:</strong> Muchos microservicios, mTLS requerido, control de tráfico complejo</li>
+                    <li><strong>✗ NO usar cuando:</strong> Pocos servicios, overhead de proxy inaceptable, equipo sin experiencia</li>
+                    <li><strong>⚠ Consideraciones:</strong> Added complexity, CPU/memory overhead, debugging más difícil</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Service Mesh: Best Practices</h2>
+                <ul>
+                    <li><strong>Empezar simple:</strong> Traffic splitting, canary deployments</li>
+                    <li><strong>Monitorea overhead:</strong> Proxies consumen recursos</li>
+                    <li><strong>mTLS es automático:</strong> No necesita código en aplicación</li>
+                    <li><strong>Testing fault injection:</strong> Valida resiliencia</li>
+                    <li><strong>Usar para lo que es bueno:</strong> No para todo</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Comparación: Sin vs Con Service Mesh</h2>
+                <table>
+                    <tr>
+                        <th>Aspecto</th>
+                        <th>Sin Mesh</th>
+                        <th>Con Mesh</th>
+                    </tr>
+                    <tr>
+                        <td><strong>mTLS</strong></td>
+                        <td>App lo implementa</td>
+                        <td>Automático</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Canary</strong></td>
+                        <td>Code changes</td>
+                        <td>Config YAML</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Retry/Timeout</strong></td>
+                        <td>App code</td>
+                        <td>Automático</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Overhead</strong></td>
+                        <td>Bajo</td>
+                        <td>Medium (proxies)</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Checklist: Service Mesh Setup</h2>
+                <ul>
+                    <li><strong>☐ Decidir:</strong> Istio, Linkerd, o ninguno</li>
+                    <li><strong>☐ Instalar:</strong> Control plane y data plane</li>
+                    <li><strong>☐ Inyectar sidecars:</strong> En namespaces apropiados</li>
+                    <li><strong>☐ mTLS:</strong> Configurar y habilitar</li>
+                    <li><strong>☐ Traffic policies:</strong> Canary, circuit breaker</li>
+                    <li><strong>☐ Observabilidad:</strong> Kiali, Jaeger, Prometheus</li>
+                    <li><strong>☐ Monitorear:</strong> Latency, errors, overhead</li>
+                </ul>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            center: false,
+            transition: 'slide',
+            width: 960,
+            height: 700
+        });
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

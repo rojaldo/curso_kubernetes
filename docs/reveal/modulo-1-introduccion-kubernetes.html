@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 1: Introducción a Kubernetes</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #2c3e50; }
+
+        /* Encabezados */
+        .reveal h1 { font-size: 2.5em; margin-bottom: 0.5em; color: #1e88e5; }
+        .reveal h2 { font-size: 1.8em; margin-bottom: 0.5em; color: #1e88e5; }
+        .reveal h3 { font-size: 1.3em; margin-bottom: 0.3em; color: #2c3e50; }
+
+        /* Párrafos y énfasis */
+        .reveal p { font-size: 0.9em; margin: 0.5em 0; color: #555555; line-height: 1.5; }
+        .reveal strong { font-size: 1em; font-weight: bold; color: #1e88e5; }
+
+        /* Código */
+        .reveal pre {
+            background: #f6f8fa !important;
+            border: 1px solid #e1e4e8 !important;
+            padding: 1.2em !important;
+            margin: 0.5em auto !important;
+            border-radius: 4px !important;
+            box-sizing: border-box !important;
+            display: block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            text-align: left !important;
+            width: auto !important;
+            font-family: 'Courier New', monospace !important;
+            line-height: 1.45 !important;
+        }
+        .reveal pre code {
+            font-size: 0.75em !important;
+            display: block !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            background: transparent !important;
+            border: none !important;
+            color: inherit !important;
+        }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; }
+
+        /* Highlight.js color scheme - ensure visibility */
+        .hljs { background: #f6f8fa !important; color: #24292e !important; }
+        .hljs-attr { color: #6f42c1 !important; }
+        .hljs-string { color: #032f62 !important; }
+        .hljs-number { color: #005cc5 !important; }
+        .hljs-literal { color: #005cc5 !important; }
+        .hljs-tag { color: #22863a !important; }
+        .hljs-name { color: #6f42c1 !important; }
+        .hljs-keyword { color: #d73a49 !important; }
+        .hljs-type { color: #005cc5 !important; }
+        .hljs-title { color: #6f42c1 !important; }
+
+        /* Listas */
+        .reveal ul { font-size: 0.85em; text-align: left; margin-left: 1em; color: #555555; }
+        .reveal li { margin: 0.4em 0; color: #555555; line-height: 1.4; }
+
+        /* Tablas */
+        .reveal table { font-size: 0.75em; margin: 0.5em 0; }
+        .reveal table td { padding: 0.4em; }
+
+        /* Bloques especiales */
+        .subtitle { font-size: 1.2em; color: #1e88e5; margin: 0.5em 0; }
+        .highlight { background-color: #fff3cd; padding: 0.2em 0.4em; border-radius: 3px; }
+
+        /* Slides de título */
+        .slide-title { text-align: center; display: flex; flex-direction: column; justify-content: center; }
+        .slide-title h1 { font-size: 3em; color: #1e88e5; }
+        .slide-title p { font-size: 1.2em; }
+
+        /* Columnas */
+        .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 2em; }
+        .column { padding: 1em; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- SLIDE 1: Portada -->
+            <section class="slide-title">
+                <h1>Introducción a Kubernetes</h1>
+                <p>Orquestación de Contenedores</p>
+                <p style="font-size: 0.8em; margin-top: 2em; color: #888;">Sistema modular para entender Kubernetes desde cero</p>
+            </section>
+
+            <!-- SLIDE 2: ¿Qué es Kubernetes? -->
+            <section>
+                <h2>¿Qué es Kubernetes?</h2>
+                <ul>
+                    <li><strong>K8s</strong> (8 letras entre K y s)</li>
+                    <li>Sistema de <strong>orquestación de contenedores</strong></li>
+                    <li>Código <strong>abierto</strong> (Open Source)</li>
+                    <li>Automatiza:
+                        <ul>
+                            <li>Despliegue de aplicaciones</li>
+                            <li>Escalado dinámico</li>
+                            <li>Gestión de recursos</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 3: Historia - Origen en Google -->
+            <section>
+                <h2>Origen: Diseñado en Google</h2>
+                <ul>
+                    <li><strong>2003-2004:</strong> Google crea <strong>Borg</strong> internamente</li>
+                    <li><strong>2013:</strong> Google comienza desarrollo de Kubernetes</li>
+                    <li><strong>Junio 2014:</strong> <strong>Liberado públicamente</strong> como Open Source</li>
+                    <li><strong>Julio 2015:</strong> Lanzamiento v1.0 y donación a CNCF</li>
+                    <li><strong>2016-presente:</strong> Estándar de facto para orquestación</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 4: Problema 1 - Gestión de Contenedores -->
+            <section>
+                <h2>Problema 1: Escala de Contenedores</h2>
+                <p><strong>Sin Kubernetes:</strong> Imposible gestionar cientos/miles de contenedores manualmente</p>
+                <ul>
+                    <li>✓ Programación y distribución automática</li>
+                    <li>✓ Reinicio de contenedores fallidos</li>
+                    <li>✓ Reemplazo ante fallos de nodos</li>
+                    <li>✓ Gestión centralizada</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 5: Problema 2 - Alta Disponibilidad -->
+            <section>
+                <h2>Problema 2: Alta Disponibilidad</h2>
+                <p><strong>Garantizar disponibilidad continua</strong></p>
+                <ul>
+                    <li>✓ Réplicas automáticas de aplicaciones</li>
+                    <li>✓ Distribución de carga entre instancias</li>
+                    <li>✓ Health checks y auto-recuperación</li>
+                    <li>✓ Eliminación de puntos únicos de falla</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 6: Problema 3 - Escalabilidad -->
+            <section>
+                <h2>Problema 3: Escalabilidad</h2>
+                <p><strong>Escalar según demanda</strong></p>
+                <ul>
+                    <li><strong>Horizontal:</strong> Agregar/quitar instancias automáticamente</li>
+                    <li><strong>Vertical:</strong> Ajustar CPU/memoria asignada</li>
+                    <li><strong>De cluster:</strong> Agregar/quitar nodos según necesidad</li>
+                    <li>Respuesta automática a cambios de carga</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 7: Problema 4 y 5 -->
+            <section>
+                <h2>Problema 4 y 5: Portabilidad y Despliegues</h2>
+                <div class="two-columns">
+                    <div class="column">
+                        <h3>Portabilidad</h3>
+                        <ul>
+                            <li>On-premise</li>
+                            <li>Cloud público</li>
+                            <li>Cloud híbrido</li>
+                            <li>Multi-cloud</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h3>Despliegues</h3>
+                        <ul>
+                            <li>Sin downtime (Rolling updates)</li>
+                            <li>Rollbacks automáticos</li>
+                            <li>Canary deployments</li>
+                            <li>Blue-Green deployments</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 8: Problema 6 - Configuración y Secretos -->
+            <section>
+                <h2>Problema 6: Gestión de Configuración</h2>
+                <ul>
+                    <li><strong>Separación código ↔ configuración</strong></li>
+                    <li>Gestión segura de credenciales</li>
+                    <li>Secrets enkriptados</li>
+                    <li>ConfigMaps para configuración dinámica</li>
+                    <li>Inyección de variables de entorno</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 9: Comparación con Alternativas -->
+            <section>
+                <h2>Kubernetes vs Alternativas</h2>
+                <table style="font-size: 0.7em;">
+                    <tr style="background: #f0f0f0;">
+                        <td><strong>Aspecto</strong></td>
+                        <td><strong>Kubernetes</strong></td>
+                        <td><strong>Docker Swarm</strong></td>
+                        <td><strong>Mesos</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Escalabilidad</td>
+                        <td>Excelente (miles nodos)</td>
+                        <td>Buena (cientos)</td>
+                        <td>Excelente (decenas miles)</td>
+                    </tr>
+                    <tr>
+                        <td>Comunidad</td>
+                        <td>Muy grande</td>
+                        <td>Moderada</td>
+                        <td>Pequeña</td>
+                    </tr>
+                    <tr>
+                        <td>Curva aprendizaje</td>
+                        <td>Empinada</td>
+                        <td>Suave</td>
+                        <td>Muy empinada</td>
+                    </tr>
+                    <tr>
+                        <td>Auto-recuperación</td>
+                        <td>Excelente</td>
+                        <td>Buena</td>
+                        <td>Buena</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- SLIDE 10: Ventajas de Kubernetes -->
+            <section>
+                <h2>Ventajas de Kubernetes</h2>
+                <ul>
+                    <li>✓ <strong>Estándar de la industria</strong> con amplio soporte</li>
+                    <li>✓ <strong>Ecosistema maduro</strong> con miles de herramientas</li>
+                    <li>✓ <strong>Soporte en todos los clouds</strong> (AWS, GCP, Azure)</li>
+                    <li>✓ <strong>Extensible</strong> mediante CRDs y Operators</li>
+                    <li>✓ <strong>Comunidad activa</strong> y documentación exhaustiva</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 11: CNCF - Ecosistema Cloud Native -->
+            <section>
+                <h2>CNCF: Ecosistema Cloud Native</h2>
+                <ul>
+                    <li><strong>Cloud Native Computing Foundation</strong></li>
+                    <li>Fundada en <strong>2015</strong> como parte de Linux Foundation</li>
+                    <li>Misión: <strong>Computación nativa de la nube ubicua</strong></li>
+                    <li>Kubernetes es el proyecto <strong>"graduado"</strong> más importante</li>
+                    <li>Múltiples proyectos complementarios en diferentes categorías</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 12: Proyectos CNCF -->
+            <section>
+                <h2>Proyectos CNCF Principales</h2>
+                <ul style="font-size: 0.8em;">
+                    <li><strong>Container Runtime:</strong> containerd, CRI-O</li>
+                    <li><strong>Networking:</strong> Calico, Cilium, Flannel</li>
+                    <li><strong>Service Mesh:</strong> Istio, Linkerd, Envoy</li>
+                    <li><strong>Monitoring:</strong> Prometheus, Grafana</li>
+                    <li><strong>Logging:</strong> Fluentd, Loki</li>
+                    <li><strong>CI/CD:</strong> Argo, Flux, Tekton</li>
+                    <li><strong>Storage:</strong> Rook, Longhorn</li>
+                    <li><strong>Security:</strong> Falco, OPA</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 13: Niveles de Madurez CNCF -->
+            <section>
+                <h2>Niveles de Madurez en CNCF</h2>
+                <ul>
+                    <li><strong>🔶 Sandbox:</strong> Proyectos experimentales</li>
+                    <li><strong>🟡 Incubating:</strong> Proyectos en crecimiento (adopción moderada)</li>
+                    <li><strong>🟢 Graduated:</strong> Proyectos maduros (adopción amplia)
+                        <ul style="margin-top: 0.5em;">
+                            <li>Kubernetes, Prometheus, Envoy, etc.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 14: Cloud Native Principles -->
+            <section>
+                <h2>Principios Cloud Native</h2>
+                <p><strong>Según CNCF, aplicaciones cloud native son:</strong></p>
+                <ul>
+                    <li><strong>📦 Containerized:</strong> Empaquetadas en contenedores</li>
+                    <li><strong>🔄 Dynamically Orchestrated:</strong> Gestionadas activamente</li>
+                    <li><strong>🏗️ Microservices-Oriented:</strong> Servicios pequeños e independientes</li>
+                </ul>
+                <p style="margin-top: 1em;"><strong>Beneficio:</strong> Innovación rápida, escalabilidad, resiliencia</p>
+            </section>
+
+            <!-- SLIDE 15: Arquitectura General - Diagrama -->
+            <section>
+                <h2>Arquitectura de Kubernetes</h2>
+                <p><strong>Separación clara:</strong> Control Plane vs Worker Nodes</p>
+                <pre style="font-size: 0.6em;">┌─────────────────────────────────────┐
+│      CONTROL PLANE                  │
+│  API │ etcd │ Scheduler │ Controller│
+└─────────────┬─────────────────────┘
+    ┌─────────┼─────────┐
+    ▼         ▼         ▼
+┌─WORKER─┐┌─WORKER─┐┌─WORKER─┐
+│Kubelet ││Kubelet ││Kubelet │
+│Proxy   ││Proxy   ││Proxy   │
+│Runtime ││Runtime ││Runtime │
+└────────┘└────────┘└────────┘</pre>
+            </section>
+
+            <!-- SLIDE 16: API Server -->
+            <section>
+                <h2>API Server: El Corazón</h2>
+                <ul>
+                    <li><strong>kube-apiserver</strong> - Componente central</li>
+                    <li>Expone <strong>API RESTful</strong> de Kubernetes</li>
+                    <li>Punto de entrada para <strong>todos los comandos</strong></li>
+                    <li>Valida y configura datos de objetos</li>
+                    <li><strong>Única interfaz</strong> que interactúa con etcd</li>
+                    <li>Gestiona autenticación, autorización, admission control</li>
+                    <li>Puerto por defecto: <strong>6443 (HTTPS)</strong></li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 17: etcd - Base de Datos -->
+            <section>
+                <h2>etcd: Base de Datos Distribuida</h2>
+                <ul>
+                    <li>Almacén <strong>distribuido consistente</strong></li>
+                    <li><strong>Única fuente de verdad</strong> del cluster</li>
+                    <li>Almacena <strong>TODO</strong> el estado del cluster</li>
+                    <li>Algoritmo <strong>Raft</strong> para consenso</li>
+                    <li>Típicamente <strong>3, 5 o 7</strong> instancias (Alta disponibilidad)</li>
+                    <li>Comunicación cifrada con <strong>TLS</strong></li>
+                    <li><strong>⚠️ CRÍTICO:</strong> Pérdida de etcd = pérdida del cluster</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 18: Scheduler - Asignación de Pods -->
+            <section>
+                <h2>Scheduler: Programación Inteligente</h2>
+                <ul>
+                    <li><strong>kube-scheduler</strong> - Asigna pods a nodos</li>
+                    <li>Monitorea pods sin nodo asignado</li>
+                    <li>Selecciona <strong>mejor nodo</strong> para cada pod</li>
+                    <li>Factores considerados:
+                        <ul>
+                            <li>Requisitos de recursos (CPU, memoria)</li>
+                            <li>Restricciones (selectors, affinity, taints)</li>
+                            <li>Optimización (distribución, localidad de datos)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 19: Proceso de Scheduling -->
+            <section>
+                <h2>Proceso de Scheduling</h2>
+                <ol>
+                    <li><strong>Filtering (Filtrado)</strong>
+                        <ul><li>Elimina nodos que no cumplen requisitos</li></ul>
+                    </li>
+                    <li><strong>Scoring (Puntuación)</strong>
+                        <ul><li>Asigna puntuación a nodos viables</li></ul>
+                    </li>
+                    <li><strong>Binding (Vinculación)</strong>
+                        <ul><li>Asigna pod al nodo con mayor puntuación</li></ul>
+                    </li>
+                </ol>
+            </section>
+
+            <!-- SLIDE 20: Controller Manager -->
+            <section>
+                <h2>Controller Manager: Reconciliación</h2>
+                <p><strong>kube-controller-manager</strong> - Ejecuta múltiples controladores</p>
+                <p><strong>Concepto clave:</strong> Bucle de control observar → comparar → actuar</p>
+                <pre style="font-size: 0.7em;">while true:
+    estado_actual = observar()
+    estado_deseado = leer_especificacion()
+    if estado_actual != estado_deseado:
+        realizar_cambios()</pre>
+            </section>
+
+            <!-- SLIDE 21: Controladores Principales -->
+            <section>
+                <h2>Controladores Principales</h2>
+                <ul>
+                    <li><strong>Node Controller:</strong> Monitorea salud de nodos</li>
+                    <li><strong>Replication Controller:</strong> Mantiene replicas</li>
+                    <li><strong>Endpoints Controller:</strong> Une Services y Pods</li>
+                    <li><strong>Deployment Controller:</strong> Gestiona actualizaciones</li>
+                    <li><strong>Job Controller:</strong> Supervisa Jobs</li>
+                    <li><strong>Service Account Controller:</strong> Crea cuentas y tokens</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 22: Cloud Controller Manager -->
+            <section>
+                <h2>Cloud Controller Manager</h2>
+                <ul>
+                    <li>Integración con <strong>APIs de proveedores cloud</strong></li>
+                    <li>Gestión de recursos específicos del cloud</li>
+                    <li>Abstracción de infraestructura subyacente</li>
+                    <li><strong>Ejemplos:</strong>
+                        <ul>
+                            <li>Node Controller (info del cloud)</li>
+                            <li>Route Controller (rutas de red)</li>
+                            <li>Service Controller (Load Balancers)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 23: Kubelet - Agente del Nodo -->
+            <section>
+                <h2>Kubelet: Agente Principal</h2>
+                <ul>
+                    <li><strong>kubelet</strong> - Se ejecuta en cada nodo worker</li>
+                    <li>Registra el nodo en API Server</li>
+                    <li>Monitorea pods asignados a su nodo</li>
+                    <li>Ejecuta contenedores via Container Runtime</li>
+                    <li>Reporta estado de pods y nodos</li>
+                    <li>Ejecuta health checks (liveness, readiness)</li>
+                    <li>Responsable del ciclo de vida de contenedores</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 24: Kube-proxy - Networking -->
+            <section>
+                <h2>Kube-proxy: Proxy de Red</h2>
+                <ul>
+                    <li>Mantiene reglas de red en cada nodo</li>
+                    <li>Implementa el concepto de <strong>Services</strong></li>
+                    <li>Gestiona reglas iptables/IPVS</li>
+                    <li>Balancea carga de tráfico hacia Pods</li>
+                    <li><strong>Modos:</strong>
+                        <ul>
+                            <li>iptables (por defecto)</li>
+                            <li>IPVS (mejor rendimiento a gran escala)</li>
+                            <li>userspace (legacy)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 25: Container Runtime -->
+            <section>
+                <h2>Container Runtime: Ejecución</h2>
+                <ul>
+                    <li>Software que <strong>ejecuta contenedores</strong></li>
+                    <li>Comunica via <strong>CRI</strong> (Container Runtime Interface)</li>
+                    <li><strong>Runtimes populares:</strong>
+                        <ul>
+                            <li><strong>containerd</strong> (más usado actualmente)</li>
+                            <li><strong>CRI-O</strong> (diseñado para K8s)</li>
+                            <li><strong>Docker</strong> (via cri-dockerd, legacy)</li>
+                        </ul>
+                    </li>
+                    <li>Responsabilidades:
+                        <ul>
+                            <li>Descargar imágenes</li>
+                            <li>Ejecutar contenedores</li>
+                            <li>Gestionar ciclo de vida</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 26: Addons Principales -->
+            <section>
+                <h2>Addons: Funcionalidades Extendidas</h2>
+                <ul>
+                    <li><strong>DNS (CoreDNS):</strong> Service discovery</li>
+                    <li><strong>Dashboard:</strong> UI web (no recomendado en prod)</li>
+                    <li><strong>Metrics Server:</strong> Métricas para HPA</li>
+                    <li><strong>Cluster Logging:</strong> Agregación de logs (EFK, Loki)</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 27: Flujo Completo kubectl a Pod - Paso 1 -->
+            <section>
+                <h2>Flujo Completo: kubectl a Pod (1/3)</h2>
+                <ol style="font-size: 0.85em;">
+                    <li>Usuario ejecuta: <code>kubectl run nginx --image=nginx</code></li>
+                    <li>kubectl contacta API Server → <code>POST /api/v1/pods</code></li>
+                    <li>API Server valida, autentica, autoriza, ejecuta admission controllers</li>
+                    <li>API Server escribe Pod en etcd (estado: <strong>Pending</strong>, sin nodo)</li>
+                </ol>
+            </section>
+
+            <!-- SLIDE 28: Flujo Completo kubectl a Pod - Paso 2 -->
+            <section>
+                <h2>Flujo Completo: kubectl a Pod (2/3)</h2>
+                <ol style="font-size: 0.85em;" start="5">
+                    <li>Scheduler observa pod sin nodo</li>
+                    <li>Scheduler evalúa nodos, selecciona el mejor (ej: node-2)</li>
+                    <li>Scheduler actualiza Pod: <strong>nodeName=node-2</strong></li>
+                    <li>API Server actualiza etcd</li>
+                </ol>
+            </section>
+
+            <!-- SLIDE 29: Flujo Completo kubectl a Pod - Paso 3 -->
+            <section>
+                <h2>Flujo Completo: kubectl a Pod (3/3)</h2>
+                <ol style="font-size: 0.85em;" start="9">
+                    <li>kubelet en node-2 detecta nuevo Pod asignado</li>
+                    <li>kubelet llama Container Runtime (containerd)</li>
+                    <li>Runtime descarga imagen nginx, crea y inicia contenedor</li>
+                    <li>kubelet reporta estado a API Server: <strong>Running</strong></li>
+                    <li>kube-proxy actualiza reglas iptables si es parte de Service</li>
+                </ol>
+            </section>
+
+            <!-- SLIDE 30: Cluster, Nodo, Pod -->
+            <section>
+                <h2>Conceptos Fundamentales: Tres Niveles</h2>
+                <ul>
+                    <li><strong>Cluster:</strong> Conjunto de máquinas gestionadas por Kubernetes</li>
+                    <li><strong>Nodo:</strong> Máquina individual (física o virtual) en el cluster</li>
+                    <li><strong>Pod:</strong> Unidad más pequeña desplegable (uno o más contenedores)</li>
+                </ul>
+                <p style="margin-top: 1em; font-size: 0.9em;"><strong>Relación:</strong> Cluster contiene Nodos que ejecutan Pods</p>
+            </section>
+
+            <!-- SLIDE 31: Tipos de Nodos -->
+            <section>
+                <h2>Tipos de Nodos</h2>
+                <div class="two-columns">
+                    <div class="column">
+                        <h3>Master/Control Plane</h3>
+                        <ul>
+                            <li>Ejecutan componentes de control</li>
+                            <li>No ejecutan apps de usuario (típicamente)</li>
+                            <li>Múltiples para HA</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h3>Worker</h3>
+                        <ul>
+                            <li>Ejecutan Pods con aplicaciones</li>
+                            <li>Contienen kubelet, kube-proxy, runtime</li>
+                            <li>Escalables según demanda</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 32: Pod - Definición -->
+            <section>
+                <h2>Pod: Unidad de Despliegue</h2>
+                <ul>
+                    <li><strong>Pod</strong> = Unidad más pequeña en Kubernetes</li>
+                    <li>Contiene <strong>uno o más contenedores</strong></li>
+                    <li><strong>Características:</strong>
+                        <ul>
+                            <li>Comparten dirección IP</li>
+                            <li>Comparten namespace de red</li>
+                            <li>Pueden compartir volúmenes</li>
+                            <li>Se programan juntos en el mismo nodo</li>
+                            <li>Escalan como unidad</li>
+                            <li>Efímeros por naturaleza</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 33: Ciclo de Vida de Pods -->
+            <section>
+                <h2>Ciclo de Vida de Pods</h2>
+                <pre style="font-size: 0.9em; text-align: center;">Pending → Running → Succeeded/Failed
+                         ↓
+                  CrashLoopBackOff</pre>
+                <ul>
+                    <li><strong>Pending:</strong> Pod creado, esperando nodo</li>
+                    <li><strong>Running:</strong> Pod asignado y en ejecución</li>
+                    <li><strong>Succeeded:</strong> Finalizado exitosamente</li>
+                    <li><strong>Failed:</strong> Contenedor finalizó con error</li>
+                    <li><strong>CrashLoopBackOff:</strong> Falla repetida</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 34: Ejemplo Pod YAML -->
+            <section>
+                <h2>Crear un Pod - YAML</h2>
+                <pre style="font-size: 0.65em;">apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.21
+    ports:
+    - containerPort: 80</pre>
+                <p style="margin-top: 1em; font-size: 0.85em;">Aplicar: <code>kubectl apply -f nginx-pod.yaml</code></p>
+            </section>
+
+            <!-- SLIDE 35: Contenedores vs Pods -->
+            <section>
+                <h2>Diferencia: Contenedor vs Pod</h2>
+                <table style="font-size: 0.7em;">
+                    <tr style="background: #f0f0f0;">
+                        <td><strong>Aspecto</strong></td>
+                        <td><strong>Contenedor</strong></td>
+                        <td><strong>Pod</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Definición</td>
+                        <td>Unidad de empaquetado</td>
+                        <td>Unidad de despliegue K8s</td>
+                    </tr>
+                    <tr>
+                        <td>Networking</td>
+                        <td>Requiere configuración</td>
+                        <td>IP compartida</td>
+                    </tr>
+                    <tr>
+                        <td>Almacenamiento</td>
+                        <td>Volúmenes propios</td>
+                        <td>Volúmenes compartidos</td>
+                    </tr>
+                    <tr>
+                        <td>Scaling</td>
+                        <td>N/A en K8s</td>
+                        <td>Pods se replican</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- SLIDE 36: Múltiples Contenedores en Pod -->
+            <section>
+                <h2>¿Cuándo Múltiples Contenedores por Pod?</h2>
+                <p><strong>Solo si están estrechamente acoplados:</strong></p>
+                <ul>
+                    <li><strong>Sidecar Pattern:</strong> Contenedor helper (ej: logs)</li>
+                    <li><strong>Ambassador Pattern:</strong> Proxy para comunicación externa</li>
+                    <li><strong>Adapter Pattern:</strong> Normaliza outputs</li>
+                </ul>
+                <p style="margin-top: 1em;"><strong>Regla general:</strong> Un contenedor por Pod si pueden ejecutarse independientemente</p>
+            </section>
+
+            <!-- SLIDE 37: Namespaces - Aislamiento Lógico -->
+            <section>
+                <h2>Namespaces: Aislamiento de Recursos</h2>
+                <ul>
+                    <li><strong>Namespace</strong> = Espacio de nombres virtual en el cluster</li>
+                    <li>Divide recursos entre equipos/aplicaciones</li>
+                    <li>Scope para nombres (únicos por namespace)</li>
+                    <li>Aplicar políticas (quotas, network policies)</li>
+                    <li>Organización lógica</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 38: Namespaces por Defecto -->
+            <section>
+                <h2>Namespaces del Sistema</h2>
+                <ul>
+                    <li><strong>default:</strong> Namespace por defecto</li>
+                    <li><strong>kube-system:</strong> Componentes del sistema (DNS, Dashboard, etc.)</li>
+                    <li><strong>kube-public:</strong> Recursos públicos (acceso sin autenticación)</li>
+                    <li><strong>kube-node-lease:</strong> Heartbeats de nodos</li>
+                </ul>
+                <p style="margin-top: 1em;"><code>kubectl get namespaces</code></p>
+            </section>
+
+            <!-- SLIDE 39: Crear y Usar Namespaces -->
+            <section>
+                <h2>Trabajar con Namespaces</h2>
+                <pre style="font-size: 0.75em;"># Crear namespace
+kubectl create namespace desarrollo
+
+# Crear recurso en namespace
+kubectl apply -f app.yaml -n desarrollo
+
+# Listar en namespace específico
+kubectl get pods -n desarrollo
+
+# Listar en todos los namespaces
+kubectl get pods --all-namespaces
+
+# Cambiar namespace por defecto
+kubectl config set-context --current --namespace=desarrollo</pre>
+            </section>
+
+            <!-- SLIDE 40: Labels - Identificación -->
+            <section>
+                <h2>Labels: Pares Clave-Valor</h2>
+                <ul>
+                    <li><strong>Label</strong> = Metadato para identificar recursos</li>
+                    <li>Pares clave-valor arbitrarios</li>
+                    <li>Múltiples labels por objeto</li>
+                    <li>No proporcionan unicidad</li>
+                    <li><strong>Ejemplos:</strong>
+                        <ul style="font-size: 0.85em;">
+                            <li><code>app: nginx</code></li>
+                            <li><code>environment: production</code></li>
+                            <li><code>team: backend</code></li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 41: Ejemplo Labels -->
+            <section>
+                <h2>Pod con Labels</h2>
+                <pre style="font-size: 0.7em;">apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-prod-frontend
+  labels:
+    app: nginx
+    environment: production
+    tier: frontend
+    version: "1.21"
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.21</pre>
+            </section>
+
+            <!-- SLIDE 42: Selectors - Filtrado -->
+            <section>
+                <h2>Selectors: Filtrar por Labels</h2>
+                <ul>
+                    <li><strong>Selector</strong> = Filtrar objetos por labels</li>
+                    <li><strong>Equality-based:</strong>
+                        <ul style="font-size: 0.85em;">
+                            <li><code>kubectl get pods -l environment=production</code></li>
+                            <li><code>kubectl get pods -l environment!=production</code></li>
+                        </ul>
+                    </li>
+                    <li><strong>Set-based:</strong>
+                        <ul style="font-size: 0.85em;">
+                            <li><code>kubectl get pods -l 'environment in (prod,staging)'</code></li>
+                            <li><code>kubectl get pods -l 'tier notin (frontend)'</code></li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 43: Selectors en Manifiestos -->
+            <section>
+                <h2>Selectors en Manifiestos</h2>
+                <pre style="font-size: 0.7em;">apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: nginx        # Selecciona Pods con app=nginx
+    tier: frontend    # Y tier=frontend
+  ports:
+  - port: 80</pre>
+                <p style="margin-top: 0.5em;"><strong>El Service usa labels para encontrar Pods</strong></p>
+            </section>
+
+            <!-- SLIDE 44: Gestionar Labels -->
+            <section>
+                <h2>Gestionar Labels con kubectl</h2>
+                <pre style="font-size: 0.75em;"># Ver labels
+kubectl get pods --show-labels
+
+# Añadir label
+kubectl label pods nginx-pod region=us-west
+
+# Modificar label
+kubectl label pods nginx-pod version=1.22 --overwrite
+
+# Eliminar label
+kubectl label pods nginx-pod version-
+
+# Ver pods con labels como columnas
+kubectl get pods -L app,environment</pre>
+            </section>
+
+            <!-- SLIDE 45: Annotations - Metadatos -->
+            <section>
+                <h2>Annotations: Metadatos No Identificatorios</h2>
+                <ul>
+                    <li><strong>Annotation</strong> = Metadato para herramientas externas</li>
+                    <li>Similar a labels pero <strong>sin límite de tamaño</strong></li>
+                    <li>No filtrables por selectors</li>
+                    <li><strong>Casos de uso:</strong>
+                        <ul style="font-size: 0.85em;">
+                            <li>Información de build/release</li>
+                            <li>Configuración de herramientas (Ingress, Mesh)</li>
+                            <li>Contacto y documentación</li>
+                            <li>Metadata de integración</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 46: Ejemplo Annotations -->
+            <section>
+                <h2>Ejemplo: Annotations en Deployment</h2>
+                <pre style="font-size: 0.65em;">metadata:
+  name: app
+  annotations:
+    # Build info
+    build.date: "2024-01-15T10:30:00Z"
+    git.commit: "a3f5c8d"
+
+    # Contact
+    owner: "platform@example.com"
+    documentation: "https://wiki.example.com"
+
+    # Integration
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"</pre>
+            </section>
+
+            <!-- SLIDE 47: Labels vs Annotations -->
+            <section>
+                <h2>Labels vs Annotations</h2>
+                <table style="font-size: 0.75em;">
+                    <tr style="background: #f0f0f0;">
+                        <td><strong>Aspecto</strong></td>
+                        <td><strong>Labels</strong></td>
+                        <td><strong>Annotations</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Propósito</td>
+                        <td>Identificar y seleccionar</td>
+                        <td>Metadata arbitrario</td>
+                    </tr>
+                    <tr>
+                        <td>Usado por</td>
+                        <td>Kubernetes (selectors)</td>
+                        <td>Herramientas externas</td>
+                    </tr>
+                    <tr>
+                        <td>Límite valor</td>
+                        <td>63 caracteres</td>
+                        <td>Sin límite práctico</td>
+                    </tr>
+                    <tr>
+                        <td>Filtrable</td>
+                        <td>Sí</td>
+                        <td>No</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- SLIDE 48: Instalación - Opciones -->
+            <section>
+                <h2>Opciones de Instalación Local</h2>
+                <table style="font-size: 0.7em;">
+                    <tr style="background: #f0f0f0;">
+                        <td><strong>Herramienta</strong></td>
+                        <td><strong>Ventajas</strong></td>
+                        <td><strong>Casos de Uso</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Minikube</td>
+                        <td>Popular, múltiples drivers</td>
+                        <td>Aprendizaje, desarrollo</td>
+                    </tr>
+                    <tr>
+                        <td>Kind</td>
+                        <td>Muy rápido, ligero</td>
+                        <td>CI/CD, testing</td>
+                    </tr>
+                    <tr>
+                        <td>Docker Desktop</td>
+                        <td>Integrado, fácil</td>
+                        <td>Desarrollo simple</td>
+                    </tr>
+                    <tr>
+                        <td>MicroK8s</td>
+                        <td>Producción-ready</td>
+                        <td>Edge, IoT</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- SLIDE 49: Minikube -->
+            <section>
+                <h2>Minikube: La Opción Popular</h2>
+                <ul>
+                    <li>Crea VM o contenedor que ejecuta Kubernetes</li>
+                    <li>Cluster de un solo nodo</li>
+                    <li>Más popular para aprendizaje</li>
+                    <li><strong>Instalación Linux:</strong>
+                        <ul style="font-size: 0.85em;">
+                            <li><code>curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64</code></li>
+                            <li><code>sudo install minikube-linux-amd64 /usr/local/bin/minikube</code></li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 50: Kind - Kubernetes in Docker -->
+            <section>
+                <h2>Kind: Kubernetes in Docker</h2>
+                <ul>
+                    <li><strong>K8s IN Docker</strong> - Corre en contenedores</li>
+                    <li>Muy rápido y ligero</li>
+                    <li>Ideal para CI/CD y testing</li>
+                    <li>Soporta multi-nodo (en contenedores)</li>
+                    <li><strong>Instalación:</strong> <code>go install sigs.k8s.io/kind@latest</code></li>
+                    <li><strong>Crear cluster:</strong> <code>kind create cluster</code></li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 51: Docker Desktop -->
+            <section>
+                <h2>Docker Desktop: Lo Más Simple</h2>
+                <ul>
+                    <li>Kubernetes integrado en Docker Desktop</li>
+                    <li>Más simple para principiantes</li>
+                    <li>Solo 1 nodo</li>
+                    <li>Disponible en macOS y Windows</li>
+                    <li><strong>Activar:</strong> Preferences → Kubernetes → Enable Kubernetes</li>
+                    <li>Automáticamente agrega contexto a kubeconfig</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 52: kubectl - Cliente de Kubernetes -->
+            <section>
+                <h2>kubectl: Tu Herramienta Principal</h2>
+                <ul>
+                    <li><strong>kubectl</strong> = Cliente CLI para interactuar con Kubernetes</li>
+                    <li>Se comunica con API Server</li>
+                    <li>Necesario para todas las operaciones</li>
+                    <li><strong>Instalación:</strong>
+                        <ul style="font-size: 0.85em;">
+                            <li>Linux: <code>curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"</code></li>
+                            <li>macOS: <code>brew install kubectl</code></li>
+                        </ul>
+                    </li>
+                    <li><strong>Verificar:</strong> <code>kubectl version --client</code></li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 53: kubeconfig - Configuración -->
+            <section>
+                <h2>Kubeconfig: Archivo de Configuración</h2>
+                <ul>
+                    <li><strong>~/.kube/config</strong> = Archivo de configuración de kubectl</li>
+                    <li>Define clusters, usuarios, contextos</li>
+                    <li><strong>Contiene:</strong>
+                        <ul>
+                            <li>Dirección del API Server</li>
+                            <li>Certificados/tokens de autenticación</li>
+                            <li>Contextos (combinación cluster + usuario)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Ver archivo:</strong> <code>kubectl config view</code></li>
+                    <li><strong>Ver contexto actual:</strong> <code>kubectl config current-context</code></li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 54: Contextos - Múltiples Clusters -->
+            <section>
+                <h2>Contextos: Múltiples Clusters</h2>
+                <ul>
+                    <li>Puedes gestionar múltiples clusters</li>
+                    <li>Cada contexto conecta a un cluster diferente</li>
+                    <li><strong>Comandos útiles:</strong>
+                        <ul style="font-size: 0.85em;">
+                            <li><code>kubectl config get-contexts</code> - Ver contextos</li>
+                            <li><code>kubectl config use-context docker-desktop</code> - Cambiar contexto</li>
+                            <li><code>kubectl config current-context</code> - Contexto actual</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 55: Primer Comando: Verificar Conexión -->
+            <section>
+                <h2>Verificar Instalación</h2>
+                <p><strong>Primer comando que debes ejecutar:</strong></p>
+                <pre style="font-size: 0.85em;">$ kubectl get nodes
+
+NAME             STATUS   ROLES           AGE     VERSION
+docker-desktop   Ready    control-plane   2d      v1.28.0</pre>
+                <ul style="margin-top: 1em;">
+                    <li>Si ves tu nodo → <strong>¡Conexión exitosa!</strong></li>
+                    <li>Si error → Verifica kubeconfig o cluster running</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 56: Verificar Componentes del Sistema -->
+            <section>
+                <h2>Explorar Componentes del Sistema</h2>
+                <pre style="font-size: 0.8em;">$ kubectl get pods -n kube-system
+
+NAME                                READY   STATUS
+coredns-5d78c0869f-9xyz             1/1     Running
+etcd-docker-desktop                 1/1     Running
+kube-apiserver-docker-desktop       1/1     Running
+kube-controller-manager-docker-desktop 1/1  Running
+kube-scheduler-docker-desktop       1/1     Running</pre>
+                <p style="margin-top: 0.5em;"><strong>Ves los componentes del control plane corriendo!</strong></p>
+            </section>
+
+            <!-- SLIDE 57: Resumen Módulo 1 - Qué es Kubernetes -->
+            <section>
+                <h2>Resumen: ¿Qué es Kubernetes?</h2>
+                <ul>
+                    <li>✅ Sistema de <strong>orquestación de contenedores</strong></li>
+                    <li>✅ Automatiza <strong>despliegue, escalado, gestión</strong></li>
+                    <li>✅ Soluciona problemas críticos de operación</li>
+                    <li>✅ Estándar de la industria con amplio soporte</li>
+                    <li>✅ Arquitectura cliente-servidor distribuida</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 58: Resumen Módulo 1 - Arquitectura -->
+            <section>
+                <h2>Resumen: Arquitectura</h2>
+                <ul>
+                    <li>✅ <strong>Control Plane:</strong> Toma decisiones globales</li>
+                    <li>✅ <strong>Worker Nodes:</strong> Ejecutan aplicaciones</li>
+                    <li>✅ <strong>Componentes clave:</strong> API Server, etcd, Scheduler, Controller Manager</li>
+                    <li>✅ <strong>Agentes en nodos:</strong> kubelet, kube-proxy, Container Runtime</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 59: Resumen Módulo 1 - Conceptos -->
+            <section>
+                <h2>Resumen: Conceptos Fundamentales</h2>
+                <ul>
+                    <li>✅ <strong>Cluster:</strong> Conjunto de máquinas gestionadas</li>
+                    <li>✅ <strong>Nodos:</strong> Máquinas individuales</li>
+                    <li>✅ <strong>Pods:</strong> Unidad de despliegue (contenedores)</li>
+                    <li>✅ <strong>Namespaces:</strong> Aislamiento lógico</li>
+                    <li>✅ <strong>Labels/Selectors:</strong> Identificación y filtrado</li>
+                    <li>✅ <strong>Annotations:</strong> Metadatos para herramientas</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 60: Resumen Módulo 1 - Instalación -->
+            <section>
+                <h2>Resumen: Instalación</h2>
+                <ul>
+                    <li>✅ <strong>Opciones:</strong> Minikube, Kind, Docker Desktop, MicroK8s</li>
+                    <li>✅ <strong>Herramienta fundamental:</strong> kubectl</li>
+                    <li>✅ <strong>Configuración:</strong> Archivo kubeconfig</li>
+                    <li>✅ <strong>Siguiente paso:</strong> Hacer primeros comandos kubectl</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 61: Próximos Pasos -->
+            <section>
+                <h2>Próximos Pasos</h2>
+                <ul>
+                    <li>📌 <strong>Instala Kubernetes localmente</strong> (Minikube o Kind)</li>
+                    <li>📌 <strong>Instala kubectl</strong> y verifica conexión</li>
+                    <li>📌 <strong>Explora comandos básicos:</strong> get, describe, logs</li>
+                    <li>📌 <strong>Crea tu primer Pod</strong> manualmente</li>
+                    <li>📌 <strong>Prepárate para Módulo 2:</strong> Trabajando con Pods</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 62: Final -->
+            <section class="slide-title">
+                <h1>¡Fin del Módulo 1!</h1>
+                <p>Has aprendido los fundamentos de Kubernetes</p>
+                <p style="margin-top: 2em; font-size: 0.9em;"><strong>Conceptos clave:</strong> Qué es, arquitectura, componentes, conceptos y instalación</p>
+                <p style="margin-top: 1em;"><strong>Siguiente:</strong> Módulo 2 - Trabajando con Pods</p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            width: '100%',
+            height: '100%',
+            margin: 0.1,
+            transition: 'slide',
+            transitionSpeed: 'default'
+        });
+
+        // Highlight code blocks with language detection
+        hljs.highlightAll();
+
+        // Apply highlighting to pre blocks without code tags
+        document.querySelectorAll('pre').forEach(function(block) {
+            // Skip if already highlighted
+            if (block.classList.contains('hljs')) return;
+
+            // Try to detect and highlight as YAML or Bash
+            var content = block.textContent;
+
+            // Try YAML first (contains : for key-value pairs)
+            if (content.includes(':') && (content.includes('apiVersion') || content.includes('kind') || content.includes('metadata'))) {
+                hljs.highlight(content, { language: 'yaml', ignoreIllegals: true })
+                    .value !== content ? block.innerHTML = hljs.highlight(content, { language: 'yaml', ignoreIllegals: true }).value : null;
+                block.classList.add('hljs', 'language-yaml');
+            }
+            // Try Bash for command lines
+            else if (content.includes('$') || content.includes('kubectl') || content.includes('docker')) {
+                hljs.highlight(content, { language: 'bash', ignoreIllegals: true })
+                    .value !== content ? block.innerHTML = hljs.highlight(content, { language: 'bash', ignoreIllegals: true }).value : null;
+                block.classList.add('hljs', 'language-bash');
+            }
+            // Try auto-detection
+            else {
+                var highlighted = hljs.highlightAuto(content);
+                if (highlighted.relevance > 0) {
+                    block.innerHTML = highlighted.value;
+                    block.classList.add('hljs', 'language-' + highlighted.language);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

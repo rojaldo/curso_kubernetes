@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 14: Kubernetes en Producción</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #1e88e5; }
+        .reveal h1 { font-size: 1.4em; margin-bottom: 0.4em; }
+        .reveal h2 { font-size: 1.0em; margin-bottom: 0.4em; }
+        .reveal h3 { font-size: 0.8em; margin-bottom: 0.3em; }
+        .reveal p { font-size: 0.5em; margin: 0.2em 0; }
+        .reveal strong { color: #1e88e5; font-weight: bold; }
+        .reveal pre { background: #f8f8f8; border: 1px solid #ddd; width: 100%; padding: 0.4em; margin: 0.3em 0; font-size: 0.30em; }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; font-size: 0.85em; }
+        .reveal ul { font-size: 0.42em; text-align: left; margin-left: 0.5em; }
+        .reveal li { margin: 0.10em 0; }
+        .reveal table { font-size: 0.35em; width: 100%; border-collapse: collapse; margin: 0.3em 0; }
+        .reveal table th, .reveal table td { border: 1px solid #ddd; padding: 0.10em; text-align: left; }
+        .reveal table th { background-color: #f0f0f0; color: #1e88e5; font-weight: bold; }
+        .highlight-box { background-color: #e3f2fd; border-left: 4px solid #1e88e5; padding: 0.3em; margin: 0.3em 0; font-size: 0.38em; }
+        .warning-box { background-color: #fff3e0; border-left: 4px solid #f57c00; padding: 0.3em; margin: 0.3em 0; font-size: 0.38em; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>Módulo 14: Kubernetes en Producción</h1>
+                <h2 style="color: #1e88e5;">Security, Performance, Cost Optimization</h2>
+                <p style="font-size: 0.7em; margin-top: 1em;">Best practices y consideraciones para producción</p>
+            </section>
+
+            <section>
+                <h2>¿Por qué Producción es Diferente?</h2>
+                <ul>
+                    <li><strong>Disponibilidad:</strong> Cero downtime no-negociable</li>
+                    <li><strong>Seguridad:</strong> Cumplir regulaciones y standards</li>
+                    <li><strong>Performance:</strong> Latencia baja, throughput alto</li>
+                    <li><strong>Costos:</strong> Optimizar infraestructura</li>
+                    <li><strong>Observabilidad:</strong> Visibilidad completa de sistema</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Realidad:</strong> Producción requiere arquitectura y operaciones deliberadas
+                </div>
+            </section>
+
+            <section>
+                <h2>Arquitectura para Alta Disponibilidad</h2>
+                <ul>
+                    <li><strong>Control Plane HA:</strong> Múltiples masters, etcd replicado</li>
+                    <li><strong>Worker Nodes HA:</strong> Distribuir carga entre múltiples nodos</li>
+                    <li><strong>Data HA:</strong> Replicación de datos persistentes</li>
+                    <li><strong>Networking HA:</strong> Múltiples subredes, path redundante</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Regla 3-2-1:</strong> 3 replicas, 2 datacenters, 1 offline backup
+                </div>
+            </section>
+
+            <section>
+                <h2>Control Plane HA: Configuración</h2>
+                <pre><code class="language-yaml"># Control Plane con etcd externo (3 nodos)
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: InitConfiguration
+etcd:
+  external:
+    endpoints:
+    - https://etcd1:2379
+    - https://etcd2:2379
+    - https://etcd3:2379
+    caFile: /etc/kubernetes/pki/etcd/ca.crt
+    certFile: /etc/kubernetes/pki/etcd/client.crt
+    keyFile: /etc/kubernetes/pki/etcd/client.key</code></pre>
+            </section>
+
+            <section>
+                <h2>Pod Disruption Budgets (PDB)</h2>
+                <pre><code class="language-yaml">apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: myapp-pdb
+spec:
+  # Mínimo 2 pods disponibles durante disruptions
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: myapp
+
+---
+# Alternativa: Máximo 1 pod disrupted
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: api-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      tier: api</code></pre>
+            </section>
+
+            <section>
+                <h2>Pod Priority y Preemption</h2>
+                <pre><code class="language-yaml"># Definir prioridades
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: critical
+value: 1000000
+globalDefault: false
+description: "Critical workloads"
+
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: normal
+value: 100
+
+---
+# Usar en Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: critical-app
+spec:
+  priorityClassName: critical
+  containers:
+  - name: app
+    image: myapp:v1</code></pre>
+            </section>
+
+            <section>
+                <h2>Network Policies para Seguridad</h2>
+                <pre><code class="language-yaml"># Deny all (defecto seguro)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+
+---
+# Allow frontend to backend
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-backend
+spec:
+  podSelector:
+    matchLabels:
+      tier: backend
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          tier: frontend
+    ports:
+    - protocol: TCP
+      port: 8080</code></pre>
+            </section>
+
+            <section>
+                <h2>RBAC en Producción</h2>
+                <pre><code class="language-yaml"># Serviceaccount para deployment
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: myapp-sa
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: myapp-role
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  resourceNames: ["myapp-secret"]
+  verbs: ["get"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: myapp-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: myapp-role
+subjects:
+- kind: ServiceAccount
+  name: myapp-sa</code></pre>
+            </section>
+
+            <section>
+                <h2>Pod Security Standards</h2>
+                <pre><code class="language-yaml"># Restricted (más seguro)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secure-pod
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 2000
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+  - name: app
+    image: myapp:v1
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+        - ALL
+    volumeMounts:
+    - name: tmp
+      mountPath: /tmp
+  volumes:
+  - name: tmp
+    emptyDir: {}</code></pre>
+            </section>
+
+            <section>
+                <h2>Performance: Resource Requests & Limits</h2>
+                <pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: performance-optimized
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: app
+        image: myapp:v1
+        resources:
+          requests:      # Mínimo garantizado
+            memory: "256Mi"
+            cpu: "500m"
+          limits:        # Máximo permitido
+            memory: "512Mi"
+            cpu: "1000m"</code></pre>
+                <div class="highlight-box">
+                    <strong>Regla:</strong> Requests = predicción de uso, Limits = protección
+                </div>
+            </section>
+
+            <section>
+                <h2>Performance: Node Affinity</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: performance-pod
+spec:
+  affinity:
+    nodeAffinity:
+      # Requerido para scheduling
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-type
+            operator: In
+            values:
+            - compute-optimized
+      # Preferencia (best effort)
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+          - key: disk-type
+            operator: In
+            values:
+            - ssd
+  containers:
+  - name: app
+    image: myapp:v1</code></pre>
+            </section>
+
+            <section>
+                <h2>Cost Optimization: Spot/Preemptible Instances</h2>
+                <pre><code class="language-yaml"># Usar Spot instances para workloads no-críticos
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: batch-processing
+spec:
+  template:
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: cloud.google.com/gke-preemptible
+                operator: In
+                values:
+                - "true"
+      tolerations:
+      - key: cloud.google.com/gke-preemptible
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+      containers:
+      - name: batch
+        image: batch-processor:v1</code></pre>
+            </section>
+
+            <section>
+                <h2>Cost Optimization: Resource Quotas</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: production-quota
+spec:
+  hard:
+    requests.cpu: "100"
+    requests.memory: "200Gi"
+    limits.cpu: "200"
+    limits.memory: "400Gi"
+    pods: "500"
+    persistentvolumeclaims: "20"
+
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: production-limits
+spec:
+  limits:
+  - max:
+      cpu: "2"
+      memory: "4Gi"
+    min:
+      cpu: "100m"
+      memory: "128Mi"
+    type: Container</code></pre>
+            </section>
+
+            <section>
+                <h2>Observabilidad en Producción</h2>
+                <ul>
+                    <li><strong>Logs:</strong> Aplicación, sistema, auditoría</li>
+                    <li><strong>Métricas:</strong> CPU, memoria, red, custom</li>
+                    <li><strong>Trazas:</strong> Distributed tracing entre servicios</li>
+                    <li><strong>Alertas:</strong> Notificaciones ante anomalías</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Stack típico:</strong> Prometheus + Grafana + ELK/Loki + Jaeger
+                </div>
+            </section>
+
+            <section>
+                <h2>Logging: Estructura</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-config
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+      Flush        5
+      Daemon       Off
+      Log_Level    info
+
+    [INPUT]
+      Name              tail
+      Path              /var/log/containers/*/*.log
+      Parser            docker
+      Tag               kube.*
+      Refresh_Interval  5
+
+    [OUTPUT]
+      Name   es
+      Match  kube.*
+      Host   elasticsearch
+      Port   9200
+      Index  kubernetes-%Y.%m.%d</code></pre>
+            </section>
+
+            <section>
+                <h2>Metrics: Prometheus Setup</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+
+    scrape_configs:
+    - job_name: 'kubernetes-apiservers'
+      kubernetes_sd_configs:
+      - role: endpoints
+      scheme: https
+      tls_config:
+        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+    - job_name: 'kubernetes-nodes'
+      kubernetes_sd_configs:
+      - role: node</code></pre>
+            </section>
+
+            <section>
+                <h2>Alerting: Rules Críticas</h2>
+                <pre><code class="language-yaml">apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: production-rules
+spec:
+  groups:
+  - name: production.rules
+    interval: 30s
+    rules:
+    - alert: PodCrashLooping
+      expr: rate(kube_pod_container_status_restarts_total[15m]) > 0.1
+      for: 5m
+      annotations:
+        summary: "Pod {{ $labels.pod }} crashlooping"
+
+    - alert: NodeMemoryPressure
+      expr: kube_node_status_condition{condition="MemoryPressure",status="true"}
+      for: 5m
+      annotations:
+        summary: "Node {{ $labels.node }} memory pressure"</code></pre>
+            </section>
+
+            <section>
+                <h2>Compliance y Auditoría</h2>
+                <ul>
+                    <li><strong>Audit Logs:</strong> Quién hizo qué, cuándo</li>
+                    <li><strong>Encryption at Rest:</strong> Datos encriptados en etcd</li>
+                    <li><strong>Network Policies:</strong> Control de tráfico</li>
+                    <li><strong>Pod Security:</strong> Restricciones de seguridad</li>
+                </ul>
+                <div class="warning-box">
+                    <strong>Regulaciones:</strong> GDPR, HIPAA, SOC 2, PCI-DSS requieren auditoría
+                </div>
+            </section>
+
+            <section>
+                <h2>Audit Logging</h2>
+                <pre><code class="language-yaml"># En /etc/kubernetes/audit-policy.yaml
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+# Log all requests at Metadata level
+- level: Metadata
+  omitStages:
+  - RequestReceived
+
+# Log pod exec at RequestResponse level
+- level: RequestResponse
+  verbs: ["exec"]
+  resources:
+  - group: ""
+    resources: ["pods"]
+
+# Log secret accesses
+- level: Metadata
+  resources:
+  - group: ""
+    resources: ["secrets"]
+
+# Default level
+- level: Metadata</code></pre>
+            </section>
+
+            <section>
+                <h2>Encryption at Rest</h2>
+                <pre><code class="language-yaml"># En /etc/kubernetes/encryption-config.yaml
+apiVersion: apiserver.config.k8s.io/v1
+kind: EncryptionConfiguration
+resources:
+- resources:
+  - secrets
+  - configmaps
+  providers:
+  # Usar AES-GCM (recomendado)
+  - aescbc:
+      keys:
+      - name: key1
+        secret: 1234567890ABCDEF1234567890ABCDEF1234567890ABCDEFG==
+  - identity: {}  # Fallback sin encriptación</code></pre>
+                <div class="warning-box">
+                    <strong>Crítico:</strong> Guardar claves en lugar seguro, nunca en Git
+                </div>
+            </section>
+
+            <section>
+                <h2>Backup y DR Checklist</h2>
+                <ul>
+                    <li><strong>☐ Backup automático:</strong> Diario mínimo, multi-región</li>
+                    <li><strong>☐ Restore testado:</strong> Monthly DR drills</li>
+                    <li><strong>☐ RTO definido:</strong> Máximo tiempo para recuperar</li>
+                    <li><strong>☐ RPO definido:</strong> Máximo pérdida de datos</li>
+                    <li><strong>☐ Runbooks documentados:</strong> Procedimientos claros</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Realidad:</strong> Backup no vale si no se puede restaurar
+                </div>
+            </section>
+
+            <section>
+                <h2>Segregación de Entornos</h2>
+                <pre><code class="language-yaml"># Namespace por entorno
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: production
+  labels:
+    environment: production
+    compliance: required
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: staging
+  labels:
+    environment: staging
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: development
+  labels:
+    environment: development</code></pre>
+            </section>
+
+            <section>
+                <h2>GitOps para Cambios</h2>
+                <ul>
+                    <li><strong>✓ Todos cambios en Git:</strong> Código y configuración</li>
+                    <li><strong>✓ Code review:</strong> Dos personas antes de merge</li>
+                    <li><strong>✓ Automated tests:</strong> Validar antes de deploy</li>
+                    <li><strong>✓ Audit trail:</strong> Quién cambió qué, cuándo</li>
+                    <li><strong>✓ Rollback fácil:</strong> Revert commit = revert cambio</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Deployment Strategies</h2>
+                <table>
+                    <tr>
+                        <th>Estrategia</th>
+                        <th>Downtime</th>
+                        <th>Rollback</th>
+                        <th>Costo</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Rolling</strong></td>
+                        <td>Ninguno</td>
+                        <td>Lento</td>
+                        <td>Normal</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Canary</strong></td>
+                        <td>Ninguno</td>
+                        <td>Rápido</td>
+                        <td>Normal</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Blue-Green</strong></td>
+                        <td>Ninguno</td>
+                        <td>Instantáneo</td>
+                        <td>Doble</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Recreate</strong></td>
+                        <td>Sí</td>
+                        <td>Rápido</td>
+                        <td>Bajo</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>SLA y SLO en Producción</h2>
+                <pre><code class="language-text">SLA (Service Level Agreement):
+- Compromiso con cliente/usuario
+- Ej: 99.9% uptime = máx 43 minutos downtime/mes
+
+SLO (Service Level Objective):
+- Meta interna del equipo
+- Ej: 99.95% uptime (más estricto que SLA)
+
+SLI (Service Level Indicator):
+- Métrica que mide SLO
+- Ej: (requests exitosos / total requests) * 100
+
+Error Budget:
+- Downtime permitido = (100 - SLO) * tiempo período
+- Ej: 99.9% SLO en mes = 43.2 minutos permitidos</code></pre>
+            </section>
+
+            <section>
+                <h2>Monitoreo de SLO</h2>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: slo-rules
+data:
+  slo.yml: |
+    groups:
+    - name: slo
+      rules:
+      # API availability SLO: 99.9%
+      - record: slo:api_success_ratio
+        expr: (sum(rate(http_requests_total{job="api",status=~"2.."}[5m]))
+               / sum(rate(http_requests_total{job="api"}[5m])))
+
+      - alert: APIAvailabilityBreach
+        expr: slo:api_success_ratio < 0.999
+        for: 10m
+        annotations:
+          summary: "API availability below SLO"</code></pre>
+            </section>
+
+            <section>
+                <h2>Incident Management</h2>
+                <ul>
+                    <li><strong>Detección:</strong> Monitoreo automático</li>
+                    <li><strong>Alerting:</strong> Notificación rápida del equipo</li>
+                    <li><strong>Respuesta:</strong> Runbook ejecutable</li>
+                    <li><strong>Mitigación:</strong> Parar el sangrado rápidamente</li>
+                    <li><strong>Resolución:</strong> Fix root cause</li>
+                    <li><strong>Postmortem:</strong> Aprender para prevenir</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Runbook: Plantilla</h2>
+                <pre><code class="language-text">## Incident: API Latency High
+
+### Detection
+Alert: APILatencyP99 > 2s
+
+### Immediate Actions
+1. Check pod metrics:
+   kubectl top pods -n production
+2. Check node metrics:
+   kubectl top nodes
+3. Check API logs:
+   kubectl logs -f deployment/api -n production
+
+### Investigation
+1. High CPU? → Scale horizontally or optimize code
+2. High memory? → Check memory leaks
+3. Slow DB? → Check DB queries
+
+### Resolution
+1. Scale deployment:
+   kubectl scale deployment api --replicas=5
+2. Verify latency returns to normal
+3. Create incident ticket
+4. Schedule postmortem</code></pre>
+            </section>
+
+            <section>
+                <h2>Escalado Automático Configuración</h2>
+                <pre><code class="language-yaml"># HPA con múltiples métricas
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: production-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api
+  minReplicas: 3
+  maxReplicas: 50
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300</code></pre>
+            </section>
+
+            <section>
+                <h2>Best Practices: Configuración</h2>
+                <ul>
+                    <li><strong>✓ ConfigMaps:</strong> Para datos no-sensibles</li>
+                    <li><strong>✓ Secrets:</strong> Para datos sensibles, encriptados</li>
+                    <li><strong>✓ External Secrets:</strong> Desde Vault/AWS Secrets Manager</li>
+                    <li><strong>✓ Versionado:</strong> Cambios rastreables</li>
+                    <li><strong>✓ Rotación:</strong> Cambiar credenciales regularmente</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>External Secrets Operator</h2>
+                <pre><code class="language-yaml">apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: vault-backend
+spec:
+  provider:
+    vault:
+      server: https://vault.example.com:8200
+      path: secret
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: myapp
+
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: myapp-secrets
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: SecretStore
+  target:
+    name: myapp-secret
+    creationPolicy: Owner
+  data:
+  - secretKey: database-password
+    remoteRef:
+      key: database
+      property: password</code></pre>
+            </section>
+
+            <section>
+                <h2>Production Checklist: Security</h2>
+                <ul>
+                    <li><strong>☐ mTLS:</strong> Service-to-service encriptación</li>
+                    <li><strong>☐ Network Policies:</strong> Restricción de tráfico</li>
+                    <li><strong>☐ RBAC:</strong> Principio de mínimos privilegios</li>
+                    <li><strong>☐ Pod Security:</strong> Non-root, read-only filesystem</li>
+                    <li><strong>☐ Secrets encriptados:</strong> Encryption at rest</li>
+                    <li><strong>☐ Scan imágenes:</strong> Vulnerabilidades en images</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Production Checklist: Operaciones</h2>
+                <ul>
+                    <li><strong>☐ Backup automático:</strong> Diario, multi-región</li>
+                    <li><strong>☐ Restore testado:</strong> Monthly drills</li>
+                    <li><strong>☐ Logging:</strong> Centralizado, 30 días mínimo</li>
+                    <li><strong>☐ Monitoring:</strong> Métricas, alertas, dashboards</li>
+                    <li><strong>☐ Runbooks:</strong> Procedimientos documentados</li>
+                    <li><strong>☐ Oncall rotation:</strong> Support 24/7</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Production Checklist: Performance</h2>
+                <ul>
+                    <li><strong>☐ Resource requests:</strong> Realistas, basadas en testing</li>
+                    <li><strong>☐ Resource limits:</strong> Prevenir runaway pods</li>
+                    <li><strong>☐ HPA configurado:</strong> Escalado automático</li>
+                    <li><strong>☐ PDB:</strong> Garantizar disponibilidad durante updates</li>
+                    <li><strong>☐ Pod affinity:</strong> Co-locate si necesario</li>
+                    <li><strong>☐ Node affinity:</strong> Usar instancias adecuadas</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Production Checklist: Cost</h2>
+                <ul>
+                    <li><strong>☐ Right-sizing:</strong> Requests/limits optimizados</li>
+                    <li><strong>☐ Spot instances:</strong> Para workloads tolerantes</li>
+                    <li><strong>☐ Autoscaling:</strong> Scale down cuando no necesita</li>
+                    <li><strong>☐ Storage:</strong> Usar tier correcto (SSD vs HDD)</li>
+                    <li><strong>☐ Monitoring de costos:</strong> Alertas para sobregasto</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Roadmap: De Dev a Prod</h2>
+                <ul>
+                    <li><strong>Fase 1 (Semana 1-2):</strong> Setup básico, RBAC, networking</li>
+                    <li><strong>Fase 2 (Semana 3-4):</strong> Logging, monitoring, alertas</li>
+                    <li><strong>Fase 3 (Semana 5-6):</strong> Backup, DR, SLOs</li>
+                    <li><strong>Fase 4 (Semana 7-8):</strong> Security hardening, compliance</li>
+                    <li><strong>Fase 5 (Semana 9-10):</strong> Performance tuning, cost optimization</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Herramientas Recomendadas</h2>
+                <table>
+                    <tr>
+                        <th>Función</th>
+                        <th>Herramienta</th>
+                        <th>Alternativa</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Logging</strong></td>
+                        <td>ELK/Loki</td>
+                        <td>Splunk, Datadog</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Metrics</strong></td>
+                        <td>Prometheus</td>
+                        <td>Datadog, New Relic</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tracing</strong></td>
+                        <td>Jaeger</td>
+                        <td>Zipkin, Datadog</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Policies</strong></td>
+                        <td>Kyverno</td>
+                        <td>OPA, Kubewarden</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Resumen: Producción Ready</h2>
+                <ul>
+                    <li><strong>Architecture:</strong> HA, resilient, scalable</li>
+                    <li><strong>Security:</strong> Defense in depth, audited</li>
+                    <li><strong>Operations:</strong> Automated, observable, documented</li>
+                    <li><strong>Performance:</strong> Tuned, monitored, optimized</li>
+                    <li><strong>Cost:</strong> Controlled, tracked, optimized</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Próximos Pasos</h2>
+                <ul>
+                    <li><strong>1. Auditoría actual:</strong> ¿Dónde estamos hoy?</li>
+                    <li><strong>2. Roadmap:</strong> Plan de mejora detallado</li>
+                    <li><strong>3. Automatización:</strong> Scripts y tools para operaciones</li>
+                    <li><strong>4. Training:</strong> Equipo entiende best practices</li>
+                    <li><strong>5. Iteración:</strong> Mejora contínua</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Meta:</strong> Kubernetes in production = boring, reliable, secure
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            center: false,
+            transition: 'slide',
+            width: 960,
+            height: 700
+        });
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

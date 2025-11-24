@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 9: Escalado y Performance</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #1e88e5; }
+        .reveal h1 { font-size: 1.4em; margin-bottom: 0.4em; }
+        .reveal h2 { font-size: 1.0em; margin-bottom: 0.4em; }
+        .reveal h3 { font-size: 0.8em; margin-bottom: 0.3em; }
+        .reveal p { font-size: 0.5em; margin: 0.2em 0; }
+        .reveal strong { color: #1e88e5; font-weight: bold; }
+        .reveal pre { background: #f8f8f8; border: 1px solid #ddd; width: 100%; padding: 0.4em; margin: 0.4em 0; font-size: 0.32em; }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; font-size: 0.85em; }
+        .reveal ul { font-size: 0.43em; text-align: left; margin-left: 0.5em; }
+        .reveal li { margin: 0.12em 0; }
+        .reveal table { font-size: 0.37em; width: 100%; border-collapse: collapse; margin: 0.4em 0; }
+        .reveal table th, .reveal table td { border: 1px solid #ddd; padding: 0.12em; text-align: left; }
+        .reveal table th { background-color: #f0f0f0; color: #1e88e5; font-weight: bold; }
+        .highlight-box { background-color: #e3f2fd; border-left: 4px solid #1e88e5; padding: 0.3em; margin: 0.3em 0; font-size: 0.40em; }
+        .warning-box { background-color: #fff3e0; border-left: 4px solid #f57c00; padding: 0.3em; margin: 0.3em 0; font-size: 0.40em; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Portada -->
+            <section>
+                <h1>Módulo 9: Escalado y Performance</h1>
+                <h2 style="color: #1e88e5;">HPA, VPA, Cluster Autoscaler</h2>
+                <p style="font-size: 0.7em; margin-top: 1em;">Escalado automático horizontal, vertical y de nodos en Kubernetes</p>
+            </section>
+
+            <!-- HPA -->
+            <section>
+                <h2>Horizontal Pod Autoscaler (HPA)</h2>
+                <ul>
+                    <li><strong>Qué:</strong> Escala automáticamente número de Pods</li>
+                    <li><strong>Cuándo:</strong> Basado en métricas (CPU, memoria, custom)</li>
+                    <li><strong>Resultado:</strong> Más/menos instancias según demanda</li>
+                    <li><strong>Velocidad:</strong> Rápido (segundos a minutos)</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Flujo:</strong> Métricas → HPA evalúa → Escala replicas
+                </div>
+            </section>
+
+            <section>
+                <h2>HPA: Métricas de Escalado</h2>
+                <table>
+                    <tr>
+                        <th>Métrica</th>
+                        <th>Descripción</th>
+                        <th>Uso</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Resource (CPU)</strong></td>
+                        <td>Utilización de CPU</td>
+                        <td>Más común</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Resource (Memory)</strong></td>
+                        <td>Utilización de memoria</td>
+                        <td>Aplicaciones intensivas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Custom</strong></td>
+                        <td>Métricas app (req/s, latency)</td>
+                        <td>Escalado inteligente</td>
+                    </tr>
+                    <tr>
+                        <td><strong>External</strong></td>
+                        <td>Métricas externas (SQS, Pub/Sub)</td>
+                        <td>Queue-based scaling</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>HPA: Configuración Básica</h2>
+                <pre><code class="language-yaml">apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: app-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: myapp
+  minReplicas: 2
+  maxReplicas: 10
+
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70</code></pre>
+                <p><strong>Efecto:</strong> Escala entre 2 y 10 Pods basado en CPU > 70%</p>
+            </section>
+
+            <section>
+                <h2>HPA: Múltiples Métricas</h2>
+                <pre><code class="language-yaml">metrics:
+# CPU > 70%
+- type: Resource
+  resource:
+    name: cpu
+    target:
+      type: Utilization
+      averageUtilization: 70
+
+# Memoria > 80%
+- type: Resource
+  resource:
+    name: memory
+    target:
+      type: Utilization
+      averageUtilization: 80
+
+# Resultado: Escala si CUALQUIERA
+# (CPU > 70% O Memoria > 80%)</code></pre>
+            </section>
+
+            <section>
+                <h2>HPA: Custom Metrics</h2>
+                <pre><code class="language-yaml"># Escalar basado en requests/segundo
+- type: Pods
+  pods:
+    metric:
+      name: http_requests_per_second
+    target:
+      type: AverageValue
+      averageValue: "1000"  # 1000 req/s por Pod</code></pre>
+                <p><strong>Requiere:</strong> Prometheus adapter o custom metrics API</p>
+            </section>
+
+            <section>
+                <h2>HPA: External Metrics</h2>
+                <pre><code class="language-yaml"># Escalar basado en SQS queue length
+- type: External
+  external:
+    metric:
+      name: sqs_queue_length
+      selector:
+        matchLabels:
+          queue_name: tasks
+    target:
+      type: AverageValue
+      averageValue: "10"  # 10 msgs por Pod</code></pre>
+            </section>
+
+            <section>
+                <h2>HPA: Comportamiento de Escalado</h2>
+                <pre><code class="language-yaml">behavior:
+  scaleUp:
+    stabilizationWindowSeconds: 0
+    policies:
+    - type: Percent
+      value: 100      # Doblar Pods
+      periodSeconds: 15
+    - type: Pods
+      value: 4        # O agregar 4 Pods
+      periodSeconds: 15
+    selectPolicy: Max
+
+  scaleDown:
+    stabilizationWindowSeconds: 300  # Esperar 5 min
+    policies:
+    - type: Percent
+      value: 50       # Remover 50%
+      periodSeconds: 60</code></pre>
+            </section>
+
+            <section>
+                <h2>HPA: Ver Estado</h2>
+                <pre><code class="language-bash"># Ver HPAs
+kubectl get hpa
+
+# Output:
+# NAME       REFERENCE        TARGETS       MINPODS MAXPODS REPLICAS
+# app-hpa    Deployment/myapp 75%/70%       2       10      5
+
+# Detalles
+kubectl describe hpa app-hpa
+
+# Ver eventos de escalado
+kubectl describe hpa app-hpa | grep -A 20 "Scale"</code></pre>
+            </section>
+
+            <section>
+                <h2>HPA: Best Practices</h2>
+                <ul>
+                    <li><strong>Set resource requests:</strong> Sin requests → HPA no funciona</li>
+                    <li><strong>Múltiples métricas:</strong> No solo CPU, incluir memoria</li>
+                    <li><strong>Conservative downscale:</strong> Evitar oscilaciones rápidas</li>
+                    <li><strong>Monitorea eventos:</strong> Alertar si scaling frecuente</li>
+                    <li><strong>Pod Disruption Budgets:</strong> Protege durante downscale</li>
+                </ul>
+            </section>
+
+            <!-- VPA -->
+            <section>
+                <h2>Vertical Pod Autoscaler (VPA)</h2>
+                <ul>
+                    <li><strong>Qué:</strong> Ajusta CPU/Memoria requests y limits</li>
+                    <li><strong>Cuándo:</strong> Basado en uso real histórico</li>
+                    <li><strong>Resultado:</strong> Pods con better-sized resources</li>
+                    <li><strong>Velocidad:</strong> Lenta (mata Pods, requiere reinicio)</li>
+                </ul>
+                <div class="warning-box">
+                    <strong>Diferencia HPA:</strong> HPA escala número de Pods, VPA escala recursos de cada Pod
+                </div>
+            </section>
+
+            <section>
+                <h2>VPA vs HPA</h2>
+                <table>
+                    <tr>
+                        <th>Aspecto</th>
+                        <th>HPA</th>
+                        <th>VPA</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Escala</strong></td>
+                        <td>Número de Pods</td>
+                        <td>Recursos por Pod</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Métrica</strong></td>
+                        <td>% de request</td>
+                        <td>Uso real histórico</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Latencia</strong></td>
+                        <td>Segundos</td>
+                        <td>Minutos (requiere reinicio)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cuándo usar</strong></td>
+                        <td>Tráfico variable</td>
+                        <td>Requests mal configured</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>VPA: Modos de Operación</h2>
+                <ul>
+                    <li><strong>off:</strong> Solo recomendaciones (no aplica)</li>
+                    <li><strong>initial:</strong> Ajusta solo Pods nuevos</li>
+                    <li><strong>recreate:</strong> Mata Pods si cambios necesarios</li>
+                    <li><strong>auto:</strong> Mejor esfuerzo (recomendado)</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>VPA: Configuración Básica</h2>
+                <pre><code class="language-yaml">apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: api-vpa
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api
+
+  updatePolicy:
+    updateMode: "auto"
+
+  resourcePolicy:
+    containerPolicies:
+    - containerName: api
+      minAllowed:
+        cpu: 100m
+        memory: 128Mi
+      maxAllowed:
+        cpu: 2
+        memory: 2Gi</code></pre>
+            </section>
+
+            <section>
+                <h2>VPA: Recomendaciones</h2>
+                <pre><code class="language-bash"># Ver recomendaciones
+kubectl describe vpa api-vpa
+
+# Output ejemplo:
+# Recommendation:
+#   Container Recommendations:
+#   - Container Name: api
+#     Target:
+#       cpu: 250m
+#       memory: 512Mi
+#     Lower Bound:
+#       cpu: 100m
+#       memory: 128Mi
+#     Upper Bound:
+#       cpu: 500m
+#       memory: 1Gi</code></pre>
+            </section>
+
+            <section>
+                <h2>VPA: Best Practices</h2>
+                <ul>
+                    <li><strong>Empezar en "off":</strong> Ver recomendaciones 2-4 semanas</li>
+                    <li><strong>NO usar con HPA:</strong> Conflictúan en objetivos</li>
+                    <li><strong>Usar "initial" en prod:</strong> Minimiza downtime</li>
+                    <li><strong>Set minAllowed/maxAllowed:</strong> Evita extremos</li>
+                    <li><strong>Para dev/staging:</strong> En producción con SLA estricto → manual</li>
+                </ul>
+            </section>
+
+            <!-- Cluster Autoscaler -->
+            <section>
+                <h2>Cluster Autoscaler</h2>
+                <ul>
+                    <li><strong>Qué:</strong> Escala automáticamente número de nodos</li>
+                    <li><strong>Cuándo:</strong> Pod Pending o nodos sub-utilizados</li>
+                    <li><strong>Resultado:</strong> Cluster crece/encoge automáticamente</li>
+                    <li><strong>Velocidad:</strong> Lenta (crea/termina VMs, minutos)</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Requiere:</strong> Cloud provider (AWS, GCP, Azure)
+                </div>
+            </section>
+
+            <section>
+                <h2>Cluster Autoscaler: Escalada</h2>
+                <pre><code class="language-yaml"># Flujo: Pod Pending
+Pod no cabe en ningún nodo (Pending)
+    ↓
+Cluster Autoscaler detecta
+    ↓
+Crea nuevo nodo
+    ↓
+Pod se scheduleá en nuevo nodo
+    ↓
+Aplicación sigue funcionando</code></pre>
+            </section>
+
+            <section>
+                <h2>Cluster Autoscaler: Downsizing</h2>
+                <pre><code class="language-yaml"># Flujo: Nodo sub-utilizado
+Nodo con <50% utilización por 10 min
+    ↓
+Cluster Autoscaler detecta
+    ↓
+Drenaja Pods (los mueve a otros nodos)
+    ↓
+Termina nodo
+    ↓
+Ahorra costos</code></pre>
+            </section>
+
+            <section>
+                <h2>Cluster Autoscaler: Configuración AWS</h2>
+                <pre><code class="language-bash"># Instalar Cluster Autoscaler (AWS)
+helm repo add autoscaler https://kubernetes.github.io/autoscaler
+helm install cluster-autoscaler autoscaler/cluster-autoscaler \
+  --namespace kube-system \
+  --set awsRegion=us-east-1 \
+  --set autoDiscovery.clusterName=my-cluster \
+  --set rbac.create=true</code></pre>
+            </section>
+
+            <section>
+                <h2>Cluster Autoscaler: Verificación</h2>
+                <pre><code class="language-bash"># Ver estado
+kubectl describe nodes
+
+# Logs de Cluster Autoscaler
+kubectl logs -n kube-system -l app=cluster-autoscaler -f
+
+# Ver eventos
+kubectl get events -n kube-system | grep -i scale</code></pre>
+            </section>
+
+            <section>
+                <h2>Escalado: Las Tres Capas</h2>
+                <table>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Herramienta</th>
+                        <th>Escala</th>
+                        <th>Velocidad</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Aplicación</strong></td>
+                        <td>HPA</td>
+                        <td>Número de Pods</td>
+                        <td>Rápido (segundos)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pod</strong></td>
+                        <td>VPA</td>
+                        <td>Recursos (CPU/Mem)</td>
+                        <td>Lento (minutos)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Infraestructura</strong></td>
+                        <td>Cluster Autoscaler</td>
+                        <td>Número de nodos</td>
+                        <td>Muy lento (minutos)</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- Resource Requests/Limits -->
+            <section>
+                <h2>Resource Requests: Criticales para Escalado</h2>
+                <pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  template:
+    spec:
+      containers:
+      - name: app
+        image: myapp:latest
+        resources:
+          requests:
+            cpu: 100m        # Garantizado
+            memory: 256Mi
+          limits:
+            cpu: 500m        # Máximo permitido
+            memory: 512Mi</code></pre>
+                <p><strong>Sin requests:</strong> HPA no puede calcular utilización</p>
+            </section>
+
+            <section>
+                <h2>Resource Requests vs Limits</h2>
+                <ul>
+                    <li><strong>Requests:</strong> Lo que se garantiza al Pod (base para HPA)</li>
+                    <li><strong>Limits:</strong> Lo máximo que puede usar (matará Pod si excede)</li>
+                    <li><strong>Recomendación:</strong> requests ≈ 50-70% de limits</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>HPA calcula:</strong> CPU actual / request × 100
+                </div>
+            </section>
+
+            <!-- Performance Optimization -->
+            <section>
+                <h2>Performance Optimization</h2>
+                <ul>
+                    <li><strong>Pod Disruption Budgets:</strong> Protege durante cambios</li>
+                    <li><strong>Node Affinity:</strong> Distribuye Pods inteligentemente</li>
+                    <li><strong>Resource Quotas:</strong> Limita recursos por namespace</li>
+                    <li><strong>Monitoring:</strong> Métricas para identificar cuellos</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Pod Disruption Budget (PDB)</h2>
+                <pre><code class="language-yaml">apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: app-pdb
+spec:
+  minAvailable: 2  # Mínimo 2 Pods disponibles
+  selector:
+    matchLabels:
+      app: myapp
+
+  # Resultado: Evita que HPA/Cluster Autoscaler
+  # mate más de 1 Pod simultáneamente</code></pre>
+            </section>
+
+            <section>
+                <h2>Node Affinity</h2>
+                <pre><code class="language-yaml">affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: disktype
+          operator: In
+          values:
+          - ssd
+
+  podAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      preference:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - cache</code></pre>
+            </section>
+
+            <!-- Ejemplo Completo -->
+            <section>
+                <h2>Ejemplo Completo: Escalado Multi-Layer</h2>
+                <pre><code class="language-yaml"># 1. Deployment con requests/limits
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: api
+        image: api:v1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi</code></pre>
+            </section>
+
+            <section>
+                <h2>Ejemplo: HPA</h2>
+                <pre><code class="language-yaml"># 2. HPA: escala Pods
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api
+  minReplicas: 3
+  maxReplicas: 30
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70</code></pre>
+            </section>
+
+            <section>
+                <h2>Ejemplo: Cluster Autoscaler</h2>
+                <pre><code class="language-yaml"># 3. Cluster Autoscaler: escala nodos
+# Instalado en kube-system
+# Automáticamente crea/termina nodos
+
+# Resultado final:
+# - Si tráfico sube: HPA → agregar Pods
+# - Si Pods no caben: Cluster Autoscaler → agregar nodos
+# - Si baja tráfico: HPA → remover Pods
+# - Si nodos ociosos: CA → terminar nodos</code></pre>
+            </section>
+
+            <!-- Checklist -->
+            <section>
+                <h2>Checklist: Escalado en Producción</h2>
+                <ul>
+                    <li><strong>☐ Resource requests/limits</strong> definidos</li>
+                    <li><strong>☐ Metrics Server</strong> instalado</li>
+                    <li><strong>☐ HPA configurado</strong> con métricas apropiadas</li>
+                    <li><strong>☐ Pod Disruption Budgets</strong> configurados</li>
+                    <li><strong>☐ Cluster Autoscaler</strong> habilitado (si cloud)</li>
+                    <li><strong>☐ Alertas</strong> para escalado frecuente</li>
+                    <li><strong>☐ Load tests</strong> verifican escalado</li>
+                </ul>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            center: false,
+            transition: 'slide',
+            width: 960,
+            height: 700
+        });
+        hljs.highlightAll();
+    </script>
+</body>
+</html>
