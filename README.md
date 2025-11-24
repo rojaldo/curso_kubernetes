@@ -1,4 +1,4 @@
-# 🚀 Curso Completo de Kubernetes
+# 🚀 Curso de Kubernetes
 
 Este repositorio contiene todo el material teórico, práctico y ejercicios para conocer la orquestación de contenedores con Kubernetes.
 
@@ -290,7 +290,3 @@ Este curso está diseñado con fines educativos. Todo el contenido es material d
 Curso creado por rojaldo para la formación en tecnologías de contenedores y orquestación.
 
 ---
-
-**¡Feliz aprendizaje de Kubernetes! 🎉**
-
-Para comenzar, abre la [documentación completa](docs/html/kubernetes.html) o la [primera presentación](docs/reveal/modulo-1-introduccion-kubernetes.html).
