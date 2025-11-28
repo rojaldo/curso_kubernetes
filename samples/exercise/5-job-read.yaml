@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-read-response
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: read-container
+        image: docker.io/library/busybox:latest
+        command:
+          - /bin/sh
+          - -c
+          - |
+            echo "Leyendo respuesta del volumen..."
+            cat /data/response.txt
+        volumeMounts:
+        - name: data-volume
+          mountPath: /data
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: ejercicio-pvc
+      restartPolicy: Never
+  backoffLimit: 1
