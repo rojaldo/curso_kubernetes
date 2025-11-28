@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-prod-frontend
+  labels:
+    app: nginx
+    environment: production
+    tier: frontend
+    version: "1.21"
+  annotations:
+    description: "Pod de NGINX para el frontend en producción"
+    contact: "admin@example.com"
+    author: "Rojaldo"
+    documentation: "http://example.com/docs/nginx-prod-frontend"
+spec:
+  containers:
+  - name: nginx
+    image: docker.io/library/nginx:1.29.3-perl

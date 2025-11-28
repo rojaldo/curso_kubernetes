@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo Extra: Ingress Controller con Nginx</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+
+    <style>
+        .reveal { text-align: left; color: #555555; }
+        .reveal section { text-align: left; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; text-align: left; color: #2c3e50; }
+
+        /* Encabezados */
+        .reveal h1 { font-size: 2.5em; margin-bottom: 0.5em; color: #1e88e5; }
+        .reveal h2 { font-size: 1.8em; margin-bottom: 0.5em; color: #1e88e5; }
+        .reveal h3 { font-size: 1.3em; margin-bottom: 0.3em; color: #2c3e50; }
+
+        /* Párrafos y énfasis */
+        .reveal p { font-size: 0.9em; margin: 0.5em 0; color: #555555; line-height: 1.5; }
+        .reveal strong { font-size: 1em; font-weight: bold; color: #1e88e5; }
+
+        /* Código */
+        .reveal pre {
+            background: #f6f8fa !important;
+            border: 1px solid #e1e4e8 !important;
+            padding: 1.2em !important;
+            margin: 0.5em auto !important;
+            border-radius: 4px !important;
+            box-sizing: border-box !important;
+            display: block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: auto !important;
+            max-height: 50vh !important;
+            text-align: left !important;
+            width: auto !important;
+            font-family: 'Courier New', monospace !important;
+            line-height: 1.45 !important;
+        }
+        .reveal pre code {
+            font-size: 0.75em !important;
+            display: block !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            background: transparent !important;
+            border: none !important;
+            color: inherit !important;
+        }
+        .reveal code { background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; color: #d63384; }
+
+        /* Highlight.js color scheme - ensure visibility */
+        .hljs { background: #f6f8fa !important; color: #24292e !important; }
+        .hljs-attr { color: #6f42c1 !important; }
+        .hljs-string { color: #032f62 !important; }
+        .hljs-number { color: #005cc5 !important; }
+        .hljs-literal { color: #005cc5 !important; }
+        .hljs-tag { color: #22863a !important; }
+        .hljs-name { color: #6f42c1 !important; }
+        .hljs-keyword { color: #d73a49 !important; }
+        .hljs-type { color: #005cc5 !important; }
+        .hljs-title { color: #6f42c1 !important; }
+
+        /* Listas */
+        .reveal ul { font-size: 0.85em; text-align: left; margin-left: 1em; color: #555555; }
+        .reveal li { margin: 0.4em 0; color: #555555; line-height: 1.4; }
+
+        /* Tablas */
+        .reveal table { font-size: 0.75em; margin: 0.5em 0; }
+        .reveal table td { padding: 0.4em; }
+
+        /* Bloques especiales */
+        .subtitle { font-size: 1.2em; color: #1e88e5; margin: 0.5em 0; }
+        .highlight { background-color: #fff3cd; padding: 0.2em 0.4em; border-radius: 3px; }
+
+        /* Slides de título */
+        .slide-title { text-align: center; display: flex; flex-direction: column; justify-content: center; }
+        .slide-title h1 { font-size: 3em; color: #1e88e5; }
+        .slide-title p { font-size: 1.2em; }
+
+        /* Columnas */
+        .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 2em; }
+        .column { padding: 1em; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- SLIDE 1: Portada -->
+            <section class="slide-title">
+                <h1>Ingress Controller con Nginx</h1>
+                <p>Gestión Avanzada de Tráfico HTTP/HTTPS</p>
+                <p style="font-size: 0.8em; margin-top: 2em; color: #888;">Reverse Proxy, Routing y Seguridad en Kubernetes</p>
+            </section>
+
+            <!-- SLIDE 2: ¿Qué es un Ingress Controller? -->
+            <section>
+                <h2>¿Qué es un Ingress Controller?</h2>
+                <ul>
+                    <li><strong>Ingress Resource:</strong> Reglas de tráfico (YAML)</li>
+                    <li><strong>Ingress Controller:</strong> El componente que <strong>aplica</strong> esas reglas</li>
+                    <li>Actúa como un <strong>Reverse Proxy</strong> y Load Balancer</li>
+                    <li>Punto de entrada único para múltiples servicios</li>
+                    <li>Gestiona enrutamiento L7 (HTTP/HTTPS)</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 3: ¿Por qué Nginx? -->
+            <section>
+                <h2>¿Por qué Nginx Ingress Controller?</h2>
+                <ul>
+                    <li><strong>Estándar de facto:</strong> El más utilizado en Kubernetes</li>
+                    <li><strong>Rendimiento:</strong> Basado en Nginx, conocido por su velocidad</li>
+                    <li><strong>Flexibilidad:</strong> Altamente configurable mediante Annotations</li>
+                    <li><strong>Comunidad:</strong> Soporte masivo y documentación extensa</li>
+                    <li><strong>Versiones:</strong>
+                        <ul>
+                            <li>Community (kubernetes/ingress-nginx)</li>
+                            <li>NGINX Inc. (nginxinc/kubernetes-ingress)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 4: Arquitectura -->
+            <section>
+                <h2>Arquitectura Simplificada</h2>
+                <pre style="font-size: 0.6em;">
+      Internet
+         │
+    [ Load Balancer (Cloud) ]
+         │
+         ▼
+  ┌───────────────┐
+  │ Ingress Pod   │  <-- Nginx Reverse Proxy
+  │ (Controller)  │      (Lee reglas de K8s API)
+  └──────┬─┬──────┘
+         │ │
+    Ruta / │ Ruta /api
+         │ └────────────────┐
+         ▼                  ▼
+  ┌─────────────┐    ┌─────────────┐
+  │ Service A   │    │ Service B   │
+  └──────┬──────┘    └──────┬──────┘
+         ▼                  ▼
+    [ Pods App A ]     [ Pods App B ]
+                </pre>
+            </section>
+
+            <!-- SLIDE 4b: Funcionamiento Interno -->
+            <section>
+                <h2>Funcionamiento Interno</h2>
+                <p>El Ingress Controller actúa como un traductor en tiempo real:</p>
+                <ol>
+                    <li><strong>Monitorización:</strong> Observa continuamente la API de Kubernetes buscando recursos <code>Ingress</code>, <code>Service</code> y <code>Secret</code>.</li>
+                    <li><strong>Generación:</strong> Cuando detecta cambios, utiliza una plantilla (Go template) para generar un nuevo archivo <code>nginx.conf</code>.</li>
+                    <li><strong>Aplicación:</strong> Valida la configuración y recarga Nginx (<code>nginx -s reload</code>) para aplicar los cambios sin cortar conexiones activas.</li>
+                </ol>
+            </section>
+
+            <!-- SLIDE 4c: De YAML a Nginx.conf -->
+            <section>
+                <h2>De YAML a nginx.conf</h2>
+                <p>Cómo se traducen los conceptos:</p>
+                <div class="two-columns">
+                    <div class="column">
+                        <h4 style="color: #1e88e5;">Ingress (YAML)</h4>
+                        <ul style="font-size: 0.8em;">
+                            <li><code>spec.rules.host</code></li>
+                            <li><code>spec.rules.http.paths</code></li>
+                            <li><code>backend.service</code></li>
+                            <li><code>annotations</code></li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h4 style="color: #2e7d32;">Nginx (Config)</h4>
+                        <ul style="font-size: 0.8em;">
+                            <li>Bloque <code>server { server_name ... }</code></li>
+                            <li>Bloque <code>location /path { ... }</code></li>
+                            <li>Directiva <code>proxy_pass http://...</code></li>
+                            <li>Directivas específicas (ej. <code>client_max_body_size</code>)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 4d: Estructura nginx.conf -->
+            <section>
+                <h2>Estructura de nginx.conf</h2>
+                <p>El archivo se organiza en contextos jerárquicos:</p>
+                <pre><code class="nginx">user nginx;                 # Contexto Main
+worker_processes auto;
+
+events {                    # Contexto Events
+    worker_connections 1024;
+}
+
+http {                      # Contexto HTTP
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    server {                # Contexto Server
+        listen       80;
+        server_name  localhost;
+
+        location / {        # Contexto Location
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+        }
+    }
+}</code></pre>
+            </section>
+
+            <!-- SLIDE 4e: Ejemplo Reverse Proxy Simple -->
+            <section>
+                <h2>Ejemplo 1: Reverse Proxy Simple</h2>
+                <p>Redirige tráfico a un servicio backend.</p>
+                <pre><code class="nginx">server {
+    listen 80;
+    server_name app.midominio.com;
+
+    location / {
+        # Pasa la petición al servicio interno
+        proxy_pass http://backend-service:8080;
+
+        # Pasa cabeceras importantes
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}</code></pre>
+            </section>
+
+            <!-- SLIDE 4f: Ejemplo Load Balancing & SSL -->
+            <section>
+                <h2>Ejemplo 2: Load Balancing & SSL</h2>
+                <pre><code class="nginx">upstream mis_backends {
+    server backend1.internal:8080;
+    server backend2.internal:8080;
+}
+
+server {
+    listen 443 ssl;
+    server_name seguro.midominio.com;
+
+    ssl_certificate     /etc/nginx/certs/tls.crt;
+    ssl_certificate_key /etc/nginx/certs/tls.key;
+
+    location /api/ {
+        proxy_pass http://mis_backends; # Usa el grupo upstream
+        proxy_next_upstream error timeout;
+    }
+}</code></pre>
+            </section>
+
+            <!-- SLIDE 4g: Directivas Explicadas (1/4) -->
+            <section>
+                <h2>Directivas: Global & Events</h2>
+                <ul style="font-size: 0.8em;">
+                    <li><code>user</code>: Usuario del sistema operativo que ejecuta los procesos worker (seguridad).</li>
+                    <li><code>worker_processes</code>: Número de procesos para manejar conexiones (usualmente <code>auto</code> = nº CPUs).</li>
+                    <li><code>pid</code>: Archivo donde se guarda el ID del proceso maestro.</li>
+                    <li><code>error_log</code>: Ruta y nivel de detalle de los logs de error.</li>
+                    <li><code>worker_connections</code>: (Events) Máximo de conexiones simultáneas por worker.</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 4h: Directivas Explicadas (2/4) -->
+            <section>
+                <h2>Directivas: Contexto HTTP</h2>
+                <ul style="font-size: 0.8em;">
+                    <li><code>include</code>: Carga otros archivos de configuración (ej. tipos MIME).</li>
+                    <li><code>default_type</code>: Tipo de archivo por defecto si no se detecta (ej. <code>application/octet-stream</code>).</li>
+                    <li><code>sendfile</code>: Optimización del kernel para copiar datos directamente a la red.</li>
+                    <li><code>keepalive_timeout</code>: Tiempo que una conexión permanece abierta esperando nuevas peticiones.</li>
+                    <li><code>gzip</code>: Habilita la compresión de respuestas para ahorrar ancho de banda.</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 4i: Directivas Explicadas (3/4) -->
+            <section>
+                <h2>Directivas: Server & Location</h2>
+                <ul style="font-size: 0.8em;">
+                    <li><code>listen</code>: Puerto e IP donde el servidor acepta peticiones (ej. <code>80</code>, <code>443 ssl</code>).</li>
+                    <li><code>server_name</code>: Dominios o IPs que este bloque <code>server</code> gestionará (Virtual Hosting).</li>
+                    <li><code>root</code>: Directorio raíz del sistema de archivos para servir contenido estático.</li>
+                    <li><code>index</code>: Archivos a servir por defecto si se solicita un directorio.</li>
+                    <li><code>try_files</code>: Comprueba la existencia de archivos en orden antes de devolver 404.</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 4j: Directivas Explicadas (4/4) -->
+            <section>
+                <h2>Directivas: Proxy (Reverse Proxy)</h2>
+                <ul style="font-size: 0.8em;">
+                    <li><code>proxy_pass</code>: La directiva principal. Define el protocolo y dirección del backend.</li>
+                    <li><code>proxy_set_header</code>: Modifica o añade cabeceras a la petición enviada al backend.</li>
+                    <li><code>proxy_connect_timeout</code>: Tiempo máximo de espera para establecer conexión con el backend.</li>
+                    <li><code>proxy_read_timeout</code>: Tiempo máximo de espera para que el backend envíe datos.</li>
+                    <li><code>upstream</code>: Define un grupo de servidores para balanceo de carga (Round Robin por defecto).</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 5: Prestaciones Principales -->
+            <section>
+                <h2>Prestaciones Principales</h2>
+                <div class="two-columns">
+                    <div class="column">
+                        <h3>Enrutamiento</h3>
+                        <ul>
+                            <li><strong>Host-based:</strong> midominio.com vs otro.com</li>
+                            <li><strong>Path-based:</strong> /app1 vs /app2</li>
+                            <li><strong>Rewrites:</strong> Reescribir URLs al vuelo</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h3>Seguridad & Tráfico</h3>
+                        <ul>
+                            <li><strong>TLS/SSL:</strong> Terminación HTTPS automática</li>
+                            <li><strong>Auth:</strong> Basic Auth, OAuth externa</li>
+                            <li><strong>Rate Limiting:</strong> Protección contra abusos</li>
+                            <li><strong>Canary:</strong> Despliegues progresivos</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 6: Ejemplo 1 - Enrutamiento por Path -->
+            <section>
+                <h2>Ejemplo 1: Enrutamiento por Path</h2>
+                <p>Un dominio, múltiples servicios según la ruta.</p>
+                <pre style="font-size: 0.65em;">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simple-fanout
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: mi-empresa.com
+    http:
+      paths:
+      - path: /tienda
+        pathType: Prefix
+        backend:
+          service:
+            name: tienda-svc
+            port:
+              number: 80
+      - path: /blog
+        pathType: Prefix
+        backend:
+          service:
+            name: blog-svc
+            port:
+              number: 80</pre>
+            </section>
+
+            <!-- SLIDE 7: Ejemplo 2 - Virtual Hosting -->
+            <section>
+                <h2>Ejemplo 2: Virtual Hosting</h2>
+                <p>Múltiples dominios en la misma IP.</p>
+                <pre style="font-size: 0.65em;">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: virtual-host-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: tienda.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tienda-svc
+            port: { number: 80 }
+  - host: blog.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: blog-svc
+            port: { number: 80 }</pre>
+            </section>
+
+            <!-- SLIDE 8: Ejemplo 3 - Terminación TLS (HTTPS) -->
+            <section>
+                <h2>Ejemplo 3: Terminación TLS</h2>
+                <p>Nginx maneja el certificado, tráfico interno HTTP.</p>
+                <pre style="font-size: 0.65em;">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tls-ingress
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+      - seguro.mi-empresa.com
+    secretName: mi-certificado-tls  # Secret con cert y key
+  rules:
+  - host: seguro.mi-empresa.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-segura
+            port: { number: 80 }</pre>
+                <p style="font-size: 0.8em;"><em>Nota: Cert-manager puede crear el secret automáticamente.</em></p>
+            </section>
+
+            <!-- SLIDE 9: Annotations - El Poder Real -->
+            <section>
+                <h2>Annotations: Configuración Avanzada</h2>
+                <p>Las <strong>Annotations</strong> permiten configurar características específicas de Nginx que no están en el estándar de Ingress.</p>
+                <p>Prefijo común: <code>nginx.ingress.kubernetes.io/</code></p>
+                <ul>
+                    <li>Modificar timeouts</li>
+                    <li>Aumentar tamaño de body (uploads)</li>
+                    <li>Configurar CORS</li>
+                    <li>Redirecciones SSL</li>
+                    <li>Autenticación</li>
+                </ul>
+            </section>
+
+            <!-- SLIDE 10: Opciones Más Empleadas (1/2) -->
+            <section>
+                <h2>Opciones Más Empleadas (1/2)</h2>
+                <table style="font-size: 0.65em;">
+                    <tr style="background: #f0f0f0;">
+                        <td><strong>Annotation</strong></td>
+                        <td><strong>Uso</strong></td>
+                    </tr>
+                    <tr>
+                        <td><code>rewrite-target</code></td>
+                        <td>Reescribe la URL antes de enviarla al pod. Ej: <code>/api/v1/users</code> -> <code>/users</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>ssl-redirect</code></td>
+                        <td>Fuerza redirección de HTTP a HTTPS (true por defecto).</td>
+                    </tr>
+                    <tr>
+                        <td><code>proxy-body-size</code></td>
+                        <td>Permite subida de archivos grandes. Ej: <code>"50m"</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>cors-allow-origin</code></td>
+                        <td>Habilita CORS para peticiones cross-origin.</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- SLIDE 11: Opciones Más Empleadas (2/2) -->
+            <section>
+                <h2>Opciones Más Empleadas (2/2)</h2>
+                <table style="font-size: 0.65em;">
+                    <tr style="background: #f0f0f0;">
+                        <td><strong>Annotation</strong></td>
+                        <td><strong>Uso</strong></td>
+                    </tr>
+                    <tr>
+                        <td><code>limit-rps</code></td>
+                        <td>Rate limiting: peticiones por segundo por IP.</td>
+                    </tr>
+                    <tr>
+                        <td><code>auth-type: basic</code></td>
+                        <td>Protege el acceso con usuario/contraseña (usando un Secret).</td>
+                    </tr>
+                    <tr>
+                        <td><code>canary</code></td>
+                        <td>Habilita despliegues Canary (división de tráfico).</td>
+                    </tr>
+                    <tr>
+                        <td><code>canary-weight</code></td>
+                        <td>Porcentaje de tráfico al canary (ej: "10").</td>
+                    </tr>
+                </table>
+            </section>
+
+
+            <!-- SLIDE 12: Resumen -->
+            <section>
+                <h2>Resumen</h2>
+                <ul>
+                    <li>✅ <strong>Nginx Ingress</strong> es el controlador más versátil y usado.</li>
+                    <li>✅ Actúa como <strong>puerta de enlace</strong> inteligente al cluster.</li>
+                    <li>✅ Soporta <strong>TLS, Auth, Rate Limit</strong> y más sin tocar la app.</li>
+                    <li>✅ Las <strong>Annotations</strong> son la clave para desbloquear su potencia.</li>
+                    <li>✅ Permite patrones avanzados como <strong>Canary</strong> y <strong>Blue/Green</strong>.</li>
+                </ul>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            width: '100%',
+            height: '100%',
+            margin: 0.1,
+            transition: 'slide',
+            transitionSpeed: 'default'
+        });
+
+        // Highlight code blocks with language detection
+        hljs.highlightAll();
+
+        // Apply highlighting to pre blocks without code tags
+        document.querySelectorAll('pre').forEach(function(block) {
+            if (block.classList.contains('hljs')) return;
+            var content = block.textContent;
+            if (content.includes(':') && (content.includes('apiVersion') || content.includes('kind') || content.includes('metadata'))) {
+                hljs.highlight(content, { language: 'yaml', ignoreIllegals: true })
+                    .value !== content ? block.innerHTML = hljs.highlight(content, { language: 'yaml', ignoreIllegals: true }).value : null;
+                block.classList.add('hljs', 'language-yaml');
+            }
+            else if (content.includes('$') || content.includes('kubectl') || content.includes('docker')) {
+                hljs.highlight(content, { language: 'bash', ignoreIllegals: true })
+                    .value !== content ? block.innerHTML = hljs.highlight(content, { language: 'bash', ignoreIllegals: true }).value : null;
+                block.classList.add('hljs', 'language-bash');
+            }
+            else {
+                var highlighted = hljs.highlightAuto(content);
+                if (highlighted.relevance > 0) {
+                    block.innerHTML = highlighted.value;
+                    block.classList.add('hljs', 'language-' + highlighted.language);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-11-27T08:56:41.412113",
+  "source": "http://localhost:8080/metrics",
+  "summary": {
+    "total_metrics": 4726,
+    "cpu_metrics": 364,
+    "memory_metrics": 1116,
+    "network_metrics": 168,
+    "fs_metrics": 1815
+  }
+}

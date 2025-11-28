@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1          # Máximo Pods extras
+      maxUnavailable: 0    # Máximo no disponibles
+  minReadySeconds: 30     # Segundos antes de Ready
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: docker.io/library/nginx:1.29.3-trixie-perl
+        ports:
+        - containerPort: 80

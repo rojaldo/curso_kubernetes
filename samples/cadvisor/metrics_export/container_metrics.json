@@ -1,0 +1,6217 @@
+{
+  "timestamp": "2025-11-27T08:55:20.062088",
+  "cadvisor_url": "http://localhost:8080/metrics",
+  "containers": {
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podfe065876_c301_4a4a_92b0_2cc17699ab85.slice": {
+      "metric_count": 19,
+      "metric_types": [
+        "container_cpu_cfs_periods_total",
+        "container_cpu_cfs_throttled_periods_total",
+        "container_cpu_cfs_throttled_seconds_total",
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_cfs_periods_total": {
+          "count": 1,
+          "sample_value": 10.0
+        },
+        "container_cpu_cfs_throttled_periods_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_cfs_throttled_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.007354
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.015721
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.008367
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 86016.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1387.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 434176.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 405504.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-pod586f9acf_6daa_4b39_8c91_9cee6286a198.slice": {
+      "metric_count": 19,
+      "metric_types": [
+        "container_cpu_cfs_periods_total",
+        "container_cpu_cfs_throttled_periods_total",
+        "container_cpu_cfs_throttled_seconds_total",
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_cfs_periods_total": {
+          "count": 1,
+          "sample_value": 12.0
+        },
+        "container_cpu_cfs_throttled_periods_total": {
+          "count": 1,
+          "sample_value": 4.0
+        },
+        "container_cpu_cfs_throttled_seconds_total": {
+          "count": 1,
+          "sample_value": 0.492593
+        },
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.022172
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.051243
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.02907
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 32768.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 2185.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 110592.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 356352.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 348160.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.474764
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.92949
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.454726
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230119.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 10584064.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 47382.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 2330624.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 17772544.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 17416192.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.177809
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.368397
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.190588
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 409600.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 23697.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 1380352.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 4919296.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 4829184.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod29159b9f_172c_4ab4_8e6e_516ad597baef.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.00522
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.012562
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.007341
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1941.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 118784.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 368640.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 364544.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod29159b9f_172c_4ab4_8e6e_516ad597baef.slice/crio-conmon-48cc9c880bb291d307a684745f84b0bbbfb241bf8310dc9a1ba9a8ce488129b0.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.00522
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.012562
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.007341
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1941.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 118784.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 331776.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 327680.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod374ec423_232d_445d_bc2b_1c420f0e6f02.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.006912
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.01367
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.006758
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1942.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 114688.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 360448.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 356352.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod374ec423_232d_445d_bc2b_1c420f0e6f02.slice/crio-conmon-e7ca696044960b3882b563dc90f07978c646325acd87cbd4c37105548959e9d1.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.006912
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.01367
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.006758
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1942.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 114688.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 323584.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 319488.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod3afd1bec_0969_4d18_a67e_960b2e915648.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.010653
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.028533
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.01788
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 36864.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 2127.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 114688.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 368640.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 356352.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod3afd1bec_0969_4d18_a67e_960b2e915648.slice/crio-conmon-de202f3fb82b9cb3d6ce872a0383be96914e21b5bdac3b866095242d87f0abb0.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.010653
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.028533
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.01788
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 36864.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 2127.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 114688.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 331776.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 319488.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod4134772f_ff99_41ca_be94_7888ad286dda.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0202
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.040653
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.020453
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 86016.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 3300.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 118784.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 454656.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 417792.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod4134772f_ff99_41ca_be94_7888ad286dda.slice/crio-conmon-20e7dc6eac0b19329636a208a9838a735a674e0b46579332f11c2c80cb0e9e05.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.011331
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.025552
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.014221
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 49152.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1360.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 118784.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 352256.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 327680.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod511f377a_5a2c_4d31_b80d_faa1b71d79c3.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.033268
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.055187
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.021919
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1384.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 368640.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 364544.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod511f377a_5a2c_4d31_b80d_faa1b71d79c3.slice/crio-conmon-97df88076703d0bb86ff37bce864a4461c5f4219fe51775556d1c3e5c2e144c4.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.033268
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.055187
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.021919
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1384.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 331776.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 327680.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod68911a3c_e02f_4a94_8801_d0ff63a8e9f6.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.005789
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.012416
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.006627
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1947.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 364544.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 360448.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod68911a3c_e02f_4a94_8801_d0ff63a8e9f6.slice/crio-conmon-1651ba4ca5ded2402c26bb2c76776bba90b42b42730dcccbacda652810d27b62.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.005789
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.012416
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.006627
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1947.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 327680.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 323584.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod6daf9318_e71f_405c_9133_1dce529c7e12.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.030793
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.077292
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.046499
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 61440.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 2245.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 118784.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 401408.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 397312.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod6daf9318_e71f_405c_9133_1dce529c7e12.slice/crio-conmon-8b98c945116e8be787168bbc8744d30c0d3ab9986121c605f7306365b8bf18ef.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.030793
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.077292
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.046499
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 61440.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 2245.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 118784.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 364544.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 360448.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod7f484b7b_685a_4263_a4e1_648790656983.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.009846
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.017291
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.007445
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1366.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 372736.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 368640.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod7f484b7b_685a_4263_a4e1_648790656983.slice/crio-conmon-5cde2e76dcf5416da81fe05dd0d8c781b3a52b2a70d271ad181ed8f3b69740c2.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.009846
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.017291
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.007445
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1366.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 335872.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 331776.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-poda47ae93a_8644_4308_bda5_5345b03193ab.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.010675
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.027244
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.016568
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230119.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 28672.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 2153.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 364544.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 360448.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-poda47ae93a_8644_4308_bda5_5345b03193ab.slice/crio-conmon-d85af7d3bd22b530f61169e1c9658a9f2d52995f84fbbc778e2c2d37905c9918.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.010716
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.027244
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.016527
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 28672.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 2153.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 327680.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 323584.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-poda9be4ca4_d1a5_4f7c_84ca_65f1b2f03feb.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.004556
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.012375
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.007818
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1370.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 118784.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 368640.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 364544.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-poda9be4ca4_d1a5_4f7c_84ca_65f1b2f03feb.slice/crio-conmon-d341c24fe79a1325c46c4a496374f96a706d5005c3c69f54f61679d26b3577b9.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.004556
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.012375
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.007818
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1370.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 118784.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 331776.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 327680.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-podbe2b993b_3d77_41c9_9046_b69a8223ee60.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.031316
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.052647
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.02133
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1977.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 65536.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 307200.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 303104.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-podbe2b993b_3d77_41c9_9046_b69a8223ee60.slice/crio-conmon-b2de2747cf57f7f5f131ae77c678d68ef1a624ecf0ed4029fab04b94159fc116.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.031316
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.052647
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.02133
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1977.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 65536.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 270336.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 266240.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pode5faf1e5_7f9f_491d_82c4_1659b16f77ac.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.009721
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.017332
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.00761
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230119.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1945.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 118784.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 356352.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 352256.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pode5faf1e5_7f9f_491d_82c4_1659b16f77ac.slice/crio-conmon-741c8d0361bc0efdc117ce4ee41a62539dd7b112f892011399ac991434409e25.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.009721
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.017332
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.00761
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1945.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 118784.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 319488.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 315392.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.27397
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.508098
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.234127
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 10137600.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 21500.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 839680.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 12701696.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 12447744.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod061608d21cd5392e23e8c2f59a2dcdf1.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.030758
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.057573
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.026814
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 3760128.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1467.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 4116480.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 4046848.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod061608d21cd5392e23e8c2f59a2dcdf1.slice/crio-conmon-66a907c24eeaf4aeee6945ec0527ee7d1d18ac924c81503ce7b74c78af342c5f.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.030806
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.057573
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.026766
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230119.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 3760128.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1467.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 4079616.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 4009984.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod4160858e7e60ec84232be254f7a26b6b.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.027333
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.04652
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.019186
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230119.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 233472.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1452.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 118784.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 569344.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 565248.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod4160858e7e60ec84232be254f7a26b6b.slice/crio-conmon-2df7029affce59e00210297ded310579b0f9356a232c8e49d60ae9e2782054a7.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.027333
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.04652
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.019186
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 233472.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1452.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 118784.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 532480.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 528384.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod6be55d70be18a400423785cb6711510d.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.027711
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.054571
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.02686
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 1486848.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1463.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 1830912.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 1785856.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod6be55d70be18a400423785cb6711510d.slice/crio-conmon-0dfd7eb934c410865c8760f9ebf6659711241224851da4707ccff6cb67bc7fd5.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.027711
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.054571
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.02686
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 1486848.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1463.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 1794048.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 1748992.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-poda96aff5c_8305_474c_ae82_6d189001cc00.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.034744
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.069346
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.034601
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 200704.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 2047.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 118784.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 540672.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 532480.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-poda96aff5c_8305_474c_ae82_6d189001cc00.slice/crio-conmon-7bda444160807dd0ff27704e6c26225a0ee1933c08cc09df07c968829661fcbb.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.034744
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.069346
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.034601
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 200704.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 2047.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 118784.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 503808.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 495616.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pode3a36fac0ae701bc11fad0a6716eec2c.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.037922
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.057291
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.019369
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 4345856.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1480.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 4706304.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 4608000.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pode3a36fac0ae701bc11fad0a6716eec2c.slice/crio-conmon-3b64025b966796be3231c036d7e4c2354a90420bb07ee5b1077baff76222e706.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.037922
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.057291
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.019369
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 4345856.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1480.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 24576.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 4669440.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 4571136.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podfb4ed69d_a13b_419f_b2af_4a54a5c25d95.slice": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.029668
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.058398
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.02873
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230119.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 28672.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1969.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 110592.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 360448.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 356352.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podfb4ed69d_a13b_419f_b2af_4a54a5c25d95.slice/crio-conmon-5bb74ded08d2ec3a916847f73642f49411025ec01784c7cceb03292f1a21c944.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.029668
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.058398
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.02873
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 28672.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1969.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 110592.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 323584.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 319488.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podfe065876_c301_4a4a_92b0_2cc17699ab85.slice/crio-conmon-32dd62c1e813b3f67b19a978b0278b3d7046c708b6823eaee01f9b1be54b1951.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.007354
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.015721
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.008367
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 86016.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 1387.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 122880.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 397312.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 368640.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-pod586f9acf_6daa_4b39_8c91_9cee6286a198.slice/crio-conmon-1dd900fa97f8ef459ce3493073f8dac1abf54d7a463082fd00a93f684c0017ee.scope": {
+      "metric_count": 16,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_usage_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.022172
+        },
+        "container_cpu_usage_seconds_total": {
+          "count": 1,
+          "sample_value": 0.051243
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.02907
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 32768.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 2185.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 110592.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 319488.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 311296.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-poda96aff5c_8305_474c_ae82_6d189001cc00.slice/crio-73d0649f6368e8917602afcfb42ee0c377595625475383bb75a7aac13a832019": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 51222.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 246.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 27862.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 269.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podfb4ed69d_a13b_419f_b2af_4a54a5c25d95.slice/crio-9f210b1dafe0d501ed66293c21622869728033061ef59294f466f08b2cbba616": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 289224.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 750.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 237178.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 628.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod6daf9318_e71f_405c_9133_1dce529c7e12.slice/crio-f685d850b5346b323c78f3bae5b7d74c000ebfac5190a636c5f3d2af85336c99": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230119.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 35432702.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 15911.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 483631.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 7129.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pode3a36fac0ae701bc11fad0a6716eec2c.slice/crio-2d1dc93281cb1f7bdf48386a20c9a982ef7ade61f136f83163c05413dbd1430f": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230119.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 35432702.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 15911.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 483631.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 7129.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod061608d21cd5392e23e8c2f59a2dcdf1.slice/crio-72c9ea50fd313828c3657c2c79270b1001a91be01c44e43274181555500ade2a": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 35432702.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 15911.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 483631.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 7129.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod6be55d70be18a400423785cb6711510d.slice/crio-2f43e5668eb818181a0e86a3791a56619105c3592fab143f9ffa1762bd573f31": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 35432702.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 15911.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 483631.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 7129.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod4160858e7e60ec84232be254f7a26b6b.slice/crio-d5a0b49c1083b9815988238ea05880519fa81f2f28ed52e2502a0943f6e4cd73": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 35432702.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 15911.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 483631.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 7129.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podfe065876_c301_4a4a_92b0_2cc17699ab85.slice/crio-e61ee3ccbccfd446072a65d66317b8369c1c7c3e6cc6842315c6afe73a69d29f": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 35432702.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 15911.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 483631.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 7129.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-pod586f9acf_6daa_4b39_8c91_9cee6286a198.slice/crio-47838dd704c74a7b177ba45e52aba75f8e45d8ac3c24c96a636ace3bb1c577f3": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 35432702.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 15911.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 483631.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 7129.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-podbe2b993b_3d77_41c9_9046_b69a8223ee60.slice/crio-75b4951253d3a3f69b5e3295506fd93dfd73ff409428368682622c071a41de06": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 1285.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 12.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 1845.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 18.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod29159b9f_172c_4ab4_8e6e_516ad597baef.slice/crio-fe39bb5917a69590b2cdda3e762037525e54cdd3e7565c928f9f0e1c22088dd8": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 446.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 5.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 866.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 11.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pode5faf1e5_7f9f_491d_82c4_1659b16f77ac.slice/crio-c5af0e881878d627a885821fb60ee07c7490cafc056ed781a93afac31bbcf843": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 446.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 5.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 866.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 11.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod374ec423_232d_445d_bc2b_1c420f0e6f02.slice/crio-f271eaed2ed6784e9921d0a2951e945c8d316174dbf70240716c5ad59d91e367": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 446.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 5.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 866.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 11.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod68911a3c_e02f_4a94_8801_d0ff63a8e9f6.slice/crio-82ecc71f54447d8245df4d906125b7529ce42d5dec0fd6e9fc08feb8b49559c9": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 446.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 5.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 866.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 11.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod511f377a_5a2c_4d31_b80d_faa1b71d79c3.slice/crio-38075d60d25da5e51b1f2e857b0146b0c0d039358c60a9a1e965920ce3d680a1": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 446.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 5.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 866.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 11.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod7f484b7b_685a_4263_a4e1_648790656983.slice/crio-c499b4e795f78c25afca14e6cd6dba326693214b52e44028368ec56b9e0e6e7e": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 446.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 5.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 866.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 11.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-poda9be4ca4_d1a5_4f7c_84ca_65f1b2f03feb.slice/crio-4d35e342842eeebd7bd35ae0a4fe9d9d177c84d0c626c0c0a9f8ee2c0687408f": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 446.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 5.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 866.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 11.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod4134772f_ff99_41ca_be94_7888ad286dda.slice/crio-b3ae8159e572ea203a1710ebb033c47751a2fa99e648bdfef54d35e16fb77317": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 35432702.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 15911.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 483631.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 7129.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-poda47ae93a_8644_4308_bda5_5345b03193ab.slice/crio-d0d6bec9252af5b40e872bd9d81664261e7638f657b4c89d4b437378f74b56a4": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 11363.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 69.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 10981.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 87.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    },
+    "/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod3afd1bec_0969_4d18_a67e_960b2e915648.slice/crio-2ce2491ce68cddb3592e9e7b3f79261689728cad2fbb0d3fcc54727aa8cf80e3": {
+      "metric_count": 23,
+      "metric_types": [
+        "container_cpu_load_average_10s",
+        "container_cpu_system_seconds_total",
+        "container_cpu_user_seconds_total",
+        "container_last_seen",
+        "container_memory_cache",
+        "container_memory_failcnt",
+        "container_memory_failures_total",
+        "container_memory_mapped_file",
+        "container_memory_max_usage_bytes",
+        "container_memory_rss",
+        "container_memory_swap",
+        "container_memory_usage_bytes",
+        "container_memory_working_set_bytes",
+        "container_network_receive_bytes_total",
+        "container_network_receive_errors_total",
+        "container_network_receive_packets_dropped_total",
+        "container_network_receive_packets_total",
+        "container_network_transmit_bytes_total",
+        "container_network_transmit_errors_total",
+        "container_network_transmit_packets_dropped_total",
+        "container_network_transmit_packets_total",
+        "container_oom_events_total",
+        "container_tasks_state"
+      ],
+      "metrics_summary": {
+        "container_cpu_load_average_10s": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_system_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_cpu_user_seconds_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_last_seen": {
+          "count": 1,
+          "sample_value": 1764230118.0
+        },
+        "container_memory_cache": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failcnt": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_failures_total": {
+          "count": 4,
+          "sample_value": 0.0
+        },
+        "container_memory_mapped_file": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_max_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_rss": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_swap": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_usage_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_memory_working_set_bytes": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_bytes_total": {
+          "count": 1,
+          "sample_value": 1036.0
+        },
+        "container_network_receive_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_receive_packets_total": {
+          "count": 1,
+          "sample_value": 13.0
+        },
+        "container_network_transmit_bytes_total": {
+          "count": 1,
+          "sample_value": 1322.0
+        },
+        "container_network_transmit_errors_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_dropped_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_network_transmit_packets_total": {
+          "count": 1,
+          "sample_value": 17.0
+        },
+        "container_oom_events_total": {
+          "count": 1,
+          "sample_value": 0.0
+        },
+        "container_tasks_state": {
+          "count": 5,
+          "sample_value": 0.0
+        }
+      }
+    }
+  }
+}

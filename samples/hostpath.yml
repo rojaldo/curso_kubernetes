@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: host-access-pod
+spec:
+  volumes:
+  - name: docker-sock
+    hostPath:
+      path: /var/run/docker.sock
+      type: Socket
+
+  - name: node-logs
+    hostPath:
+      path: /var/log
+      type: Directory
+
+  containers:
+  - name: privileged-app
+    image: docker:latest
+    volumeMounts:
+    - name: docker-sock
+      mountPath: /var/run/docker.sock
+    - name: node-logs
+      mountPath: /host-logs
+      readOnly: true
+    

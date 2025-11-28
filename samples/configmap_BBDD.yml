@@ -1,0 +1,49 @@
+# 1. Crear ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  user: "admin"
+  db: "mydatabase"
+
+---
+
+# 2. Crear Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret
+type: Opaque
+data:
+  password: czNjcjN0
+
+---
+# 2. Usar en Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-config-pod
+spec:
+  containers:
+  - name: db-client
+    image: docker.io/library/mariadb:latest
+    env:
+    - name: MARIADB_USER
+      valueFrom:
+        configMapKeyRef:
+          name: app-config
+          key: user
+    - name: MARIADB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: app-secret
+          key: password
+    - name: MARIADB_DATABASE
+      valueFrom:
+        configMapKeyRef:
+          name: app-config
+          key: db
+    command: ["sh", "-c", "echo Connecting to DB $MARIADB_DATABASE with user $MARIADB_USER && sleep 3600"]  
+# Simula conexión a la base de datos
+

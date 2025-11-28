@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: job-output-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nginx-test-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: test-client
+        image: docker.io/curlimages/curl:latest
+        command: ["/bin/sh"]
+        args:
+          - -c
+          - |
+            echo "=== Testing nginx service ===" >> /output/response.log
+            echo "Timestamp: $(date)" >> /output/response.log
+            echo "Requesting http://nginx-service/" >> /output/response.log
+            curl -v http://nginx-service/ >> /output/response.log 2>&1
+            echo "" >> /output/response.log
+            echo "=== Test completed ===" >> /output/response.log
+            cat /output/response.log
+        volumeMounts:
+        - name: output-volume
+          mountPath: /output
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+      volumes:
+      - name: output-volume
+        persistentVolumeClaim:
+          claimName: job-output-pvc
+      restartPolicy: Never
+  backoffLimit: 3

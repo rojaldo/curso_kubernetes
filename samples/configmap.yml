@@ -1,0 +1,34 @@
+# 1. Crear ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  app.conf: |
+    server:
+      port: 8080
+      host: 0.0.0.0
+    logging:
+      level: INFO
+
+---
+# 2. Usar en Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-pod
+spec:
+  volumes:
+  - name: config
+    configMap:
+      name: app-config
+      defaultMode: 0644
+
+  containers:
+  - name: app
+    image: docker.io/library/alpine:latest
+    volumeMounts:
+    - name: config
+      mountPath: /etc/config
+    # print ls and cat the config file to verify
+    command: ["sh", "-c", "ls /etc/config && cat /etc/config/app.conf && sleep 3600"]

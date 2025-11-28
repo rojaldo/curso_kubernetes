@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-11-27T08:54:57.106305",
+  "total_metric_lines": 4726,
+  "cadvisor_url": "http://localhost:8080/metrics",
+  "metric_types": {
+    "cpu": 558,
+    "memory": 1400,
+    "network": 168,
+    "filesystem": 1827,
+    "disk": 0,
+    "accelerator": 0
+  }
+}

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: temp-storage-pod
+spec:
+  volumes:
+  - name: scratch          # Directorio vacío
+    emptyDir:
+      sizeLimit: 500Mi     # Límite máximo
+
+  containers:
+  - name: writer
+    image: docker.io/library/alpine:latest
+    command: ["sh", "-c", "echo 'data' > /scratch/file.txt && sleep 3600"]
+    volumeMounts:
+    - name: scratch
+      mountPath: /scratch
+
+  - name: reader
+    image: docker.io/library/alpine:latest
+    # sleep para que de tiempo a que el contenedor writer cree el archivo 
+    command: ["sh", "-c", "sleep 5 && cat /scratch/file.txt && sleep 3600"]
+    volumeMounts:
+    - name: scratch
+      mountPath: /scratch
+      # Ambos contenedores comparten datos

@@ -1,0 +1,22 @@
+# PV that satisfies PVC in stateful.yml
+  # volumeClaimTemplates:
+  # - metadata:
+  #     name: data
+  #   spec:
+  #     accessModes: [ "ReadWriteOnce" ]
+  #     storageClassName: fast-ssd
+  #     resources:
+  #       requests:
+  #         storage: 20Gi
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: fast-ssd
+  hostPath:
+    path: /tmp/postgres-data
