@@ -1,0 +1,23 @@
+# Development environment values
+replicaCount: 1
+
+image:
+  tag: "1.25.0"
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 10m
+    memory: 32Mi
+
+autoscaling:
+  enabled: false
+
+ingress:
+  enabled: false
